@@ -1,6 +1,6 @@
 export interface MartModel {
     id: string,
-    companyName: string
+    name: string
     email:string,
     phone: string,
     cnpj_cpf: string,

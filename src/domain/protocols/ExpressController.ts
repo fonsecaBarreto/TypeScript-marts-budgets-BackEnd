@@ -6,25 +6,28 @@ import { InvalidRequestBodyError, ServerError } from './Errors';
 
 export abstract class ExpressController implements AppController{
 
-    abstract handler(request: Request): Promise<Response>
     protected readonly middlewares: AppMiddleware[]
     constructor( 
         protected readonly bodyValidator?: BodyValidator,
-        ...middlewares:AppMiddleware[]
+        ...middlewares:AppMiddleware[] 
         ){
             this.middlewares = middlewares
         }
+        
+    abstract handler(request: Request): Promise<Response>
 
     runMiddlewares(request:Request): Promise<Response | null>{
         
         return new Promise( async (resolve, reject) => {
 
-            if(this.middlewares && this.middlewares.length > 0 ){
-                await Promise.all(this.middlewares.map( async m =>{
-                    const respo = await m.handler(request)
-                    if(respo) return resolve(respo)
-                }))
-            }
+            try{
+                if(this.middlewares && this.middlewares.length > 0 ){
+                    await Promise.all(this.middlewares.map( async m =>{
+                        const respo = await m.handler(request)
+                        if(respo) return resolve(respo)
+                    }))
+                }
+            }catch(err){ return reject(err)}
 
             return resolve(null)
         })
@@ -33,13 +36,14 @@ export abstract class ExpressController implements AppController{
     async run(request:Request): Promise<Response>{
 
         try{  
+
+            const middlewaresResponse = await this.runMiddlewares(request)
+            if(middlewaresResponse) return middlewaresResponse
+
             if(this.bodyValidator){
                 const errors = await this.bodyValidator.validate(request.body)
                 if(errors) return {status: 400, body: InvalidRequestBodyError(errors)}
             }
-
-            const conditionalRespo = await this.runMiddlewares(request)
-            if(conditionalRespo) return conditionalRespo
 
             return await this.handler(request)
         }catch(err){ 

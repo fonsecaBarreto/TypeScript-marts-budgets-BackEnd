@@ -48,10 +48,10 @@ export class AuthMartController extends MainController {
 
     async handler(request: Request): Promise<Response> {
 
-        const { mart } = request
-        if(!mart) return unauthorized()
+        const { user } = request
+        if(!user) return unauthorized()
         
-        delete mart.password
-        return success(mart)
+        delete user.password
+        return success(user)
     }
 }

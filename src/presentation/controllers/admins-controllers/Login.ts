@@ -13,7 +13,7 @@ export  class AdminSignInController extends MainController {
         private readonly hasher: Hasher
     ){
         super(AccessType.PUBLIC, {
-            username: { type: "string" },
+            username: { type: "string", label:"Nome de Usuario" },
             password: { type: "string", label: "Senha" }
         })
     }
@@ -40,10 +40,10 @@ export class AuthAdminController extends MainController {
 
     async handler(request: Request): Promise<Response> {
 
-        const { admin } = request
-        if(!admin) return unauthorized()
+        const { user } = request
+        if(!user) return unauthorized()
         
-        delete admin.password
-        return success(admin)
+        delete user.password
+        return success(user)
     }
 }
