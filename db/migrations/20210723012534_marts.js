@@ -4,7 +4,7 @@ exports.up = function(knex) {
         t.string('name').notNull()
         t.string('email').notNull().unique()
         t.string('cnpj_cpf').notNull().unique()
-        t.string('password').notNull()
+        t.string('password')
         t.string('phone').unique()
         t.string('annex')
         t.string('image')

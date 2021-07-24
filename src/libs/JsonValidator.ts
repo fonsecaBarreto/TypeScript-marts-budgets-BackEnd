@@ -1,4 +1,4 @@
-import { BodyValidator, ErrorsParams, SchemaRow } from '../domain/protocols/BodyValidator'
+import { BodyValidator, ErrorsParams, SchemaRow } from '../domain/protocols/ControllerBateries'
 import * as emailValidator from 'email-validator';
 import { cpf, cnpj } from 'cpf-cnpj-validator'; 
 

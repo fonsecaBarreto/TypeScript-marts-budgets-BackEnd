@@ -1,13 +1,20 @@
 import keys from './config/keys'
-import express from "express"
-import setMiddlewares from './middlewares'
-import setRoutes from './routes'
-//parei aqui
+import { AdminModel } from '../domain/entities/AdminModel'
+import { MartModel } from '../domain/entities/MartModel'
+
+declare global {
+    namespace Express {
+        interface Request {
+            file: any ,
+            user: AdminModel | MartModel
+        }
+    }
+}
 
 async function main(){
-    const app = express()
-    setMiddlewares(app)
-    setRoutes(app)
+
+    const app = (await import('./config/app')).default
+
     app.listen(keys.port, ()=>{ 
         console.log("....................")
         console.log(" Server is running")

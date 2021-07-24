@@ -11,5 +11,36 @@
             "missingMessage": "Informe sua Senha para prosseguir",
             "invalidMessage" : "Informe sua Senha para prosseguir"
         }
-    }
+    },
+
+    "rows":{
+        "name": { "type": "string",
+            "missingMessage": "Informe-nos o nome da sua empresa" },
+
+        "email": { "type": "email",
+            "missingMessage": "É Preciso de um E-mail de trabalho para prosseguir " ,
+            "invalidMessage" : "Verifique se seu E-mail esta correto"
+        },
+        "phone": { "type": "phone", "optional": true},
+        "cnpj_cpf": { "type": "cnpj/cpf",
+            "missingMessage": "É Preciso de um documento para validar sua identidade" ,
+            "invalidMessage" : "Verifique se seu documento está correto"
+        },
+        "password": { "type": "string"},
+        "annex": { "type": "string", "optional": true},
+        "image": { "type": "string", "optional": true},
+        "transfer_allowed": { "type": "boolean",
+            "missingMessage": "Sua Colaboração é muito importante, Certifique-se de que marcar umas das opções" 
+        }
+    },
+
+    "Create": [ "name", "email", "phone", "cnpj_cpf", "password", "annex", "image", "transfer_allowed" ],
+
+    "Update": [ "name", "email", "phone", "cnpj_cpf", "annex", "image", "transfer_allowed" ],
+
+    "SignUp": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"]
+    
+
 }
+
+

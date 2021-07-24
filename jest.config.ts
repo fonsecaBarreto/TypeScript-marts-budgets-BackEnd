@@ -3,7 +3,7 @@ export default {
 
   testTimeout: 30000,
 
-  roots: ['<rootDir>/src/'],
+  roots: ['<rootDir>/test/', '<rootDir>/src'],
 
   clearMocks: true,
 

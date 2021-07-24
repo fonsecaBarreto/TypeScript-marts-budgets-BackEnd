@@ -1,23 +1,34 @@
 import { Router } from 'express'
-import { AuthMartController, MartsSignInController } from '../../presentation/controllers/marts-controllers/Login'
-import { CreateMartController } from '../../presentation/controllers/marts-controllers/Crud'
+import { authMartController, martSignInController, 
+    createMartController, updateMartController,
+    findMartController, removeMartController, signUpMartController,
+    joinMartController,
+    uploadMartAnnexController } from '../factories/marts'
 
-import { vendors, repositories } from '../factories/depedencies'
 
 
-const { adminsRepository, martsRepository } = repositories
-const { encrypter, hasher, idGenerator } = vendors
-
-const martsSignInController = new MartsSignInController(martsRepository, encrypter, hasher)
-const authController = new AuthMartController()
-
-/*  */
-
-const createController  = new CreateMartController()
 export default (router: Router) =>{
-    router.post("/marts/login/signin",martsSignInController.execute() )
-    router.post("/marts/login/auth",authController.execute() )
 
+    /* public  */
+    router.post("/marts/login/signin",martSignInController.execute() )
+    router.post('/marts/login/signup', signUpMartController.execute())
 
-    router.post('/marts', createController.execute())
+    /* marts */
+    router.post("/marts/login/auth",authMartController.execute() )
+    router.patch('/marts/annex', uploadMartAnnexController.execute())
+
+    /*  admin */
+    router.route('/marts')
+        .get(findMartController.execute())
+        .post(createMartController.execute())
+
+    router.route('/marts/:id')
+        .get(findMartController.execute())
+        .delete(removeMartController.execute())
+        .put(updateMartController.execute())
+
+    router.route('/marts/:id/join')
+        .patch(joinMartController.execute())
+
+    
 }

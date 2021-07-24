@@ -40,6 +40,8 @@ export class AuthAdminController extends MainController {
 
     async handler(request: Request): Promise<Response> {
 
+
+        console.log(request)
         const { user } = request
         if(!user) return unauthorized()
         

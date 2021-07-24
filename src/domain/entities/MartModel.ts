@@ -6,8 +6,8 @@ export interface MartModel {
     cnpj_cpf: string,
     password: string,
     annex: string
-    transfer_allowed: string,
-    image: string
+    transfer_allowed: boolean,
+    image: string,
 }
 
 

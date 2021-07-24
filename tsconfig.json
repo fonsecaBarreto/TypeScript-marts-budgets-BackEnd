@@ -11,5 +11,5 @@
   },
   "include": [
     "src/**/*"
-  ]
+,   "test/presentation/Admin Login.test.ts"  ]
 }

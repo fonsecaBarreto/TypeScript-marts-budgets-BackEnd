@@ -7,7 +7,8 @@ export type Request = {
     query: any,
     headers: any
     body?:any,
-    user?: MartModel | AdminModel
+    user?: MartModel | AdminModel,
+    file?: any
 }
 
 export type Response = {

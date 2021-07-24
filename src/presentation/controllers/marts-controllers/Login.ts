@@ -1,4 +1,4 @@
-import { MartNotFoundError } from "../../../domain/protocols/Errors/MartsErrors";
+import { MartNotFoundError, MartNotVerifiedError } from "../../../domain/protocols/Errors/MartsErrors";
 import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { Encrypter } from "../../../domain/vendors/Encrypter";
@@ -29,6 +29,8 @@ export  class MartsSignInController extends MainController {
 
         if(!exists) throw MartNotFoundError()
 
+        if(!exists.password) throw MartNotVerifiedError()
+
         const isValid = await this.hasher.compare(password, exists.password)
         if(!isValid) return unauthorized()
 
@@ -41,7 +43,7 @@ export  class MartsSignInController extends MainController {
 
 export class AuthMartController extends MainController {
 
-    constructor(  ){ super(AccessType.MART) }
+    constructor(  ){ super(AccessType.MART_OR_ADMIN) }
 
     async handler(request: Request): Promise<Response> {
 

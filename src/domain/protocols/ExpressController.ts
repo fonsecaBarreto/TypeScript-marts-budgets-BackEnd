@@ -1,70 +1,67 @@
-import { Request as ExpressRequest, Response as ExpressResponse, NextFunction as ExpressNextFunction } from 'express'
-/* protocols */
-import { Request, Response, AppController, AppMiddleware } from './http'
-import { BodyValidator } from './BodyValidator';
+import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
+import { BodyValidator, ContentTypeHandler, UserAuthentication } from './ControllerBateries';
 import { InvalidRequestBodyError, ServerError } from './Errors';
 
-export abstract class ExpressController implements AppController{
+import { AppController, Request, Response } from "./http";
 
-    protected readonly middlewares: AppMiddleware[]
-    constructor( 
-        protected readonly bodyValidator?: BodyValidator,
-        ...middlewares:AppMiddleware[] 
-        ){
-            this.middlewares = middlewares
-        }
-        
+export namespace ExpressController {
+    export type Params = {
+        userAuthentication?: UserAuthentication,
+        contentTypeHandler?: ContentTypeHandler, 
+        bodyValidator?: BodyValidator
+    }
+}
+
+export abstract class ExpressController implements AppController {
+
+    protected readonly bodyValidator: BodyValidator
+    protected readonly contentTypeHandler: ContentTypeHandler
+    protected readonly userAuthentication: UserAuthentication
+
+    constructor( params: ExpressController.Params ){
+        const { bodyValidator, contentTypeHandler, userAuthentication } = params
+        this.contentTypeHandler = contentTypeHandler
+        this.userAuthentication = userAuthentication
+        this.bodyValidator = bodyValidator
+    }
     abstract handler(request: Request): Promise<Response>
 
-    runMiddlewares(request:Request): Promise<Response | null>{
-        
-        return new Promise( async (resolve, reject) => {
-
-            try{
-                if(this.middlewares && this.middlewares.length > 0 ){
-                    await Promise.all(this.middlewares.map( async m =>{
-                        const respo = await m.handler(request)
-                        if(respo) return resolve(respo)
-                    }))
-                }
-            }catch(err){ return reject(err)}
-
-            return resolve(null)
-        })
-    }
-
-    async run(request:Request): Promise<Response>{
-
-        try{  
-
-            const middlewaresResponse = await this.runMiddlewares(request)
-            if(middlewaresResponse) return middlewaresResponse
-
-            if(this.bodyValidator){
-                const errors = await this.bodyValidator.validate(request.body)
-                if(errors) return {status: 400, body: InvalidRequestBodyError(errors)}
-            }
-
-            return await this.handler(request)
-        }catch(err){ 
-            console.log("Error: ", err)
-            if( err?.code == "ApplicationError" ){ return {status: 403, body: err} }
-            return { status: 500, body: ServerError()}
-        }
-    }
-
     execute(){
-        return async (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => {
+        return async (req: ExpressRequest, res: ExpressResponse) => {
+            try {
 
-            var request: Request = {  
-                headers: req.headers,
-                body: req.body || {}, 
-                params: req.params,  
-                query: req.query,
-            }
+                if(this.userAuthentication){
+                    let provResponse = await this.userAuthentication.execute(req)
+                    if(provResponse) return sendResponse(res, provResponse)
+                }
 
-            const response = await this.run(request)
-            sendResponse(res, response)
+                if(this.contentTypeHandler){
+                    let provResponse = await this.contentTypeHandler.execute(req, res)
+                    if(provResponse) return sendResponse(res, provResponse)
+                }
+
+                if(this.bodyValidator){
+                    const errors = await this.bodyValidator.validate(req.body)
+                    if(errors) return  sendResponse(res, { status: 400, body: InvalidRequestBodyError(errors)})
+                }
+
+                var request: Request = {  
+                    headers: req.headers,
+                    body: req.body || {}, 
+                    params: req.params,  
+                    query: req.query,
+                    file: req.file,
+                    user: req.user
+                }
+
+                const response = await this.handler(request)
+                sendResponse(res, response)
+
+            } catch(err) {   
+                console.log("Error: ", err?.stack || err.name)
+                if( err?.code == "ApplicationError" ){ return sendResponse(res, { status: 403, body: err })  }
+                return sendResponse(res, { status: 500, body: ServerError() }) 
+            }      
         }
     }
 }
@@ -83,3 +80,4 @@ export function sendResponse(res: ExpressResponse, response: Response){
         return res.status(response.status).json(response.body)
     }
 }
+
