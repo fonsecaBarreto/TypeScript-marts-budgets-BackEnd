@@ -14,9 +14,12 @@ export abstract class MainController extends ExpressController {
     static adminsRepository: DatabaseAdapter
     static martsRepository: DatabaseAdapter
 
-    constructor(access:AccessType = AccessType.ADMIN, schema?:Record<string, SchemaRow>, ...middlewares: AppMiddleware[]){
-        const validator = schema ? new JsonValidator(schema) : null
+    constructor(
+        access:AccessType = AccessType.ADMIN, 
+        schema?:Record<string, SchemaRow>, 
+        ...middlewares: AppMiddleware[]){
 
+        const validator = schema ? new JsonValidator(schema) : null
         const isAdmin = new AuthenticteMiddleware( MainController.encrypter, MainController.adminsRepository )
         const isMart = new AuthenticteMiddleware( MainController.encrypter, MainController.martsRepository )
 
@@ -26,6 +29,7 @@ export abstract class MainController extends ExpressController {
                 default: middlewares.unshift(isAdmin)
             }
         }
+        
         super(validator, ...middlewares)
     }
     abstract handler(request: Request): Promise<Response>

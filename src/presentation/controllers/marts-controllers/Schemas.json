@@ -1,0 +1,15 @@
+{
+    "SignIn":{
+        "credentials": { 
+            "type": "string",        
+            "missingMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado",
+            "invalidMessage" : "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado"
+        },
+
+        "password": { 
+            "type": "string",
+            "missingMessage": "Informe sua Senha para prosseguir",
+            "invalidMessage" : "Informe sua Senha para prosseguir"
+        }
+    }
+}

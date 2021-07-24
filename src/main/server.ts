@@ -1,4 +1,4 @@
-import keys from './keys'
+import keys from './config/keys'
 import express from "express"
 import setMiddlewares from './middlewares'
 import setRoutes from './routes'

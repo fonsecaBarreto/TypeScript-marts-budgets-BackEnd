@@ -1,4 +1,4 @@
-import keys from '../keys'
+import keys from '../config/keys'
 import NodeMailerAdapter from '../../libs/NodeMailerAdapter'
 import PasswordGeneratorAdapter from '../../libs/PasswordGeneratorAdapter'
 import UuidAdapter from '../../libs/UuidAdapter'
@@ -6,6 +6,7 @@ import BcryptAdapter from '../../libs/BcryptAdapter'
 import KnexAdapter from '../../libs/KnexAdapter'
 import JsonWebTokenAdapter from '../../libs/JsonWebTokenAdapter'
 import {MainController} from '../../presentation/helpers/MainController'
+
 KnexAdapter.open(keys.node_env)
 
 export const vendors = {

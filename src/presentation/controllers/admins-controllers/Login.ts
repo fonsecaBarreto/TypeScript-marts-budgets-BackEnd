@@ -8,9 +8,9 @@ import { AccessType, MainController } from "../../helpers/MainController"
 
 export  class AdminSignInController extends MainController {
     constructor(
-        private readonly adminsRepository: DatabaseAdapter,
-        private readonly encrypter: Encrypter,
-        private readonly hasher: Hasher
+        public readonly adminsRepository: Pick<DatabaseAdapter, 'find'>,
+        public readonly encrypter: Encrypter,
+        public readonly hasher: Hasher
     ){
         super(AccessType.PUBLIC, {
             username: { type: "string", label:"Nome de Usuario" },
@@ -36,7 +36,7 @@ export  class AdminSignInController extends MainController {
 
 export class AuthAdminController extends MainController {
 
-    constructor(  ){ super(AccessType.ADMIN) }
+    constructor(){ super(AccessType.ADMIN) }
 
     async handler(request: Request): Promise<Response> {
 

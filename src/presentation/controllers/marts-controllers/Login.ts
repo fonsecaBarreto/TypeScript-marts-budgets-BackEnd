@@ -5,18 +5,15 @@ import { Encrypter } from "../../../domain/vendors/Encrypter";
 import { Hasher } from "../../../domain/vendors/Utils";
 import { success, unauthorized } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController"
-
+import { SignIn as SignInSchema } from './Schemas.json'
 
 export  class MartsSignInController extends MainController {
     constructor(
         private readonly martsRepository: DatabaseAdapter,
         private readonly encrypter: Encrypter,
-        private readonly hasher: Hasher
+        public readonly hasher: Hasher
     ){
-        super(AccessType.PUBLIC, {
-            credentials: { type: "string", label: "Credenciais"},
-            password: { type: "string", label: "Senha"}
-        })
+        super(AccessType.PUBLIC, SignInSchema)
     }
     async handler(request: Request): Promise<Response> {
 

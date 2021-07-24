@@ -1,4 +1,4 @@
-import keys from '../keys'
+import keys from '../config/keys'
 import { Router, Express } from 'express'
 import { readdirSync } from 'fs'
 

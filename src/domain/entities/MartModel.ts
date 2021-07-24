@@ -4,5 +4,15 @@ export interface MartModel {
     email:string,
     phone: string,
     cnpj_cpf: string,
-    password: string
+    password: string,
+    annex: string
+    transfer_allowed: string,
+    image: string
 }
+
+
+//enviar documentos  [pdf or some image] // referente a autentificaçã de pessoa juridica ou fisica ( opcional)
+//
+//aceitar autorização de emvio das inforçãos de infprmaçoes cedidas
+
+//
