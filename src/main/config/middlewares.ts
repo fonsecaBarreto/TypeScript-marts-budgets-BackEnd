@@ -1,4 +1,5 @@
-import { json, Express } from 'express'
+import { Express, json, urlencoded } from 'express'
+/* import { json, urlencoded } from 'body-parser' */
 import cors from 'cors'
 
 export default (app: Express) => {
@@ -8,8 +9,8 @@ export default (app: Express) => {
     console.log("  - ",req.method, req.path)
     next()
   })
-
-  app.use(json())
-  app.use(cors())
   
+  app.use(cors())
+  app.use(json())
+  app.use(urlencoded({ extended: true }))
 }

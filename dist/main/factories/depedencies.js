@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.repositories = exports.vendors = void 0;
+exports.repositories = exports.vendors = exports.fileRepository = void 0;
+const path_1 = __importDefault(require("path"));
 const keys_1 = __importDefault(require("../config/keys"));
 const NodeMailerAdapter_1 = __importDefault(require("../../libs/NodeMailerAdapter"));
 const PasswordGeneratorAdapter_1 = __importDefault(require("../../libs/PasswordGeneratorAdapter"));
@@ -12,7 +13,7 @@ const BcryptAdapter_1 = __importDefault(require("../../libs/BcryptAdapter"));
 const KnexAdapter_1 = __importDefault(require("../../libs/KnexAdapter"));
 const JsonWebTokenAdapter_1 = __importDefault(require("../../libs/JsonWebTokenAdapter"));
 const MainController_1 = require("../../presentation/helpers/MainController");
-const Authentication_1 = require("../../presentation/helpers/Authentication");
+const LocalFileStorage_1 = __importDefault(require("../../data/LocalFileStorage"));
 KnexAdapter_1.default.open(keys_1.default.node_env);
 class MailterStub {
     async send(to, subject, html) {
@@ -21,6 +22,7 @@ class MailterStub {
         \nCorpo: ${html}`);
     }
 }
+exports.fileRepository = new LocalFileStorage_1.default(path_1.default.join(__dirname, '..', '..', '..', 'uploads', keys_1.default.node_env));
 exports.vendors = {
     idGenerator: new UuidAdapter_1.default(),
     passwordGenerator: new PasswordGeneratorAdapter_1.default(),
@@ -34,7 +36,6 @@ exports.repositories = {
     categoriesRepository: new KnexAdapter_1.default('categories'),
     productsRepository: new KnexAdapter_1.default('products')
 };
-const adminAuthentication = new Authentication_1.AuthenticationHandler(exports.vendors.encrypter, exports.repositories.adminsRepository);
-const martAuthentication = new Authentication_1.AuthenticationHandler(exports.vendors.encrypter, exports.repositories.martsRepository);
-MainController_1.MainController.adminAuthentication = adminAuthentication;
-MainController_1.MainController.martAuthentication = martAuthentication;
+MainController_1.MainController.encrypter = exports.vendors.encrypter;
+MainController_1.MainController.martRepository = exports.repositories.martsRepository;
+MainController_1.MainController.adminRepository = exports.repositories.adminsRepository;

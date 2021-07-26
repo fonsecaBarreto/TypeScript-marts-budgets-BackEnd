@@ -27,13 +27,25 @@ class SignUpMartController extends MainController_1.MainController {
 }
 exports.SignUpMartController = SignUpMartController;
 class UploadMartAnnexController extends MainController_1.MainController {
-    constructor(martRepository) {
+    constructor(martRepository, fileRepository) {
         super(MainController_1.AccessType.MART, null, MultiPartContent_1.ContentType.DOCUMENT);
         this.martRepository = martRepository;
+        this.fileRepository = fileRepository;
     }
     async handler(request) {
-        //Should store file and store name on database 
-        return http_helper_1.success(request.file);
+        const { user, file } = request;
+        const mart = { ...user };
+        if (mart.annex) {
+            return http_helper_1.unauthorized();
+        }
+        const name = "documents/strict_document_" + Date.now();
+        const result = await this.fileRepository.save({
+            buffer: file.buffer,
+            contentType: file.mimetype,
+            name
+        });
+        await this.martRepository.update({ id: user.id }, { annex: result.name });
+        return http_helper_1.success();
     }
 }
 exports.UploadMartAnnexController = UploadMartAnnexController;

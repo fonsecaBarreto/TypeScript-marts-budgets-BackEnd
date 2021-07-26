@@ -23,3 +23,6 @@ export const MissingFileBufferError = () => {
 
 
     
+export const unexpectedFileError = (param: string) =>{
+    return new ApplicationError('unexpectedFileError',  `Arquivo '${param}' é Inesperado.`, { param: "Arquivo inesperado pelo sistema"})
+}

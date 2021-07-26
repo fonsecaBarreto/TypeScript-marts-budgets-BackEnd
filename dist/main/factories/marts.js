@@ -25,5 +25,5 @@ exports.updateMartController = new Crud_1.UpdateMartController(createMart);
 exports.findMartController = new Crud_1.FindController(mrtApp);
 exports.removeMartController = new Crud_1.RemoveController(mrtApp);
 /* patch */
-exports.uploadMartAnnexController = new SignUp_1.UploadMartAnnexController(martsRepository); //Mart it self
+exports.uploadMartAnnexController = new SignUp_1.UploadMartAnnexController(martsRepository, depedencies_1.fileRepository); //Mart it self
 exports.joinMartController = new Join_1.JoinMartController(martsRepository, passwordGenerator, hasher, mailer); //Admin

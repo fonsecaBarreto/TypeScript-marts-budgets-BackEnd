@@ -5,7 +5,7 @@ import { MartModel } from '../domain/entities/MartModel'
 declare global {
     namespace Express {
         interface Request {
-            file: any ,
+            files: any ,
             user: AdminModel | MartModel
         }
     }

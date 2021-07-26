@@ -13,9 +13,6 @@ CreateList.forEach( ( key:string ) => CreateSchema[key] = schemasRows[key] )
 const UpdateSchema:any = {}
 UpdateList.forEach( ( key:string ) => UpdateSchema[key] = schemasRows[key] )
 
-
-console.log(UpdateSchema)
-
 export class CreateMartController  extends MainController{
     constructor(  private readonly createNewMart: CreateNewMart 
     ){ super(AccessType.ADMIN, CreateSchema) }

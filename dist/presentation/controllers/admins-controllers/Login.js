@@ -29,6 +29,7 @@ exports.AdminSignInController = AdminSignInController;
 class AuthAdminController extends MainController_1.MainController {
     constructor() { super(MainController_1.AccessType.ADMIN); }
     async handler(request) {
+        console.log(request);
         const { user } = request;
         if (!user)
             return http_helper_1.unauthorized();

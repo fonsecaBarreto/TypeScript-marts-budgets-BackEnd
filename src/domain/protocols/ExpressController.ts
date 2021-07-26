@@ -28,6 +28,7 @@ export abstract class ExpressController implements AppController {
 
     execute(){
         return async (req: ExpressRequest, res: ExpressResponse) => {
+
             try {
 
                 if(this.userAuthentication){
@@ -50,7 +51,7 @@ export abstract class ExpressController implements AppController {
                     body: req.body || {}, 
                     params: req.params,  
                     query: req.query,
-                    file: req.file,
+                    files: req.files,
                     user: req.user
                 }
 

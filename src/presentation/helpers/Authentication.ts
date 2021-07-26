@@ -35,8 +35,6 @@ export class AuthenticationHandler implements UserAuthentication {
 
         var user: any;
 
-        console.log(this.access)
-
         switch(this.access){
             case AccessType.MART : {
                 user = await this.martRepository.find({ id: decoded?.id })

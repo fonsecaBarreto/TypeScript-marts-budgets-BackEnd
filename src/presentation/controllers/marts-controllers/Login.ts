@@ -43,7 +43,7 @@ export  class MartsSignInController extends MainController {
 
 export class AuthMartController extends MainController {
 
-    constructor(  ){ super(AccessType.MART_OR_ADMIN) }
+    constructor(  ){ super(AccessType.MART) }
 
     async handler(request: Request): Promise<Response> {
 

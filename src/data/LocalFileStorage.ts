@@ -22,7 +22,7 @@ export default class LocalStorage implements FileRepository{
 
     async get(name: string): Promise<any> {
 
-        const fullpath = path.resolve(this.root_directory, name)
+        const fullpath = path.join(this.root_directory, name)
 
         const file = fs.readFileSync(fullpath)
 

@@ -8,7 +8,8 @@ export type Request = {
     headers: any
     body?:any,
     user?: MartModel | AdminModel,
-    file?: any
+    files?: any,
+
 }
 
 export type Response = {

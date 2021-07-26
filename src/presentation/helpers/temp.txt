@@ -1,0 +1,44 @@
+   formidable.on('fileBegin', function(name, file){
+
+                return formidable.emit("data", {name:"Muito ruim"})
+                if(!fieldNames.includes(name)) return reject(unexpectedFileError(name))
+
+    
+               console.log("began",file, name)
+                    console.log(file) 
+                               /*  if(fileType === FormDataFileType.DOCUMENT) {
+                    if(!COMMON_DOCUMENTS.includes(file.type)) throw new Error('Invalido')
+    
+                }
+          
+                 if(fileType == 'jpg' || fileType == 'png' || fileType == 'jpeg' ){
+         
+                    file.path = form.uploadDir + "/" + images_hash + '_' + image_count + '.' + fileType;
+                 
+                    ++image_count;
+                } else {
+                    console.log( 'incorrect file type: ' + fileType );
+                } 
+            })
+
+            formidable.on('end', () => {
+                console.log('Done!');
+            })
+
+
+            const filesReceived  =
+                console.log(filesReceived)
+
+
+                console.log(fileRepository) */
+
+              
+
+                await fieldNames.map(fieldName => {
+
+                    const schema = this.fileSchema[fieldName]
+                    
+                    if( !filesReceived.includes(fieldName)){
+                        return reject(new Error("Missing Param" + fieldName)) 
+                    }
+                }) 
