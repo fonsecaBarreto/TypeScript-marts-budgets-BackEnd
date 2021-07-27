@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+/* import { json, urlencoded } from 'body-parser' */
 const cors_1 = __importDefault(require("cors"));
 exports.default = (app) => {
     app.use((req, res, next) => {
@@ -11,6 +12,7 @@ exports.default = (app) => {
         console.log("  - ", req.method, req.path);
         next();
     });
-    app.use(express_1.json());
     app.use(cors_1.default());
+    app.use(express_1.json());
+    app.use(express_1.urlencoded({ extended: true }));
 };

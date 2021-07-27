@@ -8,7 +8,7 @@ const COMMON_DOCUMENTS = [
     "application/pdf"
 ];
 const getImage = MulterFactory_1.MulterMiddleWare({ types: COMMON_IMAGES, limit: 10e+6, fieldname: "image" });
-const getDocuments = MulterFactory_1.MulterMiddleWare({ types: [...COMMON_DOCUMENTS], limit: 10e+6, fieldname: "documents" });
+const getDocuments = MulterFactory_1.MulterMiddleWare({ types: [...COMMON_DOCUMENTS], limit: 10e+6, fieldname: "document" });
 var ContentType;
 (function (ContentType) {
     ContentType[ContentType["IMAGE"] = 0] = "IMAGE";

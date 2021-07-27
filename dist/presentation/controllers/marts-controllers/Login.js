@@ -4,10 +4,10 @@ exports.AuthMartController = exports.MartsSignInController = void 0;
 const MartsErrors_1 = require("../../../domain/protocols/Errors/MartsErrors");
 const http_helper_1 = require("../../helpers/http-helper");
 const MainController_1 = require("../../helpers/MainController");
-const Schemas_json_1 = require("./Schemas.json");
+const mart_schemas_json_1 = require("../../schemas/mart-schemas.json");
 class MartsSignInController extends MainController_1.MainController {
     constructor(martsRepository, encrypter, hasher) {
-        super(MainController_1.AccessType.PUBLIC, Schemas_json_1.SignIn);
+        super(MainController_1.AccessType.PUBLIC, mart_schemas_json_1.SignIn);
         this.martsRepository = martsRepository;
         this.encrypter = encrypter;
         this.hasher = hasher;

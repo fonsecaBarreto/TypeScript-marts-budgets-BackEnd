@@ -7,7 +7,8 @@ exports.default = (router) => {
     router.post('/marts/login/signup', marts_1.signUpMartController.execute());
     /* marts */
     router.post("/marts/login/auth", marts_1.authMartController.execute());
-    router.patch('/marts/annex', marts_1.uploadMartAnnexController.execute());
+    router.post("/marts/login/reset-password", marts_1.resetPassword.execute());
+    router.post("/marts/login/change-password", marts_1.changePasswordByToken.execute());
     /*  admin */
     router.route('/marts')
         .get(marts_1.findMartController.execute())

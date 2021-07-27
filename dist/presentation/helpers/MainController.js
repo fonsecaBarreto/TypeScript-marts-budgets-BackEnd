@@ -17,15 +17,14 @@ exports.MainController = void 0;
 const ExpressController_1 = require("../../domain/protocols/ExpressController");
 const JsonValidator_1 = __importDefault(require("../../libs/JsonValidator"));
 const Authentication_1 = require("./Authentication");
-/* deep */
-const MultiPartContent_1 = require("./MulterAdapter/MultiPartContent");
+const FormDataParser_1 = require("./FormDataParser");
 __exportStar(require("./Authentication"), exports);
 class MainController extends ExpressController_1.ExpressController {
-    constructor(accessType = Authentication_1.AccessType.ADMIN, schema, contentType) {
+    constructor(accessType = Authentication_1.AccessType.ADMIN, schema, fileSchema) {
         const bodyValidator = schema ? new JsonValidator_1.default(schema) : null;
         const userAuthentication = accessType == Authentication_1.AccessType.PUBLIC ? null :
             new Authentication_1.AuthenticationHandler(MainController.encrypter, MainController.adminRepository, MainController.martRepository, accessType);
-        const contentTypeHandler = contentType != null ? new MultiPartContent_1.MultiPartContent(contentType) : null;
+        const contentTypeHandler = fileSchema != null ? new FormDataParser_1.FormDataParser(fileSchema) : null;
         super({ userAuthentication, bodyValidator, contentTypeHandler });
     }
 }

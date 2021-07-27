@@ -65,13 +65,22 @@ class JsonValidator {
                 case "cnpj/cpf":
                     final_value = (value + "").replace(/[^\d]+/g, '');
                     break;
+                case "phone":
+                    final_value = (value + "").replace(/[^\d]+/g, '');
+                    break;
                 case "number":
-                    if (!isNaN(value))
-                        final_value = Number(value);
+                    {
+                        if (!isNaN(value))
+                            final_value = Number(value);
+                    }
+                    ;
                     break;
                 case "date":
                     if (!isNaN(Date.parse(value)))
                         final_value = new Date(value);
+                    break;
+                case "boolean":
+                    final_value = JSON.parse(value);
                     break;
             }
             return body[field] = final_value;
@@ -100,7 +109,7 @@ class JsonValidator {
                 {
                     if (isNaN(value))
                         isValid = false;
-                    if (value.length < 10 || value.length > 20) {
+                    if (value.length < 10 || value.length > 14) {
                         isValid = false;
                     }
                 }

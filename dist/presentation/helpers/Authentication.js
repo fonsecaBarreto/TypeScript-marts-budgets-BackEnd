@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticationHandler = exports.AccessType = void 0;
 const http_helper_1 = require("./http-helper");
+const Errors_1 = require("../../domain/protocols/Errors");
 var AccessType;
 (function (AccessType) {
     AccessType[AccessType["PUBLIC"] = 0] = "PUBLIC";
@@ -27,13 +28,26 @@ class AuthenticationHandler {
         };
     }
     async execute(request) {
+        var decoded;
+        var user;
         const token = this.extractToken(request);
         if (!token)
             return http_helper_1.unauthorized();
-        const decoded = await this.encrypter.decode(token);
+        try {
+            decoded = await this.encrypter.decode(token);
+        }
+        catch (err) {
+            console.log(err);
+            switch (err.name) {
+                case "TokenExpiredError":
+                    return http_helper_1.forbidden(Errors_1.SessionExpiredError());
+                    break;
+                default: return http_helper_1.unauthorized();
+            }
+        }
         if (!decoded || !decoded.id)
             return http_helper_1.unauthorized();
-        var user;
+        console.log("resting time", decoded.exp - Math.floor(Date.now() / 1000), 's');
         switch (this.access) {
             case AccessType.MART:
                 {

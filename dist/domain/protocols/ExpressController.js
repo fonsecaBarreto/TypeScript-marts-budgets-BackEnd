@@ -32,17 +32,17 @@ class ExpressController {
                     body: req.body || {},
                     params: req.params,
                     query: req.query,
-                    file: req.file,
+                    files: req.files,
                     user: req.user
                 };
                 const response = await this.handler(request);
                 sendResponse(res, response);
             }
             catch (err) {
-                console.log("Error: ", (err === null || err === void 0 ? void 0 : err.stack) || err.name);
                 if ((err === null || err === void 0 ? void 0 : err.code) == "ApplicationError") {
                     return sendResponse(res, { status: 403, body: err });
                 }
+                console.log(console.log("\n *Error: ", err.stack));
                 return sendResponse(res, { status: 500, body: Errors_1.ServerError() });
             }
         };
@@ -51,7 +51,7 @@ class ExpressController {
 exports.ExpressController = ExpressController;
 function sendResponse(res, response) {
     if (response.status >= 400) {
-        console.log("Error: ", response.body);
+        console.log("  --> Error: ", response.body.name);
         return res.status(response.status).json({ error: {
                 name: response.body.name,
                 message: response.body.message,
