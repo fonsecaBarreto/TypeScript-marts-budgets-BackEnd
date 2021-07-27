@@ -27,7 +27,7 @@ export  class AdminSignInController extends MainController {
         const isValid = await this.hasher.compare(password, exists.password)
         if(!isValid) return unauthorized()
 
-        const token = await this.encrypter.sign(exists.id)
+        const token = await this.encrypter.sign(exists.id,  Math.floor(Date.now() / 1000) + (3600))
         return success({ accessToken: token })
     }
 
@@ -40,8 +40,6 @@ export class AuthAdminController extends MainController {
 
     async handler(request: Request): Promise<Response> {
 
-
-        console.log(request)
         const { user } = request
         if(!user) return unauthorized()
         

@@ -59,8 +59,8 @@ export abstract class ExpressController implements AppController {
                 sendResponse(res, response)
 
             } catch(err) {   
-                console.log("Error: ", err?.stack || err.name)
-                if( err?.code == "ApplicationError" ){ return sendResponse(res, { status: 403, body: err })  }
+                if( err?.code == "ApplicationError" ){ return sendResponse(res, { status: 403, body: err }) }
+                console.log( console.log("\n *Error: ", err.stack) )
                 return sendResponse(res, { status: 500, body: ServerError() }) 
             }      
         }
@@ -71,7 +71,7 @@ export abstract class ExpressController implements AppController {
 export function sendResponse(res: ExpressResponse, response: Response){
 
     if(response.status >= 400 ){
-        console.log("Error: ", response.body)
+        console.log("  --> Error: ", response.body.name)
         return res.status(response.status).json({ error: {
             name: response.body.name,
             message: response.body.message,

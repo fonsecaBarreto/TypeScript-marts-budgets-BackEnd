@@ -6,6 +6,7 @@ import { Mailer } from "../../../domain/vendors/Mailer";
 import { Hasher, IdGenerator, PasswordGenerator } from "../../../domain/vendors/Utils";
 import { success } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController";
+import { UnoComprasTemplate } from '../../helpers/EmailLayouts/UnoCompras'
 
 export class JoinMartController extends MainController {
     constructor(
@@ -30,7 +31,13 @@ export class JoinMartController extends MainController {
 
         await this.marsRepository.update({id}, { password: password_hash })
 
-        await this.mailer.send(exists.email,"Bem Vindo ao UnoCompras", `Senha: ${password}`)
+        this.mailer.send(exists.email,"Bem Vindo ao UnoCompras", UnoComprasTemplate(`
+            <h2> Bem Vindo ao UnoCompra  </h2>
+            <h2 style=" color: #333; font-size:20px;"> Sua Senha:</h2>
+            <h2 style="padding: 10px 32px; border: dashed 3px #ccc; width: fit-content; margin:auto">
+                ${password}
+            </h2>
+        `))
         const updated = await this.marsRepository.find({id})
 
         return success(updated)

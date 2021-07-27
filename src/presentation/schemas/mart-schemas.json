@@ -13,6 +13,19 @@
         }
     },
 
+    "resetPassword": {
+        "credentials": { 
+            "type": "string",        
+            "missingMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado",
+            "invalidMessage" : "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado"
+        }
+    },
+
+    "changePassword": {
+        "password": { "type": "string", "missingMessage": "Digite sua nova Senha" },
+        "passwordConfirmation": { "type": "string", "missingMessage": "Confirme a sua nova senha" }
+    },
+
     "rows":{
         "name": { "type": "string",
             "missingMessage": "Informe-nos o nome da sua empresa" },
@@ -39,7 +52,6 @@
     "Update": [ "name", "email", "phone", "cnpj_cpf", "annex", "image", "transfer_allowed" ],
 
     "SignUp": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"]
-    
 
 }
 

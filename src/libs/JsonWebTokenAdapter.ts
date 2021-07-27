@@ -5,17 +5,13 @@ export default class JsonWebTokenAdapter implements Encrypter {
         private readonly secret:string
     ){}
 
-    async sign(id: string): Promise<string> {
-        try{
-            const token = await sign({ id }, this.secret)
-            return token
-        }catch(err){ return null}
+    async sign(id: string, exp?:number): Promise<string> {
+        const token = await sign({ id, exp: exp || Math.floor(Date.now() / 1000) + 604800 }, this.secret)
+        return token
     }
 
     async decode(token: string): Promise<any> {
-        try{
-            var decoded = await verify(token, this.secret)
-            return decoded
-        }catch(err){ return null}
+        var decoded = await verify(token, this.secret)
+        return decoded
     }
 }

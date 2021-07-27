@@ -8,7 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 exports.default = (app) => {
     app.use((req, res, next) => {
         console.log("\nNova Requisição:");
-        console.log("  - ", req.method, req.path);
+        console.log(" -", req.method, req.path);
         next();
     });
     app.use(express_1.json());

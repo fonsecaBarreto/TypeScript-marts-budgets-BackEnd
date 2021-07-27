@@ -26,7 +26,8 @@ export const fileRepository = new LocalFileStorage(path.join(__dirname,'..','..'
 export const vendors = {
     idGenerator: new UuidAdapter(),
     passwordGenerator: new PasswordGeneratorAdapter(),
-    mailer: keys.node_env === "development" ? new MailterStub() : new  NodeMailerAdapter( keys.email_address, keys.email_password ),
+   /*  mailer: keys.node_env === "development" ? new MailterStub() : new NodeMailerAdapter( keys.email_address, keys.email_password ), */
+    mailer: new NodeMailerAdapter( keys.email_address, keys.email_password ),
     hasher: new BcryptAdapter(),
     encrypter: new JsonWebTokenAdapter(keys.jwt_secret)
 }

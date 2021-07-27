@@ -1,6 +1,5 @@
 import ApplicationError from './ApplicationError'
 
-
 export const ProductNotFoundError = () => (
     new ApplicationError('ProductNotFoundError', "Producto não encontrado ", {'product_id': "Produto não existe"}))
     

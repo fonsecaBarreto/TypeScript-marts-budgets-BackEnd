@@ -1,4 +1,4 @@
 export interface Encrypter{
-    sign(value:string): Promise<string>
+    sign(value:string, exp?:number): Promise<string>
     decode(token:string): Promise<any>
 }

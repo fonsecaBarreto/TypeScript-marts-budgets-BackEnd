@@ -3,9 +3,9 @@ import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { Encrypter } from "../../../domain/vendors/Encrypter";
 import { Hasher } from "../../../domain/vendors/Utils";
-import { success, unauthorized } from "../../helpers/http-helper";
+import { serverError, success, unauthorized } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController"
-import { SignIn as SignInSchema } from './Schemas.json'
+import { SignIn as SignInSchema } from '../../schemas/mart-schemas.json'
 
 export  class MartsSignInController extends MainController {
     constructor(
@@ -35,6 +35,7 @@ export  class MartsSignInController extends MainController {
         if(!isValid) return unauthorized()
 
         const token = await this.encrypter.sign(exists.id)
+
         return success({ accessToken: token })
     }
 
@@ -43,7 +44,7 @@ export  class MartsSignInController extends MainController {
 
 export class AuthMartController extends MainController {
 
-    constructor(  ){ super(AccessType.MART) }
+    constructor( ){ super(AccessType.MART) }
 
     async handler(request: Request): Promise<Response> {
 

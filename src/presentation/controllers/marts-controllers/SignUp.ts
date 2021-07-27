@@ -2,7 +2,7 @@
 import { Request, Response } from "../../../domain/protocols/http";
 import { AccessType, MainController } from "../../helpers/MainController";
 import CreateNewMart, {CreateMart} from "../../../data/mart/CreateMart";
-import { rows, SignUp as SignupList } from './Schemas.json'
+import { rows, SignUp as SignupList } from '../../schemas/mart-schemas.json'
 import { SchemaRow } from "../../../domain/protocols/ControllerBateries";
 import { success, unauthorized } from "../../helpers/http-helper";
 import { FileSchema } from "../../helpers/FormDataParser";
