@@ -15,7 +15,7 @@ const mrtApp = new MartApp(martsRepository)
 /* Login */
 export const martSignInController = new MartsSignInController(martsRepository, encrypter, hasher)
 export const authMartController = new AuthMartController()
-export const signUpMartController = new SignUpMartController(createMart)
+export const signUpMartController = new SignUpMartController(createMart, fileRepository)
 
 /* crud */
 export const createMartController = new CreateMartController(createMart)
@@ -25,5 +25,5 @@ export const removeMartController = new RemoveController(mrtApp)
 
 
 /* patch */
-export const uploadMartAnnexController = new UploadMartAnnexController(martsRepository, fileRepository) //Mart it self
+export const uploadMartAnnexController = new UploadMartAnnexController(martsRepository, fileRepository) // outdated
 export const joinMartController = new JoinMartController(martsRepository, passwordGenerator, hasher, mailer) //Admin

@@ -12,17 +12,12 @@ export const ServerError = () => (
 
 /* files */
 
-export const InvalidFileBufferError = (types:string[], limit: number) => {
-    const list = types.map(t=>(`'.${t.substring(t.lastIndexOf("/")+1, t.length )}'`)) 
-    const limitMb = (limit / (1024 * 1024 )).toFixed(2)
-    return new ApplicationError('InvalidFileBufferError',  `Somente arquivos de extesão (${ list}), e tamanho maximo de ${limitMb}Mb são permitidos.`)
+export const InvalidFileBufferError = (types:string[], limit: number, param: string) => {
+    const list = types.map(t=>(` .${t.substring(t.lastIndexOf("/")+1, t.length )}`)) 
+    const limitMb = (limit / (1024 * 1024 )).toFixed(2);
+    const message = `Somente arquivos de extesão (${ list} ) e tamanho maximo de ${limitMb} Mb.`
+    return new ApplicationError('InvalidFileBufferError',  message, { [param]: message })
 }
-export const MissingFileBufferError = () => {
-    return new ApplicationError('MissingFileBufferError',  `Arquivo não encontrado.`)
-}
-
-
-    
-export const unexpectedFileError = (param: string) =>{
-    return new ApplicationError('unexpectedFileError',  `Arquivo '${param}' é Inesperado.`, { param: "Arquivo inesperado pelo sistema"})
+export const MissingFileBufferError = (param: string) => {
+    return new ApplicationError('MissingFileBufferError',  `Arquivo não encontrado.`, {[param]:'Arquivo não encontrado.'})
 }
