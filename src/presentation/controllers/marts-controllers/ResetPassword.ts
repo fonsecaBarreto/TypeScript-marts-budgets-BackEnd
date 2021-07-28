@@ -1,4 +1,4 @@
-import { DisagreementPasswordError, MartNotFoundError, SessionExpiredError } from "../../../domain/protocols/Errors";
+import { DisagreementPasswordError, MartNotFoundError, MartNotVerifiedError, SessionExpiredError } from "../../../domain/protocols/Errors";
 import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { Encrypter } from "../../../domain/vendors/Encrypter";
@@ -33,6 +33,8 @@ export class ResetPassword extends MainController {
        }
 
        if(!exists) throw MartNotFoundError()
+
+       if(!exists.password) throw MartNotVerifiedError()
 
        const token = await this.encrypter.sign(exists.id, Math.floor(Date.now() / 1000) + (3600)) // um minuto
  

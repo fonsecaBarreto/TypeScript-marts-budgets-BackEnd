@@ -8,6 +8,8 @@ import { SchemaRow } from "../../../domain/protocols/ControllerBateries";
 import { rows,  Create as CreateList, Update as UpdateList } from '../../schemas/mart-schemas.json'
 import { MartModel } from "../../../domain/entities/MartModel";
 
+import { MapMartPrivateView } from './serializers/MartPrivateView'
+
 const schemasRows: Record<string, SchemaRow> = rows
 
 const CreateSchema:any = {}
@@ -44,7 +46,7 @@ export class FindController  extends MainController{
         if(request.params.id){
             return success(result)
         }else{
-            return success(await mapMartsToAdmin(result))
+            return success(await MapMartPrivateView(result))
         }
     }
 }
@@ -58,11 +60,3 @@ export class RemoveController  extends MainController{
 }
 
 
-const mapMartsToAdmin = (marts: MartModel[]):  Promise<any> =>{
-    if(marts.length === 0 ) return Promise.resolve([])
-    return Promise.all(marts.map(async (m: MartModel )=> {
-        const novo=  ({ ...m, isActive: m.password ? true : false}) 
-        delete novo.password 
-        return novo 
-    }))
-}

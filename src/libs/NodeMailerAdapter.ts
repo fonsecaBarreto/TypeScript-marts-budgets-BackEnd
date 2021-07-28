@@ -6,7 +6,8 @@ export default class NodeMailerAdapter implements Mailer{
     private readonly transporter: Transporter
     constructor(private readonly email:string, password: string){
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            port: 587,
+            host: "smtp.umbler.com",
             auth: {
                 user: email,
                 pass: password
@@ -18,7 +19,7 @@ export default class NodeMailerAdapter implements Mailer{
     async send(to:string, subject:string, html:string ): Promise<void> {
         let mailOptions = {
             from: this.email,
-            to,subject, html
+            to,subject, html, text:html
         };
 
         return new Promise((resolve, reject) =>{
