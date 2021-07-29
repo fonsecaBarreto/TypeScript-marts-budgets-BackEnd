@@ -1,0 +1,12 @@
+{
+    "Create": {
+        "name": { "type": "string" },
+        "email": { "type": "email" },
+        "phone": { "type": "phone", "optional": true }
+    },
+    "Update": {
+        "name": { "type": "string" },
+        "email": { "type": "email" },
+        "phone": { "type": "phone", "optional": true }
+    }
+}

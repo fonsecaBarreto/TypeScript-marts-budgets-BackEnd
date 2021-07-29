@@ -1,0 +1,10 @@
+{
+    "Create": {
+        "name": { "type": "string" },
+        "category_id": { "type": "string", "optional": true }
+    },
+    "Update": {
+        "name": { "type": "string" },
+        "category_id": { "type": "string", "optional": true }
+    }
+}

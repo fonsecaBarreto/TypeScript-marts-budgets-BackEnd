@@ -18,6 +18,4 @@ export const MartNotVerifiedError = () => (
 export const MartAlreadyVerifiedError = () => (
     new ApplicationError('MartAlreadyVerifiedError', "Conta Mercado Já foi verificado."))
     
-    
-
-    
+    /*  */

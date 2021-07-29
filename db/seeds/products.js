@@ -13,19 +13,19 @@ const createFakeProduct = (i) =>({
   ean: null,
   sku: null,
   image: null,
-  brand_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 6 - 1) ) : null,
-  provider_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 6 - 1) ) : null,
-  category_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 6 - 1) ) : null,
+  brand: Math.random() > .5 ? `Marca Teste` : null,
+  provider_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
+  category_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
 })
 
 
 const createFakeCategories = async (knex) => {
   
-  const TOTAL = 8
+  const TOTAL = 2
   const create = (i) => ({
       id: "test_ID_0"+i,
       name: faker.commerce.department(),
-      category_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * TOTAL - 1) ) : null
+      category_id: null
   })
   const categories = []
   for(let i = 0; i < TOTAL; i ++ ){
@@ -36,6 +36,43 @@ const createFakeCategories = async (knex) => {
   await knex('categories').insert(categories);
 }
 
+const createFakeProvider = async (knex) => {
+
+  const create = (i) =>({
+    id: "test_ID_0"+i,
+    name: faker.commerce.department(),
+    email: faker.internet.email(),
+    phone: faker.phone.phoneNumber()
+  })
+
+  const providers = []
+  for(let i = 0; i < 2; i ++ ){
+    providers.push(create(i))
+  }
+  await knex('providers').del()
+  await knex('providers').insert(providers);
+}
+
+exports.seed = async function(knex) {
+
+
+  await createFakeCategories(knex)
+  await createFakeProvider(knex)
+
+  const products = []
+  for(let i = 1; i < 20; i ++ ){
+    products.push(createFakeProduct(i))
+  }
+
+  await knex('products').del()
+  await knex('products').insert(products);
+  
+   
+};
+
+
+
+/* 
 const createFakeBrand = async (knex) => {
 
   const create = (i) => ({
@@ -50,39 +87,4 @@ const createFakeBrand = async (knex) => {
   await knex('brands').del()
   await knex('brands').insert(brands);
 
-}
-
-const createFakeProvider = async (knex) => {
-
-  const create = (i) =>({
-    id: "test_ID_0"+i,
-    name: faker.commerce.department(),
-  })
-
-  const providers = []
-  for(let i = 0; i < 16; i ++ ){
-    providers.push(create(i))
-  }
-  await knex('providers').del()
-  await knex('providers').insert(providers);
-}
-
-exports.seed = async function(knex) {
-
-
-  await createFakeCategories(knex)
-  await createFakeBrand(knex)
-  await createFakeProvider(knex)
-
-  const products = []
-  for(let i = 1; i < 49; i ++ ){
-    products.push(createFakeProduct(i))
-  }
-
-  await knex('products').del()
-  await knex('products').insert(products);
-  
-   
-};
-
-
+} */

@@ -34,6 +34,7 @@ export const vendors = {
 
 export const repositories = {
     martsRepository: new KnexAdapter('marts'),
+    providersRepository: new KnexAdapter('providers'),
     adminsRepository: new KnexAdapter('admins'),
     categoriesRepository: new KnexAdapter('categories'),
     productsRepository: new KnexAdapter('products')

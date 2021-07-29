@@ -6,14 +6,11 @@ export interface CategoryModel {
     category_id:string
 }
 
-export interface Brand {
-    id: string,
-    name: string
-}
-
-export interface Provider {
+export interface ProviderModel {
     id:string,
     name: string
+    phone: string,
+    email: string
 }
 
 export interface ProductModel {
