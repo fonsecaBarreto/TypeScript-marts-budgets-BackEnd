@@ -56,7 +56,7 @@ export default class CreateMart {
 
     async update(params: CreateMart.UpdateParams) {
 
-        const { id, cnpj_cpf, name, email, phone, annex, transfer_allowed,image } = params
+        const { id, cnpj_cpf, name, email, phone, annex, transfer_allowed, image } = params
 
         const mart = await this.martsRepository.find({id})
         if(!mart) throw MartNotFoundError()

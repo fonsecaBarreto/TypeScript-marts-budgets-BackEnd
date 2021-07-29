@@ -11,7 +11,7 @@ export const SessionExpiredError = (message?:string) => (
 
 
 export const DisagreementPasswordError = () => (
-    new ApplicationError('DisagreementPasswordError', "Senha e confirmação devem ser iguais"))
+    new ApplicationError('DisagreementPasswordError', "Senha e confirmação devem ser iguais",{passwordConfirmation:'Senha e confirmação devem ser iguais'}))
 
 export const ServerError = () => (
         new ApplicationError('ServerError', "Erro no servidor"))

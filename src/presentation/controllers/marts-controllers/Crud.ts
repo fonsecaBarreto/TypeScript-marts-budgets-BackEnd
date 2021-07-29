@@ -9,6 +9,7 @@ import { rows,  Create as CreateList, Update as UpdateList } from '../../schemas
 import { MartModel } from "../../../domain/entities/MartModel";
 
 import { MapMartPrivateView } from './serializers/MartPrivateView'
+import { DisagreementPasswordError } from "../../../domain/protocols/Errors";
 
 const schemasRows: Record<string, SchemaRow> = rows
 
@@ -21,6 +22,10 @@ export class CreateMartController  extends MainController{
     constructor(  private readonly createNewMart: CreateNewMart 
     ){ super(AccessType.ADMIN, CreateSchema) }
     async handler(request: Request): Promise<Response> {
+
+        const { password, passwordConfirmation } = request.body
+        if(password !== passwordConfirmation) throw DisagreementPasswordError()
+
         const stored = await this.createNewMart.execute(request.body)
         return success(stored)
     }
@@ -30,8 +35,7 @@ export class UpdateMartController  extends MainController{
     constructor(  private readonly createNewMart: CreateNewMart 
     ){ super(AccessType.ADMIN, UpdateSchema) }
     async handler(request: Request): Promise<Response> {
-        console.log(request)
-        const stored = await this.createNewMart.update({ id: request.params.id, ...request.body})
+        const stored = await this.createNewMart.update({ id: request.params.id, ...request.body })
         return success(stored)
     }
 }
