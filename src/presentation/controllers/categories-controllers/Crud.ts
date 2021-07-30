@@ -28,7 +28,7 @@ export class CreateCategoryController  extends MainController{
             const fatherExists = await this.categoryRepository.find({ id: category_id })
             if(!fatherExists) throw CategoryNotFoundError()
 
-            if( fatherExists.id === id ) throw CategoryConflictError()
+            if( fatherExists.id === id ) throw CategoryConflictError() //Should not be father of it self
         }
 
         /* persistence */

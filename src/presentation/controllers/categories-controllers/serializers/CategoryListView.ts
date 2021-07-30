@@ -1,29 +1,28 @@
 import { CategoryModel } from "../../../../domain/entities/ProductModel"
 import { DatabaseAdapter } from "../../../../domain/vendors/DatabaseAdapter"
 
-export interface CategoryListView extends Pick<CategoryModel,'name' | 'id'> { }
+export interface CategoryListView extends Pick<CategoryModel,'name' | 'id'> {
+    children: CategoryListView[]
+}
 
-export const MakeCategoryListView= (category: CategoryModel): CategoryListView =>{
+export const MakeCategoryListView= (category: CategoryModel, children: CategoryListView[]): CategoryListView =>{
     if(!category) return null
-    return { id: category.id, name: category.name } 
+    return { id: category.id, name: category.name, children } 
 }
 
-export const MapCategoryListView= (categories: any[]):  Promise<any> =>{
-    if(categories.length === 0 ) return Promise.resolve([])
-    categories.sort((a, b) => (a.created_at < b.created_at) ? 1 : -1)
-    return Promise.all(categories.map(async (c: CategoryModel )=> {
-        return MakeCategoryListView(c)
-    })) 
+export const MapCategoryTreeListView= async (categoriesRepository: DatabaseAdapter, categories: any[]):  Promise<any> =>{
+    return await MapCategoryTreeView(categoriesRepository, categories, MakeCategoryListView)
 }
 
-
-export const MapCategoryTreeView= ( categoriesRepository: DatabaseAdapter, categories: any[]):  Promise<any> =>{
+/* tree */
+export const MapCategoryTreeView= ( categoriesRepository: DatabaseAdapter, categories: any[], serializer?: any):  Promise<any> =>{
     if(categories.length === 0 ) return Promise.resolve([])
-    //find ou the childs of ir
-
     return Promise.all(categories.map(async (c: CategoryModel )=> {
-        const children  = await categoriesRepository.list({ category_id: c.id })
-        return { ...c, children }
+        const result  = await categoriesRepository.list({ category_id: c.id })
+        var children = await MapCategoryTreeView(categoriesRepository,result, serializer && serializer) 
+
+        return  serializer ? serializer(c, children) : { ...c, children }
+
     }))
   
 }

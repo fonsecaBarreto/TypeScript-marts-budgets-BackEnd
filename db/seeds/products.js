@@ -14,11 +14,12 @@ const createFakeProduct = (i) =>({
   sku: null,
   image: null,
   brand: Math.random() > .5 ? `Marca Teste` : null,
-  provider_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
-  category_id: Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
-})
+  provider_id: null,/* Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null, */
+  category_id: null/* Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
+  */
+}) 
 
-
+/* 
 const createFakeCategories = async (knex) => {
   
   const TOTAL = 2
@@ -51,18 +52,18 @@ const createFakeProvider = async (knex) => {
   }
   await knex('providers').del()
   await knex('providers').insert(providers);
-}
+} */
 
 exports.seed = async function(knex) {
 
-
+/* 
   await createFakeCategories(knex)
-  await createFakeProvider(knex)
+  await createFakeProvider(knex) */
 
   const products = []
   for(let i = 1; i < 20; i ++ ){
     products.push(createFakeProduct(i))
-  }
+  } 
 
   await knex('products').del()
   await knex('products').insert(products);

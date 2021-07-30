@@ -21,7 +21,7 @@ class AdminSignInController extends MainController_1.MainController {
         const isValid = await this.hasher.compare(password, exists.password);
         if (!isValid)
             return http_helper_1.unauthorized();
-        const token = await this.encrypter.sign(exists.id, Math.floor(Date.now() / 1000) + (3600));
+        const token = await this.encrypter.sign(exists.id, Math.floor(Date.now() / 1000) + (604800));
         return http_helper_1.success({ accessToken: token });
     }
 }

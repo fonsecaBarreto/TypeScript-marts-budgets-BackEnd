@@ -11,7 +11,7 @@ const AccessDeniedError = () => (new ApplicationError_1.default('AccessDeniedErr
 exports.AccessDeniedError = AccessDeniedError;
 const SessionExpiredError = (message) => (new ApplicationError_1.default('SessionExpiredError', message || "A seção foi expirada"));
 exports.SessionExpiredError = SessionExpiredError;
-const DisagreementPasswordError = () => (new ApplicationError_1.default('DisagreementPasswordError', "Senha e confirmação devem ser iguais"));
+const DisagreementPasswordError = () => (new ApplicationError_1.default('DisagreementPasswordError', "Senha e confirmação devem ser iguais", { passwordConfirmation: 'Senha e confirmação devem ser iguais' }));
 exports.DisagreementPasswordError = DisagreementPasswordError;
 const ServerError = () => (new ApplicationError_1.default('ServerError', "Erro no servidor"));
 exports.ServerError = ServerError;

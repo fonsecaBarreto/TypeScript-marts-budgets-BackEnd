@@ -35,13 +35,14 @@
             "invalidMessage": "Verifique se seu documento está correto"
         },
         "password": { "type": "string" },
+        "passwordConfirmation": { "type": "string", "missingMessage": "Confirme a sua nova senha" },
         "annex": { "type": "string", "optional": true },
         "image": { "type": "string", "optional": true },
         "transfer_allowed": { "type": "boolean",
             "missingMessage": "Sua Colaboração é muito importante, Certifique-se de que marcar umas das opções"
         }
     },
-    "Create": ["name", "email", "phone", "cnpj_cpf", "password", "annex", "image", "transfer_allowed"],
-    "Update": ["name", "email", "phone", "cnpj_cpf", "annex", "image", "transfer_allowed"],
+    "Create": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed", "password", "passwordConfirmation"],
+    "Update": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"],
     "SignUp": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"]
 }

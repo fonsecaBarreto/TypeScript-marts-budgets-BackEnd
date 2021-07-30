@@ -17,3 +17,4 @@ const MartNotVerifiedError = () => (new ApplicationError_1.default('MartNotVerif
 exports.MartNotVerifiedError = MartNotVerifiedError;
 const MartAlreadyVerifiedError = () => (new ApplicationError_1.default('MartAlreadyVerifiedError', "Conta Mercado Já foi verificado."));
 exports.MartAlreadyVerifiedError = MartAlreadyVerifiedError;
+/*  */

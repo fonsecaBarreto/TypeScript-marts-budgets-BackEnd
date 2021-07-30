@@ -5,6 +5,7 @@ const Errors_1 = require("../../../domain/protocols/Errors");
 const http_helper_1 = require("../../helpers/http-helper");
 const MainController_1 = require("../../helpers/MainController");
 const UnoCompras_1 = require("../../helpers/EmailLayouts/UnoCompras");
+const MartPrivateView_1 = require("./serializers/MartPrivateView");
 class JoinMartController extends MainController_1.MainController {
     constructor(marsRepository, passwordGenerator, hasher, mailer) {
         super(MainController_1.AccessType.ADMIN);
@@ -31,7 +32,7 @@ class JoinMartController extends MainController_1.MainController {
             </h2>
         `));
         const updated = await this.marsRepository.find({ id });
-        return http_helper_1.success(updated);
+        return http_helper_1.success(MartPrivateView_1.MakeMartPrivateView(updated));
     }
 }
 exports.JoinMartController = JoinMartController;

@@ -4,6 +4,8 @@ exports.RemoveController = exports.FindController = exports.UpdateMartController
 const http_helper_1 = require("../../helpers/http-helper");
 const MainController_1 = require("../../helpers/MainController");
 const mart_schemas_json_1 = require("../../schemas/mart-schemas.json");
+const MartPrivateView_1 = require("./serializers/MartPrivateView");
+const Errors_1 = require("../../../domain/protocols/Errors");
 const schemasRows = mart_schemas_json_1.rows;
 const CreateSchema = {};
 mart_schemas_json_1.Create.forEach((key) => CreateSchema[key] = schemasRows[key]);
@@ -15,6 +17,9 @@ class CreateMartController extends MainController_1.MainController {
         this.createNewMart = createNewMart;
     }
     async handler(request) {
+        const { password, passwordConfirmation } = request.body;
+        if (password !== passwordConfirmation)
+            throw Errors_1.DisagreementPasswordError();
         const stored = await this.createNewMart.execute(request.body);
         return http_helper_1.success(stored);
     }
@@ -26,7 +31,6 @@ class UpdateMartController extends MainController_1.MainController {
         this.createNewMart = createNewMart;
     }
     async handler(request) {
-        console.log(request);
         const stored = await this.createNewMart.update({ id: request.params.id, ...request.body });
         return http_helper_1.success(stored);
     }
@@ -44,7 +48,7 @@ class FindController extends MainController_1.MainController {
             return http_helper_1.success(result);
         }
         else {
-            return http_helper_1.success(await mapMartsToAdmin(result));
+            return http_helper_1.success(await MartPrivateView_1.MapMartPrivateView(result));
         }
     }
 }
@@ -59,12 +63,3 @@ class RemoveController extends MainController_1.MainController {
     }
 }
 exports.RemoveController = RemoveController;
-const mapMartsToAdmin = (marts) => {
-    if (marts.length === 0)
-        return Promise.resolve([]);
-    return Promise.all(marts.map(async (m) => {
-        const novo = ({ ...m, isActive: m.password ? true : false });
-        delete novo.password;
-        return novo;
-    }));
-};

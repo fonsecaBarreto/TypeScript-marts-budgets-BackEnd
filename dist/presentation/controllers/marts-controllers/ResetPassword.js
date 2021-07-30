@@ -25,6 +25,8 @@ class ResetPassword extends MainController_1.MainController {
         }
         if (!exists)
             throw Errors_1.MartNotFoundError();
+        if (!exists.password)
+            throw Errors_1.MartNotVerifiedError();
         const token = await this.encrypter.sign(exists.id, Math.floor(Date.now() / 1000) + (3600)); // um minuto
         this.mailer.send(exists.email, "Reset de Senha", UnoCompras_1.UnoComprasTemplate(`<div>
             <h2> Olá ${exists.name}, você solicitou a troca de senha? </h2>
