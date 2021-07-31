@@ -19,10 +19,10 @@ const createFakeProduct = (i) =>({
   */
 }) 
 
-/* 
+
 const createFakeCategories = async (knex) => {
   
-  const TOTAL = 2
+  const TOTAL = 2000
   const create = (i) => ({
       id: "test_ID_0"+i,
       name: faker.commerce.department(),
@@ -47,18 +47,17 @@ const createFakeProvider = async (knex) => {
   })
 
   const providers = []
-  for(let i = 0; i < 2; i ++ ){
+  for(let i = 0; i < 40; i ++ ){
     providers.push(create(i))
   }
   await knex('providers').del()
   await knex('providers').insert(providers);
-} */
+} 
 
 exports.seed = async function(knex) {
 
-/* 
   await createFakeCategories(knex)
-  await createFakeProvider(knex) */
+   await createFakeProvider(knex)  
 
   const products = []
   for(let i = 1; i < 20; i ++ ){

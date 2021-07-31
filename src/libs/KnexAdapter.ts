@@ -1,5 +1,6 @@
 import { DatabaseAdapter } from '../domain/vendors/DatabaseAdapter'
 import knex, { Knex } from 'knex'
+import { off } from 'process';
 const knexfile = require("../../knexfile")
 
 
@@ -29,6 +30,7 @@ export default class KnexAdapter implements DatabaseAdapter {
         this.table = table
     }
 
+ 
     async remove( where: Object): Promise<any> {
         return KnexAdapter.connection(this.table).where(where).del()
     }
@@ -51,6 +53,19 @@ export default class KnexAdapter implements DatabaseAdapter {
             return KnexAdapter.connection(this.table).where(where || {}).select(select || [])
         }   
     }
+
+    listAlike(columns: string[], alike: string, orderBy:string ="created_at", offset:number = 0, limit: number = 99 ): Promise<any> {
+ 
+        const qb = (query:any) => {
+            for (const col of columns) {
+            query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
+            }
+        }
+
+        return KnexAdapter.connection(this.table).where(qb).orderBy(orderBy,"desc").limit(limit).offset(offset);
+        
+    }
+
 
     async insert( data: any): Promise<any> {
         const created_at = new Date()

@@ -1,11 +1,14 @@
 import { Router } from 'express'
-import { createProviderController,findProviderController,removeProviderController,updateProviderController} from '../factories/providers'
+import { createProviderController,findProviderController,removeProviderController,updateProviderController,
+filterListProvider} from '../factories/providers'
 
 
 
 export default (router: Router) =>{
 
     /*  admin */
+    router.get('/providers/list', filterListProvider.execute())
+
     router.route('/providers')
         .get(findProviderController.execute())
         .post(createProviderController.execute())
