@@ -6,8 +6,9 @@ import { ProviderModel } from "../../../domain/entities/ProductModel"
 
 export interface ProviderListFeed {
     total: number,
-    offset: number
-    data: ProviderModel[]
+    subTotal: number,
+    queries: Record<string, string>
+    data: ProviderModel[],
 }
 
 export class FilterListProvider extends MainController{
@@ -19,11 +20,14 @@ export class FilterListProvider extends MainController{
         const offset = Number(request.query.o) || 0
 
         const total = await this.providersRepository.count({},'id')
-        const found = await this.providersRepository.listAlike(['name','email','phone'], text, 'created_at', offset, 2)
+
+        const { queryData, queryTotal } = await this.providersRepository.listAlike(['name','email','phone'], text, {},{}, offset, 16)
+
         const providerListFeed: ProviderListFeed ={
             total, 
-            offset,
-            data: found
+            subTotal: queryTotal,
+            queries: {text : text},
+            data: queryData,
         }
         return success(providerListFeed)
     }

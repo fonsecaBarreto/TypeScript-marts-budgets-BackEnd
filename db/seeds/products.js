@@ -22,7 +22,7 @@ const createFakeProduct = (i) =>({
 
 const createFakeCategories = async (knex) => {
   
-  const TOTAL = 2000
+  const TOTAL = 6
   const create = (i) => ({
       id: "test_ID_0"+i,
       name: faker.commerce.department(),

@@ -3,7 +3,8 @@ import { authMartController, martSignInController,
     createMartController, updateMartController,
     findMartController, removeMartController, signUpMartController,
     joinMartController,
-    resetPassword, changePasswordByToken } from '../factories/marts'
+    resetPassword, changePasswordByToken,
+    filterListMart } from '../factories/marts'
 
 
 
@@ -19,6 +20,10 @@ export default (router: Router) =>{
     router.post("/marts/login/change-password",changePasswordByToken.execute())
 
     /*  admin */
+
+
+    router.get('/marts/list', filterListMart.execute())
+
     router.route('/marts')
         .get(findMartController.execute())
         .post(createMartController.execute())

@@ -18,7 +18,7 @@ const createFakeMart = (i) =>({
 exports.seed = async function(knex) {
 
   const fakers = []
-  for(let i = 1; i < 20; i ++ ){
+  for(let i = 1; i < 1000; i ++ ){
     fakers.push(createFakeMart(i))
   }
   await knex('marts').del()

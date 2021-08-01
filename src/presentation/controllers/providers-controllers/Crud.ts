@@ -71,7 +71,7 @@ export class FindController  extends MainController{
         if(id){
             return success(await this.providersRepository.find({id}))
         }else{
-            return success(await this.providersRepository.list({}))
+            return success(await this.providersRepository.list({},[],'created_at'))
         }
     }
 }

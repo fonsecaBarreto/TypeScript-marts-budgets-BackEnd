@@ -6,6 +6,8 @@ import { CreateMartController, UpdateMartController, FindController, RemoveContr
 import { SignUpMartController, UploadMartAnnexController } from '../../presentation/controllers/marts-controllers/SignUp'
 import { JoinMartController } from '../../presentation/controllers/marts-controllers/Join' 
 import { ResetPassword, ChangePasswordByToken } from '../../presentation/controllers/marts-controllers/ResetPassword'
+import { FilterListMart } from '../../presentation/controllers/marts-controllers/ListMarts' 
+
 import keys from '../config/keys'
 
 const { martsRepository } = repositories
@@ -25,6 +27,7 @@ export const createMartController = new CreateMartController(createMart)
 export const updateMartController = new UpdateMartController(createMart)
 export const findMartController = new FindController(mrtApp)
 export const removeMartController = new RemoveController(mrtApp)
+export const filterListMart = new FilterListMart(martsRepository)
 
 
 /* patch */

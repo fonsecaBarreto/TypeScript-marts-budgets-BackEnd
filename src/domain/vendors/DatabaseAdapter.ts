@@ -6,5 +6,5 @@ export interface DatabaseAdapter {
     list( where: object, select?: string[], order?:string, limit?: number) : Promise<any>
     insert(data: any): Promise<any>
     update(where:object, data: object ): Promise<any>
-    listAlike( columns: string[], alike: string, orderBy?:string, offset?:number, limit?:number): Promise<any>
+    listAlike( columns: string[], alike: string, where:object, whereNot: object, offset?:number, limit?:number): Promise<any>
 }

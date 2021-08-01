@@ -54,16 +54,21 @@ export default class KnexAdapter implements DatabaseAdapter {
         }   
     }
 
-    listAlike(columns: string[], alike: string, orderBy:string ="created_at", offset:number = 0, limit: number = 99 ): Promise<any> {
+    async listAlike(columns: string[], alike: string, where:object, whereNot:object, offset:number = 0, limit: number = 99 ): Promise<any> {
  
-        const qb = (query:any) => {
-            for (const col of columns) {
-            query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
+            const qb = (query:any) => {
+                for (const col of columns) {
+                query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
+                }
             }
-        }
 
-        return KnexAdapter.connection(this.table).where(qb).orderBy(orderBy,"desc").limit(limit).offset(offset);
-        
+            const countResult = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).count('id', {as: 'count'}).first();
+            const queryTotal = !countResult ? 0 : Number(countResult.count) ;
+            
+            const queryData = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).limit(limit).offset(offset);
+
+            return ({ queryData, queryTotal })
+
     }
 
 
