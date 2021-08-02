@@ -3,6 +3,12 @@ const faker  = require('faker')
 
 const presentations = ["Caixa com 24 unidades", "Granel","Unidade" ]
 
+
+
+const test_categories = ["Grãos", "Cereais", "laticínios", "Hortaliças", 'Vegetais', "Frutas", "Industrializados"]
+const subCategories = [ "Leite", "Feijão", "Arroz", "Oleo de Cozinha", "Trigo", "Iogurte", "peixe", "Maça", "Uva"]
+const brands = ["Amazon", "Apple", "Microsoft", "Pier", "Petrobras", "xiaomi", "Dell"]
+
 const createFakeProduct = (i) =>({
   id: 'prod_test_ID_0'+i, 
   description: faker.commerce.productName(),
@@ -13,22 +19,25 @@ const createFakeProduct = (i) =>({
   ean: null,
   sku: null,
   image: null,
-  brand: Math.random() > .5 ? `Marca Teste` : null,
-  category_id: null/* Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
-  */
+  brand: brands[ Math.ceil( Math.random() * brands.length - 1 )  ],
+  category_id: "test_ID_0"+ Math.ceil( (Math.random() * test_categories.length ) -1 ) 
 }) 
-
-
-const names = ["Grãos", "Cereas", "Laticineos", "Hortaliças", 'Vegetais', "Frutas", "Industrializados"]
 
 const createFakeCategories = async (knex) => {
   
-  const TOTAL = 50
-  const create = (i) => ({
+  const TOTAL = 16
+  const create = (i) => {
+    
+    const cate = ({
       id: "test_ID_0"+i,
-      name: i < 7 ? names[i] : faker.commerce.productName(),
-      category_id: i < 7 ? null :  "test_ID_0"+ Math.ceil( (Math.random() * 7 ) -1 ) 
-  })
+      name: i < test_categories.length ? test_categories[i] : 
+        i < test_categories.length + subCategories.length ? subCategories[i - test_categories.length ] :
+        faker.commerce.productName(),
+
+      category_id: i < test_categories.length ? null :  "test_ID_0"+ Math.ceil( (Math.random() * 7 ) -1 ) 
+    })
+    return cate
+}
   const categories = []
   for(let i = 0; i < TOTAL; i ++ ){
     categories.push(create(i))
@@ -48,7 +57,7 @@ const createFakeProvider = async (knex) => {
   })
 
   const providers = []
-  for(let i = 0; i < 40; i ++ ){
+  for(let i = 0; i < 10; i ++ ){
     providers.push(create(i))
   }
   await knex('providers').del()

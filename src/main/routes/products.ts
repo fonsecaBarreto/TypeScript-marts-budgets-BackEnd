@@ -1,10 +1,13 @@
 import { Router } from 'express'
 import { createProductController, updateProductController, findProductController, removeProductController,
-filterListProduct } from '../factories/products'
+filterListProduct, searchProductController} from '../factories/products'
 
 
 
 export default (router: Router) =>{
+
+    router.get('/products/search', searchProductController.execute())
+
 
     router.get('/products/list', filterListProduct.execute())
     /*  admin */
