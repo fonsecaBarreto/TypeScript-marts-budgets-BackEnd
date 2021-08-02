@@ -24,7 +24,7 @@ class CreateCategoryController extends MainController_1.MainController {
             if (!fatherExists)
                 throw Errors_1.CategoryNotFoundError();
             if (fatherExists.id === id)
-                throw Errors_1.CategoryConflictError();
+                throw Errors_1.CategoryConflictError(); //Should not be father of it self
         }
         /* persistence */
         if (request.params.id) {

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const categories_1 = require("../factories/categories");
 exports.default = (router) => {
     /*  admin */
-    router.get("/categories/primaries", categories_1.listPrimaryCategories.execute());
+    router.get("/categories/list", categories_1.filterListCategories.execute());
     router.get("/categories/tree", categories_1.listCategoriesTree.execute());
     router.route('/categories')
         .get(categories_1.findCategoryController.execute())

@@ -63,7 +63,7 @@ class FindController extends MainController_1.MainController {
             return http_helper_1.success(await this.providersRepository.find({ id }));
         }
         else {
-            return http_helper_1.success(await this.providersRepository.list({}));
+            return http_helper_1.success(await this.providersRepository.list({}, [], 'created_at'));
         }
     }
 }

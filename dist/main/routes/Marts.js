@@ -10,6 +10,7 @@ exports.default = (router) => {
     router.post("/marts/login/reset-password", marts_1.resetPassword.execute());
     router.post("/marts/login/change-password", marts_1.changePasswordByToken.execute());
     /*  admin */
+    router.get('/marts/list', marts_1.filterListMart.execute());
     router.route('/marts')
         .get(marts_1.findMartController.execute())
         .post(marts_1.createMartController.execute());

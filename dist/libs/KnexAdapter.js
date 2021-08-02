@@ -43,6 +43,17 @@ class KnexAdapter {
             return KnexAdapter.connection(this.table).where(where || {}).select(select || []);
         }
     }
+    async listAlike(columns, alike, where, whereNot, offset = 0, limit = 99) {
+        const qb = (query) => {
+            for (const col of columns) {
+                query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
+            }
+        };
+        const countResult = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).count('id', { as: 'count' }).first();
+        const queryTotal = !countResult ? 0 : Number(countResult.count);
+        const queryData = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).limit(limit).offset(offset);
+        return ({ queryData, queryTotal });
+    }
     async insert(data) {
         const created_at = new Date();
         const updated_at = created_at;

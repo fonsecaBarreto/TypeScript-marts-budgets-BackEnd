@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const providers_1 = require("../factories/providers");
 exports.default = (router) => {
     /*  admin */
+    router.get('/providers/list', providers_1.filterListProvider.execute());
     router.route('/providers')
         .get(providers_1.findProviderController.execute())
         .post(providers_1.createProviderController.execute());
