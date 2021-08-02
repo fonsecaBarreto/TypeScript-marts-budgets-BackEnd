@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createCategoryController, findCategoryController,removeCategoryController,updateCategoryController,
-listCategoriesTree } from '../factories/categories'
+listCategoriesTree, filterListCategories } from '../factories/categories'
 
 
 
@@ -8,7 +8,9 @@ export default (router: Router) =>{
     
     /*  admin */
 
-    router.get("/categories/tree",listCategoriesTree.execute())
+    router.get("/categories/list", filterListCategories.execute())
+
+    router.get("/categories/tree", listCategoriesTree.execute())
 
     router.route('/categories')
         .get(findCategoryController.execute())

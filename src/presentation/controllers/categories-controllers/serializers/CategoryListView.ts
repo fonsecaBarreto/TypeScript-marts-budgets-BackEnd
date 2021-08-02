@@ -1,28 +1,41 @@
 import { CategoryModel } from "../../../../domain/entities/ProductModel"
 import { DatabaseAdapter } from "../../../../domain/vendors/DatabaseAdapter"
 
+/* list */
+
 export interface CategoryListView extends Pick<CategoryModel,'name' | 'id'> {
-    children: CategoryListView[]
+    bread_crumbs: string[],
 }
 
-export const MakeCategoryListView= (category: CategoryModel, children: CategoryListView[]): CategoryListView =>{
+const getFather = async (sup_id:string, categoriesRepository: DatabaseAdapter): Promise<any> =>{
+    if(!sup_id) return null
+    var bread_crumbs: string[] = []
+
+    const supCategory = await categoriesRepository.find({ id: sup_id },['name', 'category_id'])
+    bread_crumbs = [ supCategory.name ]
+
+    const result = await getFather(supCategory.category_id,categoriesRepository)
+    if(result) {
+        bread_crumbs=[ ...bread_crumbs, result.name ]
+    }
+
+    return { ...supCategory, bread_crumbs}
+}
+
+export const MakeCategoryListView= async (categoriesRepository: DatabaseAdapter, category: CategoryModel): Promise<CategoryListView> =>{
     if(!category) return null
-    return { id: category.id, name: category.name, children } 
+    const supCategory = await getFather(category.category_id, categoriesRepository)
+    return { id: category.id, name: category.name, bread_crumbs: supCategory?.bread_crumbs || [] } 
 }
 
-export const MapCategoryTreeListView= async (categoriesRepository: DatabaseAdapter, categories: any[]):  Promise<any> =>{
-    return await MapCategoryTreeView(categoriesRepository, categories, MakeCategoryListView)
-}
+export const MapCategoryListView = ( categoriesRepository: DatabaseAdapter, categories: any[]):  Promise<any> =>{
 
-/* tree */
-export const MapCategoryTreeView= ( categoriesRepository: DatabaseAdapter, categories: any[], serializer?: any):  Promise<any> =>{
     if(categories.length === 0 ) return Promise.resolve([])
     return Promise.all(categories.map(async (c: CategoryModel )=> {
-        const result  = await categoriesRepository.list({ category_id: c.id })
-        var children = await MapCategoryTreeView(categoriesRepository,result, serializer && serializer) 
-
-        return  serializer ? serializer(c, children) : { ...c, children }
-
+        return MakeCategoryListView(categoriesRepository, c)
     }))
-  
+    
 }
+
+
+/* tree */

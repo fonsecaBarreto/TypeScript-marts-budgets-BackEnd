@@ -1,0 +1,24 @@
+{
+    "Create": {
+        "description": { "type": "string" },
+        "stock": { "type": "number" },
+        "price": { "type": "number" },
+        "presentation": { "type": "string", "optional": true },
+        "brand": { "type": "string", "optional": true  },
+        "ncm": { "type": "string", "optional": true },
+        "ean": { "type": "string", "optional": true },
+        "sku": { "type": "string", "optional": true },
+        "category_id": { "type": "string", "optional": true }
+    },
+    "Update": {
+        "description": { "type": "string" },
+        "stock": { "type": "number" },
+        "price": { "type": "number" },
+        "presentation": { "type": "string", "optional": true },
+        "brand": { "type": "string", "optional": true  },
+        "ncm": { "type": "string", "optional": true },
+        "ean": { "type": "string", "optional": true },
+        "sku": { "type": "string", "optional": true },
+        "category_id": { "type": "string", "optional": true }
+    }
+}

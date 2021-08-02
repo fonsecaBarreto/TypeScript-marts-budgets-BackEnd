@@ -23,7 +23,6 @@ export interface ProductModel {
     ean: string,
     sku:string,
     image: string
-    brand_id:string
-    provider_id:string
+    brand:string
     category_id: string
 }

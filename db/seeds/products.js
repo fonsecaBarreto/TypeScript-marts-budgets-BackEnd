@@ -14,19 +14,20 @@ const createFakeProduct = (i) =>({
   sku: null,
   image: null,
   brand: Math.random() > .5 ? `Marca Teste` : null,
-  provider_id: null,/* Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null, */
   category_id: null/* Math.random() > .5 ? `test_ID_0`+ Math.ceil( (Math.random() * 2 - 1) ) : null,
   */
 }) 
 
 
+const names = ["Grãos", "Cereas", "Laticineos", "Hortaliças", 'Vegetais', "Frutas", "Industrializados"]
+
 const createFakeCategories = async (knex) => {
   
-  const TOTAL = 6
+  const TOTAL = 50
   const create = (i) => ({
       id: "test_ID_0"+i,
-      name: faker.commerce.department(),
-      category_id: null
+      name: i < 7 ? names[i] : faker.commerce.productName(),
+      category_id: i < 7 ? null :  "test_ID_0"+ Math.ceil( (Math.random() * 7 ) -1 ) 
   })
   const categories = []
   for(let i = 0; i < TOTAL; i ++ ){

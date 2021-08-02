@@ -61,7 +61,6 @@ export default class KnexAdapter implements DatabaseAdapter {
                 query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
                 }
             }
-
             const countResult = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).count('id', {as: 'count'}).first();
             const queryTotal = !countResult ? 0 : Number(countResult.count) ;
             
