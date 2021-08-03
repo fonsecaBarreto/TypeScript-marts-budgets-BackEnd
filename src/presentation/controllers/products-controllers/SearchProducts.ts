@@ -11,66 +11,89 @@ export interface ProductSearchView{
     products: ProductModel[], 
 }
 
-
 export class SearchProductController extends MainController{
     constructor( 
          private readonly knexConnection: Knex
     ){  super(AccessType.MART) }
+
+
+    async getCategoriesChilds(category_id: string){
+
+        var childs = await this.knexConnection('categories').where({"category_id": category_id}).select(["id"])
+        await Promise.all(childs.map(async ch=>{
+            let grandsons = await this.getCategoriesChilds(ch.id)
+            childs = [ ...childs, ...grandsons]
+        }))
+        return  childs
+    }
+
+    async handleCategories(query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, categories: string[]): Promise<void>{
+        if(categories.length == 0 ) return
+      
+        await Promise.all(categories.map( async (c_id: string)=>{  //look for categories childs
+            const childs = await this.getCategoriesChilds(c_id)
+            categories = [ ...categories, ...childs.map(child=>child.id)]
+        }))
+
+        query.whereIn('category_id', categories) 
+        count_query.whereIn('category_id', categories)   
+    }
+
+    async handleBrands (query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, brands: string[]): Promise<void>{
+        if(brands.length == 0 ) return
+
+        query.whereIn('brand', brands) 
+        count_query.whereIn('brand', brands)   
+    }
+
+    async handleDescriptionLike(query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, description:string): Promise<void> {
+ 
+        query.andWhere(`products.description`, 'ilike', `%${description}%`)
+        count_query.andWhere(`products.description`, 'ilike', `%${description}%`)
+    }
+
     async handler(request: Request): Promise<Response> {
 
-        const c = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [request.query.c] : null
+        const description = request.query.v || '';
+        var categories = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [ request.query.c ] : []
+        var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
+        const offset = Number(request.query.o) || 0
 
-        const categories:string[] = c || []
-        const brands = []
-        var description = ""
-
+        const limit = 4
         var total = 0
         var subTotal = 0
         var products: ProductModel[] = []
       
-      
-        console.log("categories", categories)
-        const qb = (query:any) => {
+        /* Count all */
+        const totalOfProfucts = await this.knexConnection('products').count('id', {as: 'count'}).first();
+        total = totalOfProfucts ? Number(totalOfProfucts.count) : 0
+       
+        /* Create query */
+        var query = this.knexConnection('products').select('*').offset(offset).limit(limit);
+        var count_query = this.knexConnection('products')
 
-            if(categories.length > 0 ) {
-                query.AWhereIn('category_id', categories)
-            }
+        await this.handleCategories(query, count_query, categories) // insure all categories childs are included
+        await this.handleBrands(query, count_query, brands)
+        await this.handleDescriptionLike(query, count_query, description)
+        count_query.count('id', {as: 'count'}).first(); 
 
-            /*  */
-            /* for (const col of columns) {
-                query.orWhere(`${this.table}.${col}`, 'ilike', `%${alike}%`);
-            } */
-        }
+        var result: ProductSearchView = { total, subTotal, products }
 
+        const resulta = await Promise.all([
+            
+            count_query.then((count:any)=> { result.subTotal = count ? Number(count.count) : 0 } ),
+        
+            query.then(products=>{
+                products = products.map(p=>({description: p.description, category_id: p.category_id, brand: p.brand}))
+                result.products = products
+            })
+            
+        ])
 
-
-        products = await this.knexConnection('products').where({}).andWhere(qb)
-      /*   const queryData = await KnexAdapter.connection(this.table).where(where).andWhereNot(whereNot).andWhere(qb).limit(limit).offset(offset);
-
- */
-
-        const result: ProductSearchView = { total, subTotal, products }
-
-
+        console.log(resulta)
 
         return success(result)
-     
-       /*  const text = request.query.v || '';
-        var category_id = request.query.c || null;
 
-        const offset = Number(request.query.o) || 0
-        const total = await this.productsRepository.count({},'id')
-        const where = category_id ? { category_id } : {}
-
-        const { queryData, queryTotal } = await this.productsRepository.listAlike(['description','ncm', 'ean', 'sku', 'brand'], text, where,{}, offset, 16)
-
-        const providerListFeed: ProductListFeed ={
-            total, 
-            subTotal: queryTotal,
-            queries: { text, category_id },
-            data: queryData
-        }
-
-        return success(providerListFeed) */
+ 
     }
 }

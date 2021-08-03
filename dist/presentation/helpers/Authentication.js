@@ -47,7 +47,14 @@ class AuthenticationHandler {
         }
         if (!decoded || !decoded.id)
             return http_helper_1.unauthorized();
-        console.log("resting time", decoded.exp - Math.floor(Date.now() / 1000), 's');
+        if (decoded.exp) {
+            console.log('*Token Gerado em', new Date(decoded.iat * 1000));
+            console.log("*Token expira em", new Date(decoded.exp * 1000));
+        }
+        else {
+            console.log("*sem tempo de expiração");
+        }
+        console.log('\n');
         switch (this.access) {
             case AccessType.MART:
                 {

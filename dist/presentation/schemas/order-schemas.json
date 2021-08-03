@@ -1,0 +1,7 @@
+{
+    "Create": {
+        "quantity": { "type": "number", "label": "Quantidade" },
+        "forecast": { "type": "date", "label": "Previsão de compra" },
+        "product_id": { "type": "string", "label": "Produto Não Encontrado" }
+    }
+}

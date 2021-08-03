@@ -31,7 +31,6 @@ exports.vendors = {
     idGenerator: new UuidAdapter_1.default(),
     passwordGenerator: new PasswordGeneratorAdapter_1.default(),
     mailer: keys_1.default.node_env === "development" ? new MailterStub() : new NodeMailerAdapter_1.default(keys_1.default.email_address, keys_1.default.email_password),
-    /*     mailer: new NodeMailerAdapter( keys.email_address, keys.email_password ), */
     hasher: new BcryptAdapter_1.default(),
     encrypter: new JsonWebTokenAdapter_1.default(keys_1.default.jwt_secret)
 };
@@ -40,7 +39,8 @@ exports.repositories = {
     providersRepository: new KnexAdapter_1.default('providers'),
     adminsRepository: new KnexAdapter_1.default('admins'),
     categoriesRepository: new KnexAdapter_1.default('categories'),
-    productsRepository: new KnexAdapter_1.default('products')
+    productsRepository: new KnexAdapter_1.default('products'),
+    ordersRepository: new KnexAdapter_1.default('orders')
 };
 MainController_1.MainController.encrypter = exports.vendors.encrypter;
 MainController_1.MainController.martRepository = exports.repositories.martsRepository;
