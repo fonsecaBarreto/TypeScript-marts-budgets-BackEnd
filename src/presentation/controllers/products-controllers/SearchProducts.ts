@@ -35,6 +35,9 @@ export class SearchProductController extends MainController{
             categories = [ ...categories, ...childs.map(child=>child.id)]
         }))
 
+        categories = [ ...new Set(categories)]
+        console.log(categories)
+
         query.whereIn('category_id', categories) 
         count_query.whereIn('category_id', categories)   
     }
@@ -59,7 +62,7 @@ export class SearchProductController extends MainController{
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
         const offset = Number(request.query.o) || 0
 
-        const limit = 4
+        const limit = 6
         var total = 0
         var subTotal = 0
         var products: ProductModel[] = []
