@@ -1,6 +1,8 @@
 import { vendors, repositories, fileRepository } from './depedencies'
 import { CreateCategoryController, RemoveController,FindController } from '../../presentation/controllers/categories-controllers/Crud'
-import { ListCategoriesTree, FilterListCategories } from '../../presentation/controllers/categories-controllers/ListCategories'
+import { FilterListCategories } from '../../presentation/controllers/categories-controllers/ListCategories'
+import { ListCategoriesTree } from '../../presentation/controllers/categories-controllers/ListCategoryTree'
+import { ListCategoriePrimaries } from '../../presentation/controllers/categories-controllers/ListCategoriesPrimaries'
 
 const { categoriesRepository } = repositories
 const { idGenerator} = vendors
@@ -14,4 +16,5 @@ export const removeCategoryController = new RemoveController(categoriesRepositor
 
 export const listCategoriesTree = new ListCategoriesTree(categoriesRepository)
 export const filterListCategories = new FilterListCategories(categoriesRepository)
+export const listCategoriesPrimaries = new ListCategoriePrimaries(categoriesRepository)
 

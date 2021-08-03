@@ -6,9 +6,10 @@ import { ProductModel } from "../../../domain/entities/ProductModel"
 import { Knex } from "knex"
 
 export interface ProductSearchView{
+    totalPages: number,
     total: number,
     subTotal: number,
-    products: ProductModel[], 
+    products: ProductModel[]
 }
 
 export class SearchProductController extends MainController{
@@ -60,11 +61,12 @@ export class SearchProductController extends MainController{
         const description = request.query.v || '';
         var categories = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [ request.query.c ] : []
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
-        const offset = Number(request.query.o) || 0
+        const pageIndex = Number(request.query.p) || 0
 
-        const limit = 6
+        const limit = 2
+        const offset = pageIndex * limit
+
         var total = 0
-        var subTotal = 0
         var products: ProductModel[] = []
       
         /* Count all */
@@ -80,11 +82,15 @@ export class SearchProductController extends MainController{
         await this.handleDescriptionLike(query, count_query, description)
         count_query.count('id', {as: 'count'}).first(); 
 
-        var result: ProductSearchView = { total, subTotal, products }
+        var result: ProductSearchView = { total, subTotal:0, totalPages:0, products, }
 
         const resulta = await Promise.all([
             
-            count_query.then((count:any)=> { result.subTotal = count ? Number(count.count) : 0 } ),
+            count_query.then((count:any)=> { 
+                var subTotal =  count ? Number(count.count) : 0
+                result.subTotal = subTotal
+                result.totalPages = Math.ceil(subTotal / limit) 
+             } ),
         
             query.then(products=>{
                 products = products.map(p=>({description: p.description, category_id: p.category_id, brand: p.brand}))
