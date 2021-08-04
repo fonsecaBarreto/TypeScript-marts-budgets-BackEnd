@@ -21,6 +21,12 @@ exports.up = function(knex) {
         t.timestamp('created_at').default(knex.fn.now())
         t.timestamp('updated_at').default(knex.fn.now())
     })
+    .createTable('brands', t => {
+        t.string('id').primary()
+        t.string('name').notNull()
+        t.timestamp('created_at').default(knex.fn.now())
+        t.timestamp('updated_at').default(knex.fn.now())
+    })
     .createTable('products', t =>{
         t.string('id').primary()
         t.text('description','longtext').notNull()
@@ -31,7 +37,7 @@ exports.up = function(knex) {
         t.string('ean').unique()
         t.string('sku').unique()
         t.string('image')
-        t.string('brand')
+        t.string('brand_id').references('brands.id').onDelete('SET NULL');
         t.string('category_id').references('categories.id').onDelete('SET NULL');
         t.timestamp('created_at').default(knex.fn.now())
         t.timestamp('updated_at').default(knex.fn.now())
@@ -40,6 +46,6 @@ exports.up = function(knex) {
   };
   
   exports.down = function(knex) {
-    return knex.schema.dropTable("products").dropTable("providers").dropTable('categories')
+    return knex.schema.dropTable("products").dropTable("providers").dropTable("brands").dropTable('categories')
 };
   

@@ -1,0 +1,8 @@
+{
+    "Create": {
+        "name": { "type": "string", "label": "Nome" }
+    },
+    "Update": {
+        "name": { "type": "string", "label": "Nome" }
+    }
+}

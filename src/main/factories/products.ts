@@ -6,18 +6,17 @@ import { SearchProductController } from '../../presentation/controllers/products
 import { ListAllbrands } from '../../presentation/controllers/products-controllers/ListAllBrands'
 import KnexAdapter from '../../libs/KnexAdapter'
 
-const { productsRepository, categoriesRepository } = repositories
+const { productsRepository, categoriesRepository, brandsRepository } = repositories
 const { idGenerator, fileRepository, imageTransformer } = vendors
 
 
 export const serializers = { 
-    productView: MakeProductView(productsRepository, categoriesRepository)
+    productView: MakeProductView(brandsRepository, categoriesRepository)
 }
 
-
 /* crud */
-export const createProductController = new CreateProductController(productsRepository, categoriesRepository, idGenerator, fileRepository, imageTransformer, serializers.productView)
-export const updateProductController = new CreateProductController(productsRepository, categoriesRepository, idGenerator, fileRepository, imageTransformer, serializers.productView)
+export const createProductController = new CreateProductController(productsRepository, categoriesRepository, brandsRepository, idGenerator, fileRepository, imageTransformer, serializers.productView)
+export const updateProductController = new CreateProductController(productsRepository, categoriesRepository, brandsRepository, idGenerator, fileRepository, imageTransformer, serializers.productView)
 
 export const findProductController = new FindController(productsRepository, serializers.productView)
 export const removeProductController = new RemoveController(productsRepository, fileRepository)

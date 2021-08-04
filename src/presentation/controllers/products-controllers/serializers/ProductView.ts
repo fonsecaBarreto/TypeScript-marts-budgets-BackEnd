@@ -6,15 +6,24 @@ export type CategoryLabelView = {
     value: string
 }
 
+export type BrandLabelView = {
+    label: string,
+    value: string
+}
+
 export interface ProductView extends ProductModel{
     category: CategoryLabelView
 }
 
-export const MakeProductView = (productRepository: DatabaseAdapter, categoryRepository: DatabaseAdapter) =>{
+export const MakeProductView = (brandsRepository: DatabaseAdapter, categoryRepository: DatabaseAdapter) =>{
     return async (product: ProductModel) =>{
         const categoryResult = !product.category_id ? null : await categoryRepository.find({id: product.category_id})
         const category = categoryResult ? { label: categoryResult.name, value: categoryResult.id} : { label: "", value: ""}
-        return { ...product, category }
+
+        const brandResult = !product.brand_id ? null : await brandsRepository.find({id: product.brand_id})
+        const brand = brandResult ? { label: brandResult.name, value: brandResult.id} : { label: "", value: ""}
+
+        return { ...product, category, brand }
     }
 }
 

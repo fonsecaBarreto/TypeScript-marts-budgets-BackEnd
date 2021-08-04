@@ -7,12 +7,9 @@ import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { IdGenerator } from "../../../domain/vendors/Utils";
 
 import { Create as CreateSchema, Update as UpdateSchema } from '../../schemas/product-schemas.json'
-import { CategoryNotFoundError, ProductCodeInUseError, ProductNotFoundError } from "../../../domain/protocols/Errors";
+import { BrandNotFoundError, CategoryNotFoundError, ProductCodeInUseError, ProductNotFoundError } from "../../../domain/protocols/Errors";
 import { FileRepository } from "../../../domain/vendors/FileRepository";
 import { ImageTransformer } from "../../../domain/vendors/ImageTransformer";
-import { MakeCategoryListView } from '../categories-controllers/serializers/CategoryListView'
-import { ListCategoriesTree } from "../categories-controllers/ListCategories";
-import { serialize } from "node:v8";
 
 const ImageSchema: Record<string, FileSchema> = {
     image: {
@@ -26,6 +23,7 @@ export class CreateProductController  extends MainController{
     constructor( 
         private readonly productsRepository: DatabaseAdapter,
         private readonly categoriesRepository: DatabaseAdapter,
+        private readonly brandsRepository: DatabaseAdapter, // thr
         private readonly idGenerator: IdGenerator,
         private readonly fileRepository: FileRepository,
         private readonly imageTransformer: ImageTransformer,
@@ -59,7 +57,7 @@ export class CreateProductController  extends MainController{
 
         const product_id = request.params.id;
 
-        const { description, stock, price, presentation, brand, ncm, ean, sku, category_id } = request.body
+        const { description, stock, price, presentation, brand_id, ncm, ean, sku, category_id } = request.body
         const { image } = request.files
 
         var image_name = null
@@ -91,16 +89,19 @@ export class CreateProductController  extends MainController{
             const categoryExists = await this.categoriesRepository.find({id: category_id})
             if(!categoryExists) throw CategoryNotFoundError()
         }
+        if(brand_id){
+            const brandExists = await this.brandsRepository.find({id: brand_id})
+            if(!brandExists) throw BrandNotFoundError()
+        }
 
         const id = product_id ? product_id : await this.idGenerator.generate()
 
        
-
         if(product_id){
-            await this.productsRepository.update({id}, {description, stock, price, presentation, brand, ncm, ean, sku, category_id, image: image_name})
+            await this.productsRepository.update({id}, {description, stock, price, presentation, brand_id, ncm, ean, sku, category_id, image: image_name})
         }else{
             const productModel: ProductModel = {
-                id, description, stock, price, presentation, brand, ncm, ean, sku, category_id, image: image_name
+                id, description, stock, price, presentation, brand_id, ncm, ean, sku, category_id, image: image_name
             }
             await this.productsRepository.insert(productModel)
         }

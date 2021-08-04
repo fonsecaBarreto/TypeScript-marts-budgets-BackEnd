@@ -11,10 +11,14 @@ export interface ProviderModel {
     name: string
     phone: string,
     email: string,
-    
     cnpj: string,
     corporate_name:string,
     obs:string,
+}
+
+export interface BrandModel {
+    id: string,
+    name: string
 }
 
 export interface ProductModel {
@@ -27,6 +31,6 @@ export interface ProductModel {
     ean: string,
     sku:string,
     image: string
-    brand:string
     category_id: string
+    brand_id:string
 }

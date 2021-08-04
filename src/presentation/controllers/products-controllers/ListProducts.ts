@@ -24,7 +24,7 @@ export class FilterListProduct extends MainController{
         const total = await this.productsRepository.count({},'id')
         const where = category_id ? { category_id } : {}
 
-        const { queryData, queryTotal } = await this.productsRepository.listAlike(['description','ncm', 'ean', 'sku', 'brand'], text, where,{}, offset, 16)
+        const { queryData, queryTotal } = await this.productsRepository.listAlike(['description','ncm', 'ean', 'sku'], text, where,{}, offset, 16)
 
         const providerListFeed: ProductListFeed ={
             total, 

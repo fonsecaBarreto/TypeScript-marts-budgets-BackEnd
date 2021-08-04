@@ -1,8 +1,6 @@
 
 const faker  = require('faker')
-
 const presentations = ["Caixa com 24 unidades", "Granel","Unidade" ]
-const brands = ["Amazon", "Apple", "Microsoft", "Pier", "Petrobras", "xiaomi", "Dell"]
 
 const createFakeProduct = (i) =>({
   id: 'prod_test_ID_0'+i, 
@@ -14,7 +12,7 @@ const createFakeProduct = (i) =>({
   ean: null,
   sku: null,
   image: null,
-  brand: brands[ Math.ceil( Math.random() * brands.length - 1 )  ],
+  brand_id: `test_brand_${Math.ceil( Math.random() * 12) - 1 }`,
   category_id: `test_sub_category_${Math.ceil(Math.random() * 6 ) - 1}-${Math.ceil(Math.random() * 3) - 1}`,
  
 }) 

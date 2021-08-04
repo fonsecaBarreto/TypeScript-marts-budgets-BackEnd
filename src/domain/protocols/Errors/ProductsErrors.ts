@@ -3,6 +3,10 @@ import ApplicationError from './ApplicationError'
 export const ProductNotFoundError = () => (
     new ApplicationError('ProductNotFoundError', "Producto não encontrado ", {'product_id': "Produto não existe"}))
     
+
+export const BrandNotFoundError = () => (
+    new ApplicationError('BrandNotFoundError', "Marca não encontrada", {'brand_id': "Marca não existe"}))
+    
 export const CategoryNotFoundError = () => (
     new ApplicationError('CategoryNotFoundError', "Categoria não encontrada ", {'category_id': "Categoria referenciada não existe"}))
 
