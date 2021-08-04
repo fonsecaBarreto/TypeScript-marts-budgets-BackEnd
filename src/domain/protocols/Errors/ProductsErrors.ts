@@ -7,7 +7,7 @@ export const CategoryNotFoundError = () => (
     new ApplicationError('CategoryNotFoundError', "Categoria não encontrada ", {'category_id': "Categoria referenciada não existe"}))
 
 export const ProviderNotFoundError = () => (
-    new ApplicationError('ProviderNotFoundError', "Fornecedor referenciado já não existe ", {'provider_id': "Fornecedor Desconhecido."}))
+    new ApplicationError('ProviderNotFoundError', "Fornecedor Não encontado ", {'provider_id': "Fornecedor Desconhecido."}))
 
     /* categories */
 export const CategoryConflictError = () => (

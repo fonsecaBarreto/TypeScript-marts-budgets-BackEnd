@@ -17,7 +17,7 @@ const annexSchema: Record<string, FileSchema> = {
     annex: {
         optional: true,
         types: ['image/jpeg','image/png','application/pdf'],
-        max_size: 10e+6,
+        max_size: 5e+6,
     }
 }
 

@@ -1,12 +1,18 @@
 {
     "Create": {
-        "name": { "type": "string" },
-        "email": { "type": "email" },
-        "phone": { "type": "phone", "optional": true }
+        "name": { "type": "string", "label": "Nome" },
+        "corporate_name": { "type": "string", "label": "Razão social" },
+        "email": { "type": "email", "label": "E-mail" },
+        "phone": { "type": "phone", "optional": true, "label": "Telefone" },
+        "cnpj": { "type": "cnpj/cpf", "label": "CNPJ" },
+        "obs": { "type": "string", "label": "Observações","optional":true }
     },
     "Update": {
-        "name": { "type": "string" },
-        "email": { "type": "email" },
-        "phone": { "type": "phone", "optional": true }
+        "name": { "type": "string", "label": "Nome" },
+        "corporate_name": { "type": "string", "label": "Razão social" },
+        "email": { "type": "email", "label": "E-mail" },
+        "phone": { "type": "phone", "optional": true, "label": "Telefone" },
+        "cnpj": { "type": "cnpj/cpf", "label": "CNPJ" },
+        "obs": { "type": "string", "label": "Observações","optional":true }
     }
 }

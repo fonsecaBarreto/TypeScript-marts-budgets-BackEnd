@@ -10,7 +10,11 @@ export interface ProviderModel {
     id:string,
     name: string
     phone: string,
-    email: string
+    email: string,
+    
+    cnpj: string,
+    corporate_name:string,
+    obs:string,
 }
 
 export interface ProductModel {

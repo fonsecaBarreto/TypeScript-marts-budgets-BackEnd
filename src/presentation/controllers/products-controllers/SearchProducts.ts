@@ -6,17 +6,17 @@ import { ProductModel } from "../../../domain/entities/ProductModel"
 import { Knex } from "knex"
 
 export interface ProductSearchView{
-    totalPages: number,
     total: number,
     subTotal: number,
+    totalPages: number,
+    currentPage: number,
     products: ProductModel[]
 }
 
 export class SearchProductController extends MainController{
     constructor( 
          private readonly knexConnection: Knex
-    ){  super(AccessType.MART) }
-
+    ){  super(AccessType.MART_OR_ADMIN) }
 
     async getCategoriesChilds(category_id: string){
 
@@ -63,8 +63,9 @@ export class SearchProductController extends MainController{
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
         const pageIndex = Number(request.query.p) || 0
 
-        const limit = 2
+        const limit = 16
         const offset = pageIndex * limit
+        const currentPage = pageIndex
 
         var total = 0
         var products: ProductModel[] = []
@@ -82,7 +83,7 @@ export class SearchProductController extends MainController{
         await this.handleDescriptionLike(query, count_query, description)
         count_query.count('id', {as: 'count'}).first(); 
 
-        var result: ProductSearchView = { total, subTotal:0, totalPages:0, products, }
+        var result: ProductSearchView = { total, subTotal:0, totalPages:0, currentPage, products}
 
         const resulta = await Promise.all([
             
@@ -93,7 +94,7 @@ export class SearchProductController extends MainController{
              } ),
         
             query.then(products=>{
-                products = products.map(p=>({description: p.description, category_id: p.category_id, brand: p.brand}))
+                //products = products.map(p=>({description: p.description, category_id: p.category_id, brand: p.brand}))
                 result.products = products
             })
             

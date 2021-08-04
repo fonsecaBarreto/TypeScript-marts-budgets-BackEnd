@@ -7,15 +7,6 @@ import { InvalidFileBufferError, MissingFileBufferError } from "../../domain/pro
 import { fileRepository } from "../../main/factories";
 import { Console } from "console";
 
-
-/* 
-const COMMON_IMAGES =  ["image/png", "image/jpeg", "image/jpg", "image/webp" ]
-
-const COMMON_DOCUMENTS  = [ 
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/pdf"
-] */
-
 export interface FileSchema {
     types: string[],
     max_size: number,

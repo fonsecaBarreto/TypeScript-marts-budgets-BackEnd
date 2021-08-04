@@ -1,15 +1,25 @@
 import { Router } from 'express'
 import { createCategoryController, findCategoryController,removeCategoryController,updateCategoryController,
 listCategoriesTree, filterListCategories,
-listCategoriesPrimaries } from '../factories/categories'
+listCategoriesPrimaries,
+listCategoriesScrewView } from '../factories/categories'
 
 
 
 export default (router: Router) =>{
+
+
+    /* mart or admin */
+
+
+    router.get("/categories/screw", listCategoriesScrewView.execute())
+
+    router.get("/categories/primaries", listCategoriesPrimaries.execute())
+
+
     
     /*  admin */
 
-    router.get("/categories/primaries", listCategoriesPrimaries.execute())
 
     router.get("/categories/list", filterListCategories.execute()) //admin select input
 

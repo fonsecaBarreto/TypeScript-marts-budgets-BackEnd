@@ -13,6 +13,11 @@ exports.up = function(knex) {
         t.string('name').notNull()
         t.string('phone').unique()
         t.string('email').notNull().unique()
+
+        t.string('cnpj').unique().notNull()
+        t.string('corporate_name').unique().notNull()
+        t.text('obs','longtext')
+  
         t.timestamp('created_at').default(knex.fn.now())
         t.timestamp('updated_at').default(knex.fn.now())
     })

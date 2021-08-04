@@ -21,7 +21,7 @@ export const ServerError = () => (
 export const InvalidFileBufferError = (types:string[], limit: number, param: string) => {
     const list = types.map(t=>(` .${t.substring(t.lastIndexOf("/")+1, t.length )}`)) 
     const limitMb = (limit / (1024 * 1024 )).toFixed(2);
-    const message = `Somente arquivos de extesão (${ list} ) e tamanho maximo de ${limitMb} Mb.`
+    const message = `Somente arquivos (${ list} ) com tamanho maximo de ${limitMb} Mb.`
     return new ApplicationError('InvalidFileBufferError',  message, { [param]: message })
 }
 export const MissingFileBufferError = (param: string) => {

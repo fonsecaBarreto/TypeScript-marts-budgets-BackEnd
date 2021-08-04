@@ -3,6 +3,7 @@ import { CreateCategoryController, RemoveController,FindController } from '../..
 import { FilterListCategories } from '../../presentation/controllers/categories-controllers/ListCategories'
 import { ListCategoriesTree } from '../../presentation/controllers/categories-controllers/ListCategoryTree'
 import { ListCategoriePrimaries } from '../../presentation/controllers/categories-controllers/ListCategoriesPrimaries'
+import { ListCategoriesScrewView } from '../../presentation/controllers/categories-controllers/CategoriesInfinityView'
 
 const { categoriesRepository } = repositories
 const { idGenerator} = vendors
@@ -18,3 +19,7 @@ export const listCategoriesTree = new ListCategoriesTree(categoriesRepository)
 export const filterListCategories = new FilterListCategories(categoriesRepository)
 export const listCategoriesPrimaries = new ListCategoriePrimaries(categoriesRepository)
 
+
+/* v2 */
+
+export const listCategoriesScrewView = new ListCategoriesScrewView(categoriesRepository)
