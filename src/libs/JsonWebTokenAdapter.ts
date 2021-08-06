@@ -6,7 +6,7 @@ export default class JsonWebTokenAdapter implements Encrypter {
     ){}
 
     async sign(id: string, exp?:number): Promise<string> {
-        const token = await sign({ id, exp: exp || Math.floor(Date.now() / 1000) + 604800 }, this.secret)
+        const token = await sign({ id, exp: exp || Math.floor(Date.now() / 1000) + 6004800 }, this.secret)
         return token
     }
 

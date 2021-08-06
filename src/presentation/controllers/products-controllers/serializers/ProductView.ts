@@ -12,7 +12,8 @@ export type BrandLabelView = {
 }
 
 export interface ProductView extends ProductModel{
-    category: CategoryLabelView
+    category: CategoryLabelView,
+    brand: BrandLabelView
 }
 
 export const MakeProductView = (brandsRepository: DatabaseAdapter, categoryRepository: DatabaseAdapter) =>{

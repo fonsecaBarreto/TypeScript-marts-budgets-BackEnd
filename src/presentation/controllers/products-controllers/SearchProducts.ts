@@ -3,6 +3,7 @@ import { success } from "../../helpers/http-helper"
 import { Request, Response } from "../../../domain/protocols/http"
 import { AccessType, MainController } from "../../helpers/MainController"
 import { ProductModel } from "../../../domain/entities/ProductModel"
+import { mapProductSearchView } from './serializers/ProductSearchView'
 import { Knex } from "knex"
 
 export interface ProductSearchView{
@@ -15,7 +16,8 @@ export interface ProductSearchView{
 
 export class SearchProductController extends MainController{
     constructor( 
-         private readonly knexConnection: Knex
+         private readonly knexConnection: Knex,
+         private readonly serializer: any, 
     ){  super(AccessType.MART_OR_ADMIN) }
 
     async getCategoriesChilds(category_id: string){
@@ -46,8 +48,8 @@ export class SearchProductController extends MainController{
     async handleBrands (query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, brands: string[]): Promise<void>{
         if(brands.length == 0 ) return
 
-        query.whereIn('brand', brands) 
-        count_query.whereIn('brand', brands)   
+        query.whereIn('brand_id', brands) 
+        count_query.whereIn('brand_id', brands)   
     }
 
     async handleDescriptionLike(query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, description:string): Promise<void> {
@@ -93,9 +95,8 @@ export class SearchProductController extends MainController{
                 result.totalPages = Math.ceil(subTotal / limit) 
              } ),
         
-            query.then(products=>{
-                //products = products.map(p=>({description: p.description, category_id: p.category_id, brand: p.brand}))
-                result.products = products
+            query.then( async products=>{
+                result.products = await mapProductSearchView(products, this.serializer)
             })
             
         ])
