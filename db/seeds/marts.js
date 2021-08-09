@@ -12,7 +12,8 @@ const createFakeMart = (i) =>({
   password: Math.random() > 0.5 ? hashSync('123456') : null,
   annex: null,
   transfer_allowed: Math.random() > 0.5 ? true : false,
-  image: null
+  image: null,
+  responsible_name:"Nome Teste "
 })
 
 exports.seed = async function(knex) {
@@ -34,7 +35,8 @@ exports.seed = async function(knex) {
           cnpj_cpf: "16684653216687",
           annex: null,
           transfer_allowed: true,
-          image: null
+          image: null,
+          responsible_name:"Lucas Fonseca Barretp"
         }, ...fakers
         
       ]);

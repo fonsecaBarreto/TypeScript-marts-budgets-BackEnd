@@ -1,0 +1,15 @@
+{
+    "address": { "type": "string", "label":"Logradouro",
+        "missingMessage": "Informe um Endereço válido" }, 
+    "address_region": { "type": "string", "label":"Bairro",
+        "missingMessage": "Informe seu Bairro" }, 
+    "address_number":{ "type": "string", "label":"Numero",
+        "missingMessage": "Informe o Numero" }, 
+    "address_postalcode": { "type": "string", "label":"CEP",
+        "missingMessage": "Informe um CEP válido" },  
+    "address_city": { "type": "string", "label":"Cidade",
+        "missingMessage": "Informe sua Cidade" },  
+    "uf": { "type": "string", "label":"UF",
+        "missingMessage": "Informe um UF válido" },  
+    "details": { "type": "string", "label": "Complemento", "optional":true }
+}

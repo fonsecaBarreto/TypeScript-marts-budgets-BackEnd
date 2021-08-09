@@ -6,6 +6,9 @@ export const MartNotFoundError = () => (
 export const EmailInUseError = () => (
     new ApplicationError('EmailInUseError', "Este E-mail já está em uso", {'email': "Email está em uso"}))
 
+export const FinancialEmailInUseError = () => (
+    new ApplicationError('FinancialEmailInUseError', "Este E-mail já está em uso", {'financial_email': "Email está em uso"}))
+
 export const CpfCnpjInUseError = () => (
     new ApplicationError('CpfCnpjInUseError', "Já existe Conta cadastrada para esse documento", {'cnpj_cpf': "documento está em uso"}))
 
@@ -18,4 +21,7 @@ export const MartNotVerifiedError = () => (
 export const MartAlreadyVerifiedError = () => (
     new ApplicationError('MartAlreadyVerifiedError', "Conta Mercado Já foi verificado."))
     
+export const CorporateNameInUseError = () => (
+    new ApplicationError('CorporateNameInUseError', "Razão social já está em uso", {'corporate_name': "Razão social já está em uso"}))
+
     /*  */

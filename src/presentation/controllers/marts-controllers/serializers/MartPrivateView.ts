@@ -1,27 +1,27 @@
+import { Addresses } from "../../../../domain/entities/Addresses"
 import { MartModel } from "../../../../domain/entities/MartModel"
+import { DatabaseAdapter } from "../../../../domain/vendors/DatabaseAdapter"
 
 export interface MartPrivateView extends Omit<MartModel,'password'> {
-    isActive: boolean
+    isActive: boolean,
+    address: Addresses
 }
 
-export const MakeMartPrivateView = (mart: MartModel): MartPrivateView =>{
-    if(!mart) return null
-    //aqui tave eu deveria resovler o image url e annex url
-    const novo=  ({ ...mart, isActive: mart.password ? true : false}) 
+
+export const MakeMartPrivateView = ( addressRepository: DatabaseAdapter ) =>{
+    return async (mart: MartModel): Promise<MartPrivateView> => {
+    if(!mart) return 
+    const address = !mart.address_id ? null : await addressRepository.find({ id: mart.address_id })
+    const novo=  ({ ...mart, address, isActive: mart.password ? true : false}) 
     delete novo.password 
-    return novo 
-}
+    return novo
+}}
 
-export const MapMartPrivateView = (marts: any[]):  Promise<any> =>{
+export const MapMarts = (marts: any[], serializer: any):  Promise<any> =>{
     if(marts.length === 0 ) return Promise.resolve([])
-
-    marts.sort((a, b) => (a.created_at < b.created_at) ? 1 : -1)
-
     return Promise.all(marts.map(async (m: MartModel )=> {
-        return MakeMartPrivateView(m)
-    }))
-
-    
+        return serializer(m)
+    })) 
 }
 
 

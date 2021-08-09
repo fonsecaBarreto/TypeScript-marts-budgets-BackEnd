@@ -17,6 +17,12 @@ export const ServerError = () => (
         new ApplicationError('ServerError', "Erro no servidor"))
 
 
+export const AddressNotFoundError = () => (
+    new ApplicationError('AddressNotFoundError', "Endereço não encontrado", {'address_id': "Endereço não encontrado"}))
+    
+        
+
+
 /* files */
 export const InvalidFileBufferError = (types:string[], limit: number, param: string) => {
     const list = types.map(t=>(` .${t.substring(t.lastIndexOf("/")+1, t.length )}`)) 

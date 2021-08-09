@@ -4,7 +4,7 @@ import { cpf, cnpj } from 'cpf-cnpj-validator';
 
 
 const makeMissingMessage = (field: string, missingMessage: string) =>{
-  return missingMessage || `Campo de ${field} é obrigatorio`
+  return missingMessage || `Campo '${field}' é obrigatório`
 }
 
 const makeInvalidMessage = (field: string, invalidMessage:string) =>{
@@ -26,6 +26,8 @@ export default class JsonValidator implements BodyValidator{
       const { type, size, optional, label, missingMessage, invalidMessage } = this.schema[field] 
       const value = body[field]
 
+      if(type === "any") return 
+
       if ( value === null ){
         if(optional === true) return
         return params[field]= makeMissingMessage(label || field, missingMessage)
@@ -38,7 +40,6 @@ export default class JsonValidator implements BodyValidator{
 
     return Object.keys(params).length == 0 ? null : params 
   }
-
 
   private sanitize (body: Record<string,any>) {
 
@@ -54,6 +55,7 @@ export default class JsonValidator implements BodyValidator{
       if(final_value == null) return body[field] = null
 
       switch(type){
+        
         case "cnpj/cpf": final_value = (value+"").replace(/[^\d]+/g,'');break;
         case "phone":  final_value = (value+"").replace(/[^\d]+/g,''); break;
         case "number": { if(!isNaN(value)) final_value = Number(value); };break;
@@ -67,6 +69,15 @@ export default class JsonValidator implements BodyValidator{
   private checkType( value:any, type:string){
     var isValid = true
     switch(type){
+
+      case "json" :{
+        try {
+          JSON.parse(value);
+          isValid = true;
+        } catch (e) {
+          isValid = false;
+        }
+      };break;
 
       case "cnpj/cpf" : {
         try{

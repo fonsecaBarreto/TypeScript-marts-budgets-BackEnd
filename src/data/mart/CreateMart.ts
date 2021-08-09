@@ -1,5 +1,6 @@
 import { MartModel } from "../../domain/entities/MartModel";
-import { CpfCnpjInUseError, EmailInUseError, MartNotFoundError, PhoneInUseError } from "../../domain/protocols/Errors";
+import { AddressNotFoundError, CpfCnpjInUseError, EmailInUseError, MartNotFoundError, PhoneInUseError } from "../../domain/protocols/Errors";
+import { CorporateNameInUseError, FinancialEmailInUseError } from "../../domain/protocols/Errors/MartsErrors";
 import { DatabaseAdapter } from "../../domain/vendors/DatabaseAdapter";
 import { Hasher, IdGenerator } from "../../domain/vendors/Utils";
 
@@ -9,20 +10,29 @@ export namespace CreateMart {
         email:string,
         phone: string,
         cnpj_cpf: string,
-        password: string,
         annex: string,
         image: string
-        transfer_allowed: boolean
+        transfer_allowed: boolean,
+        address_id:string,
+        financial_email:string,
+        responsible_name:string,
+        corporate_name:string,
+        obs:string,
+
+        password: string,
     }
     export type UpdateParams = {
         id:string,
+
         name: string
         email:string,
         phone: string,
         cnpj_cpf: string,
-        annex: string,
-        image: string
-        transfer_allowed: boolean
+        transfer_allowed: boolean,
+        financial_email:string,
+        responsible_name:string,
+        corporate_name:string,
+        obs:string,
     }
 }
 
@@ -31,10 +41,12 @@ export default class CreateMart {
     constructor(
         private readonly martsRepository: DatabaseAdapter,
         private readonly idGenerator: IdGenerator,
-        private readonly hasher: Hasher 
+        private readonly hasher: Hasher,
+        private readonly addressRepository: DatabaseAdapter
     ){}
 
-    private async checkDuplicity(cnpj_cpf: string, email: string, phone: string, mart?:MartModel): Promise<void> {
+    public async checkDuplicity(cnpj_cpf: string, email: string, phone?: string, corporate_name?:string, financial_email?:string, mart?:MartModel): Promise<void> {
+
 
         const emailExists = await this.martsRepository.find({email})
         if(emailExists) {
@@ -52,18 +64,32 @@ export default class CreateMart {
                 if( (!mart) || mart.phone !== phone) throw PhoneInUseError()
             }
         }
+
+        if(corporate_name){
+            const corporateNameExists = await this.martsRepository.find({corporate_name})
+            if(corporateNameExists) {
+                if( (!mart) || mart.corporate_name !== corporate_name) throw CorporateNameInUseError()
+            }
+        }
+
+        if(financial_email) {
+            const financialEmailExits = await this.martsRepository.find({financial_email})
+            if(financialEmailExits) {
+                if( (!mart) || mart.financial_email !== financial_email) throw FinancialEmailInUseError()
+            }
+        }
     }
 
     async update(params: CreateMart.UpdateParams) {
 
-        const { id, cnpj_cpf, name, email, phone, annex, transfer_allowed, image } = params
+        const { id, cnpj_cpf, name, email, phone, transfer_allowed, corporate_name, financial_email, obs,responsible_name } = params
 
         const mart = await this.martsRepository.find({id})
         if(!mart) throw MartNotFoundError()
 
-        await this.checkDuplicity(cnpj_cpf, email, phone, mart)
+        await this.checkDuplicity(cnpj_cpf, email, phone, corporate_name, financial_email, mart)
     
-        await this.martsRepository.update({id},{ cnpj_cpf, name, email, phone, annex, transfer_allowed, image })
+        await this.martsRepository.update({id},{ cnpj_cpf, name, email, phone, transfer_allowed, corporate_name, financial_email, obs,responsible_name  })
 
         const rescued  = await this.martsRepository.find({id})
         return rescued
@@ -72,17 +98,20 @@ export default class CreateMart {
 
     async execute(params: CreateMart.Params) {
 
-        const { cnpj_cpf, name, email, phone, password, annex, transfer_allowed, image } = params
+        const { cnpj_cpf, name, email, phone, password, annex, transfer_allowed, image, 
+            obs, address_id, corporate_name, financial_email, responsible_name } = params
 
-        await this.checkDuplicity(cnpj_cpf, email, phone)
-        
+        const addressExits = await this.addressRepository.find({ id: address_id })
+        if(!addressExits) throw AddressNotFoundError()
+
         const id = await this.idGenerator.generate()
 
         const password_hash = password ? await this.hasher.hash(password) : null
 
         const mart: MartModel = {
             image, annex, transfer_allowed,
-            id, cnpj_cpf, name, email, phone, password: password_hash
+            id, cnpj_cpf, name, email, phone, password: password_hash,
+            address_id, corporate_name, financial_email, responsible_name,  obs, 
         }
 
         await this.martsRepository.insert(mart)

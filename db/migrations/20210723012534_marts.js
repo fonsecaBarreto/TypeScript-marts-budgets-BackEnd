@@ -9,6 +9,13 @@ exports.up = function(knex) {
         t.string('annex')
         t.string('image')
         t.boolean('transfer_allowed').default(false)
+        
+        t.string("responsible_name").notNull()
+        t.string("financial_email").unique()
+        t.string("corporate_name").unique()
+        t.string('address_id').references('addresses.id').onDelete('CASCADE');
+        t.text('obs','longtext')
+
         t.timestamp('created_at').default(knex.fn.now())
         t.timestamp('updated_at').default(knex.fn.now())
     })

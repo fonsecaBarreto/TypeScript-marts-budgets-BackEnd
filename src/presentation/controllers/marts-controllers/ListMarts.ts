@@ -3,7 +3,7 @@ import { success } from "../../helpers/http-helper"
 import { Request, Response } from "../../../domain/protocols/http"
 import { AccessType, MainController } from "../../helpers/MainController"
 import { MartModel } from "../../../domain/entities/MartModel"
-import { MartPrivateView, MapMartPrivateView} from './serializers/MartPrivateView'
+import { MartPrivateView, MapMarts} from './serializers/MartPrivateView'
 
 export interface MartListFeed {
     total: number,
@@ -19,7 +19,9 @@ enum MartStatus {
 }
 
 export class FilterListMart extends MainController{
-    constructor(  private readonly martsRepository: DatabaseAdapter,
+    constructor(  
+        private readonly martsRepository: DatabaseAdapter,
+        private readonly serializer: any
     ){  super(AccessType.ADMIN) }
     async handler(request: Request): Promise<Response> {
      
@@ -38,7 +40,7 @@ export class FilterListMart extends MainController{
             total, 
             subTotal: queryTotal,
             queries: { text, status },
-            data: await MapMartPrivateView(queryData),
+            data: await MapMarts(queryData, this.serializer),
         }
 
         return success(providerListFeed)

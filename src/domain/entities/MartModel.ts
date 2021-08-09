@@ -8,6 +8,13 @@ export interface MartModel {
     annex: string
     transfer_allowed: boolean,
     image: string,
+
+    address_id:string,
+    financial_email:string,
+    responsible_name:string,
+    corporate_name:string,
+    obs:string,
+    
 }
 
 
