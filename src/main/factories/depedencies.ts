@@ -10,6 +10,7 @@ import JsonWebTokenAdapter from '../../libs/JsonWebTokenAdapter'
 import { MainController } from '../../presentation/helpers/MainController'
 import LocalFileStorage from '../../data/LocalFileStorage'
 import { Mailer } from '../../domain/vendors/Mailer'
+import { Knex } from 'knex'
 
 KnexAdapter.open(keys.node_env)
 
@@ -42,7 +43,8 @@ export const repositories = {
     productsRepository: new KnexAdapter('products'),
     ordersRepository: new KnexAdapter('orders'),
     brandsRepository: new KnexAdapter('brands'),
-    addressRepository: new KnexAdapter('addresses')
+    addressRepository: new KnexAdapter('addresses'),
+    martannexsRepository: new KnexAdapter('mart_annexs')
 }
 
 MainController.encrypter = vendors.encrypter

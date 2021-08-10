@@ -9,10 +9,10 @@ const createAddress = (i) =>{
     id: 'address_test_ID_'+i, 
     address: faker.address.streetAddress(),
     address_region: faker.address.county(),
-    address_number: faker.address.streetSuffix(),
+    address_number: Math.ceil(Math.random() * 200),
     address_postalcode: faker.address.zipCode(),
     address_city: faker.address.cityName(),
-    uf: faker.address.state(),
+    uf: "RJ",
     details: ""
   })
   
@@ -24,12 +24,10 @@ const createFakeMart = (i) =>({
   phone: (faker.phone.phoneNumber()).replace(/[^\d]+/g,''),
   cnpj_cpf: (cnpj.generate()).replace(/[^\d]+/g,''),
   password: Math.random() > 0.5 ? hashSync('123456') : null,
-  annex: null,
   transfer_allowed: Math.random() > 0.5 ? true : false,
   image: null,
-
   financial_email: faker.internet.email(),
-  responsible_name:"Nome Teste ",
+  responsible_name:"Lucas Fonseca Barreto Test",
   corporate_name: faker.company.companyName(),
   address_id: `address_test_ID_${i}`
 })
@@ -61,7 +59,7 @@ exports.seed = async function(knex) {
           email: "emailtest@mail.com",
           phone: "2134567892",
           cnpj_cpf: "16684653216687",
-          annex: null,
+
           transfer_allowed: true,
           image: null,
           responsible_name:"Lucas Fonseca Barretp",

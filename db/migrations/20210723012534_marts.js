@@ -6,10 +6,9 @@ exports.up = function(knex) {
         t.string('cnpj_cpf').notNull().unique()
         t.string('password')
         t.string('phone').unique()
-        t.string('annex')
         t.string('image')
         t.boolean('transfer_allowed').default(false)
-        
+  
         t.string("responsible_name").notNull()
         t.string("financial_email").unique()
         t.string("corporate_name").unique()

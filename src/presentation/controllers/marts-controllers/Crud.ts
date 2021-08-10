@@ -6,7 +6,7 @@ import { MartApp } from "../../../data/mart/MartApp";
 import { BodyValidator, SchemaRow } from "../../../domain/protocols/ControllerBateries";
 
 import { rows,  Create as CreateList, Update as UpdateList } from '../../schemas/mart-schemas.json'
-import { MartModel } from "../../../domain/entities/MartModel";
+import { MartAnnex, MartModel } from "../../../domain/entities/MartModel";
 
 import { DisagreementPasswordError, InvalidRequestBodyError, MartNotFoundError } from "../../../domain/protocols/Errors";
 import  CreateAddress from "../../../data/address/CreateAdress";
@@ -52,7 +52,7 @@ export class CreateMartController  extends MainController{
         //create new mart
         const params: CreateMart.Params = {
             name, email, phone, cnpj_cpf, transfer_allowed,  password,
-            image: null, annex: null,
+            image: null,
             address_id: storedAddress.id,
             responsible_name, 
             obs,
@@ -70,7 +70,6 @@ export class UpdateMartController  extends MainController{
         private readonly serializer: any,
     ){ super(AccessType.ADMIN, UpdateSchema) }
     async handler(request: Request): Promise<Response> {
-
 
         const { name, cnpj_cpf, email, phone, transfer_allowed,
             responsible_name,corporate_name, financial_email, obs } = request.body
@@ -103,6 +102,7 @@ export class RemoveController  extends MainController{
     constructor( 
         private readonly martsRepository: DatabaseAdapter,
         private readonly addressRepository: DatabaseAdapter,
+        private readonly annexsRepository: DatabaseAdapter,
         private readonly fileRepository: FileRepository
     ){  super(AccessType.ADMIN) }
     async handler(request: Request): Promise<Response> {
@@ -115,9 +115,22 @@ export class RemoveController  extends MainController{
         if(exists.image){
             await this.fileRepository.remove(exists.image)
         }
+        
         if(exists.address_id){
             await this.addressRepository.remove({id: exists.address_id})
         }
+
+        var annexes = await this.annexsRepository.list({mart_id: exists.id})
+        console.log(annexes)
+
+        if(annexes?.length > 0){
+            await Promise.all(annexes.map( async (a: MartAnnex) =>{
+                try{
+                    await this.fileRepository.remove(a.name)
+                }catch(err){ console.log(err)}
+            }))
+        }
+        
         //Anexos Should be deleted here
         await this.martsRepository.remove({id})
 

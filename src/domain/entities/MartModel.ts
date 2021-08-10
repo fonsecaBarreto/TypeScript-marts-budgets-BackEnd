@@ -1,3 +1,10 @@
+export interface MartAnnex {
+    id:string,
+    mart_id:string,
+    name: string,
+    contentType: string
+}
+
 export interface MartModel {
     id: string,
     name: string
@@ -5,16 +12,14 @@ export interface MartModel {
     phone: string,
     cnpj_cpf: string,
     password: string,
-    annex: string
     transfer_allowed: boolean,
     image: string,
-
     address_id:string,
     financial_email:string,
     responsible_name:string,
     corporate_name:string,
     obs:string,
-    
+    // - annex
 }
 
 

@@ -24,12 +24,16 @@ export const AddressNotFoundError = () => (
 
 
 /* files */
-export const InvalidFileBufferError = (types:string[], limit: number, param: string) => {
+export const InvalidFileBufferError = (types:string[], limit: number, param: string, fileName:string ) => {
     const list = types.map(t=>(` .${t.substring(t.lastIndexOf("/")+1, t.length )}`)) 
     const limitMb = (limit / (1024 * 1024 )).toFixed(2);
     const message = `Somente arquivos (${ list} ) com tamanho maximo de ${limitMb} Mb.`
-    return new ApplicationError('InvalidFileBufferError',  message, { [param]: message })
+    return new ApplicationError('InvalidFileBufferError',  message, { [param]: fileName })
 }
 export const MissingFileBufferError = (param: string) => {
     return new ApplicationError('MissingFileBufferError',  `Arquivo não encontrado.`, {[param]:'Arquivo não encontrado.'})
+}
+
+export const FilesLengthExceedError = (param:string, n: number) => {
+    return new ApplicationError('FilesLengthExceedError',  `Não é permitido mais que ${n} Arquivo${n > 1 ? 's' : ''}`, {[param]: `Não é permitido mais que ${n} Arquivo${n > 1 ? 's' : ''}`})
 }

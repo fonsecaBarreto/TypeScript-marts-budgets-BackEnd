@@ -10,7 +10,6 @@ export namespace CreateMart {
         email:string,
         phone: string,
         cnpj_cpf: string,
-        annex: string,
         image: string
         transfer_allowed: boolean,
         address_id:string,
@@ -18,12 +17,10 @@ export namespace CreateMart {
         responsible_name:string,
         corporate_name:string,
         obs:string,
-
         password: string,
     }
     export type UpdateParams = {
         id:string,
-
         name: string
         email:string,
         phone: string,
@@ -98,7 +95,7 @@ export default class CreateMart {
 
     async execute(params: CreateMart.Params) {
 
-        const { cnpj_cpf, name, email, phone, password, annex, transfer_allowed, image, 
+        const { cnpj_cpf, name, email, phone, password, transfer_allowed, image, 
             obs, address_id, corporate_name, financial_email, responsible_name } = params
 
         const addressExits = await this.addressRepository.find({ id: address_id })
@@ -109,7 +106,7 @@ export default class CreateMart {
         const password_hash = password ? await this.hasher.hash(password) : null
 
         const mart: MartModel = {
-            image, annex, transfer_allowed,
+            image, transfer_allowed,
             id, cnpj_cpf, name, email, phone, password: password_hash,
             address_id, corporate_name, financial_email, responsible_name,  obs, 
         }

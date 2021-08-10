@@ -1,38 +1,38 @@
 import { ContentTypeHandler } from "../../domain/protocols/ControllerBateries";
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import Formidable from 'formidable'
-import { rejects } from "assert/strict";
-import { forbidden } from "./http-helper";
-import { InvalidFileBufferError, MissingFileBufferError } from "../../domain/protocols/Errors";
-import { fileRepository } from "../../main/factories";
-import { Console } from "console";
+import { FilesLengthExceedError, InvalidFileBufferError, MissingFileBufferError } from "../../domain/protocols/Errors";
 
 export interface FileSchema {
     types: string[],
     max_size: number,
-    optional: boolean
+    optional: boolean,
+    multiples?: number
 }
 
 export interface FormDataFile {
     buffer: Buffer,
     contentType: string,
     size: number
+    fileName:string
 }
+
+
 
 export class FormDataParser implements ContentTypeHandler {
     constructor( private readonly fileSchema: Record<string, FileSchema> ){}
     
     execute(request: ExpressRequest, response: ExpressResponse ): Promise<Response | null> {
         if(!this.fileSchema) return null
-        const filesBuffer:Record<string, FormDataFile> = {}
+        const formidable = Formidable({ multiples: true });
+
+        var filesBuffer:Record<string, FormDataFile[] > = {} //result
+
         const fieldNames = Object.keys(this.fileSchema)
-        const multiples = fieldNames.length > 0  ? true : false
-        const formidable = Formidable({ multiples });
 
         return new Promise((resolve, reject) => {
 
-            formidable.parse(request, async (err: Error, fields:any, files: any) => {
-       
+            formidable.parse(request, async (err: Error, fields:any) => {
                 if(err) {return reject(err)} 
 
                 request.body = { ...fields }
@@ -40,7 +40,6 @@ export class FormDataParser implements ContentTypeHandler {
 
                 fieldNames.map(fieldName => {
                     const schema = this.fileSchema[fieldName]
-
                     if( !Object.keys(filesBuffer).includes(fieldName) && schema.optional !== true ){
                         return reject(MissingFileBufferError(fieldName)) 
                     }
@@ -49,35 +48,43 @@ export class FormDataParser implements ContentTypeHandler {
                 return resolve(null)
             }); 
       
-
+            var partNameCount: any = {}
             formidable.onPart = (part) => {
-
+          
                 if (!part.filename || !part.mime ) { formidable.handlePart(part); } // all non-files will pass
 
-                if (part.mime && fieldNames.includes(part.name)) { 
+                if (part.mime && fieldNames.includes(part.name)) { // Handle files
 
-                    const { max_size, optional, types } = this.fileSchema[part.name]
+                    
+                    const { max_size, types, multiples } = this.fileSchema[part.name]
+                  
+                    partNameCount[part.name]  = partNameCount[part.name] ? partNameCount[part.name] + 1 : 1
+                    if(partNameCount[part.name] > multiples ) return reject(FilesLengthExceedError(part.name, multiples))
+                  
 
-                    if(!types.includes(part.mime)) return reject(InvalidFileBufferError(types, max_size, part.name))
+                    if(!types.includes(part.mime)) return reject(InvalidFileBufferError(types, max_size, part.name, part.filename))
 
                     var bufferList:any =[]
                     var totalSize = 0
+
                     var form: FormDataFile = {
                         buffer: null,
                         contentType: part.mime,
-                        size: 0
+                        size: 0,
+                        fileName: part.filename
                     }
             
                     part.on('data', (buffer) => {
                         bufferList.push(buffer)
                         totalSize += buffer.length
-                        if(totalSize > max_size) return reject(InvalidFileBufferError(types, max_size,  part.name))
+                        if(totalSize > max_size) return reject(InvalidFileBufferError(types, max_size, part.name, part.filename))
                     });
-
+                    
                     part.on('end', (data) =>{
+                        
                         form.buffer = Buffer.concat(bufferList)
                         form.size = form.buffer.length
-                        filesBuffer[part.name] = form
+                        filesBuffer[part.name] = filesBuffer[part.name]?.length ? [ ...filesBuffer[part.name], form ] : [form] 
                     })
     
                 }

@@ -14,6 +14,10 @@ export interface ProviderModel {
     cnpj: string,
     corporate_name:string,
     obs:string,
+
+    address_id:string,
+    financial_email:string,
+    responsible_name:string,
 }
 
 export interface BrandModel {
