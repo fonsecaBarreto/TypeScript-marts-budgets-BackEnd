@@ -16,6 +16,7 @@ const ImageSchema: Record<string, FileSchema> = {
         optional: true,
         types: ['image/jpeg','image/png','image/webp'],
         max_size: 8e+6,
+        multiples: 1
     }
 }
 
@@ -29,7 +30,6 @@ export class CreateProductController  extends MainController{
         private readonly imageTransformer: ImageTransformer,
         private readonly serializer:any,
     ){ super(AccessType.ADMIN, CreateSchema, ImageSchema) }
-
 
     private async checkDuplicity( ncm: string, ean: string, sku: string, product?: ProductModel ): Promise<void> {
 
@@ -57,7 +57,7 @@ export class CreateProductController  extends MainController{
 
         const product_id = request.params.id;
 
-        const { description, stock, price, presentation, brand_id, ncm, ean, sku, category_id } = request.body
+        const { description, presentation, brand_id, ncm, ean, sku, category_id } = request.body
         const { image } = request.files
 
         var image_name = null
@@ -73,8 +73,8 @@ export class CreateProductController  extends MainController{
 
         if(image){
 
-            var altered = await this.imageTransformer.convert({ buffer: image.buffer, type: "webp" })
-            altered = await this.imageTransformer.resize({ buffer: image.buffer , dimensions: {width: 360, height: 360 }})
+            var altered = await this.imageTransformer.convert({ buffer: image[0].buffer, type: "webp" })
+            altered = await this.imageTransformer.resize({ buffer: altered.buffer , dimensions: {width: 320, height: 320 }})
             const fileStored = await this.fileRepository.save({
                 buffer: altered.buffer,
                 contentType: altered.contentType,
@@ -98,10 +98,10 @@ export class CreateProductController  extends MainController{
 
        
         if(product_id){
-            await this.productsRepository.update({id}, {description, stock, price, presentation, brand_id, ncm, ean, sku, category_id, image: image_name})
+            await this.productsRepository.update({id}, {description, presentation, brand_id, ncm, ean, sku, category_id, image: image_name})
         }else{
             const productModel: ProductModel = {
-                id, description, stock, price, presentation, brand_id, ncm, ean, sku, category_id, image: image_name
+                id, description, stock:0, price:0, presentation, brand_id, ncm, ean, sku, category_id, image: image_name
             }
             await this.productsRepository.insert(productModel)
         }

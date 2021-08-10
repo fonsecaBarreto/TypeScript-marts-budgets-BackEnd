@@ -1,24 +1,20 @@
 {
     "Create": {
         "description": { "type": "string", "label":"Descrição" },
-        "stock": { "type": "number", "label":"Estoque" },
-        "price": { "type": "number", "label":"Preço" },
         "presentation": { "type": "string", "optional": true, "label":"Apresentação"},
         "brand_id": { "type": "string", "optional": true, "label": "Marca"  },
         "ncm": { "type": "string", "optional": true },
         "ean": { "type": "string", "optional": true },
         "sku": { "type": "string", "optional": true },
-        "category_id": { "type": "string", "optional": true, "label":"Categoria" }
+        "category_id": { "type": "string", "label":"Categoria" }
     },
     "Update": {
         "description": { "type": "string", "label":"Descrição" },
-        "stock": { "type": "number", "label":"Estoque" },
-        "price": { "type": "number", "label":"Preço" },
         "presentation": { "type": "string", "optional": true, "label":"Apresentação"},
         "brand_id": { "type": "string", "optional": true, "label": "Marca"  },
         "ncm": { "type": "string", "optional": true },
         "ean": { "type": "string", "optional": true },
         "sku": { "type": "string", "optional": true },
-        "category_id": { "type": "string", "optional": true, "label":"Categoria" }
+        "category_id": { "type": "string", "label":"Categoria" }
     }
 }
