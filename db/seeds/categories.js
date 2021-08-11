@@ -1,3 +1,4 @@
+const { v4 } = require('uuid')
 const categorias_test = [
   { name: "Grãos" , childs :[
     {name: "feijão"},
@@ -37,13 +38,13 @@ exports.seed = async function(knex) {
   for(let i = 0; i < categorias_test.length; i ++ ){
 
     const category = {
-      id: `test_category_${i}`,
+      id: v4(),
       name: categorias_test[i].name,
       category_id: null
     }
     categories.push(category)
 
-    for(let j= 0 ; j < categorias_test[i].childs.length ; j ++ ){
+   /*  for(let j= 0 ; j < categorias_test[i].childs.length ; j ++ ){
       const subCategory = {
         id: `test_sub_category_${i}-${j}`,
         name: categorias_test[i].childs[j].name,
@@ -51,7 +52,7 @@ exports.seed = async function(knex) {
       }
 
       categories.push(subCategory)
-    } 
+    }  */
     
   } 
 

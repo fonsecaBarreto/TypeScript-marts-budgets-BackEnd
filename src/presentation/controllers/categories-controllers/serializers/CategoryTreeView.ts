@@ -22,7 +22,6 @@ export const MapCategoryTreeView= ( categoriesRepository: DatabaseAdapter, categ
         const result  = await categoriesRepository.list({ category_id: c.id })
         var children = await MapCategoryTreeView(categoriesRepository,result, serializer && serializer) 
         return  serializer ? await serializer(categoriesRepository, c, children) : { ...c, children }
-
     }))
   
 }

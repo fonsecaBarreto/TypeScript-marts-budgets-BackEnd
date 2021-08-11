@@ -14,7 +14,6 @@ export interface ProviderModel {
     cnpj: string,
     corporate_name:string,
     obs:string,
-
     address_id:string,
     financial_email:string,
     responsible_name:string,
@@ -35,6 +34,6 @@ export interface ProductModel {
     ean: string,
     sku:string,
     image: string
-    category_id: string
+    item_id: string
     brand_id:string
 }

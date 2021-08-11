@@ -1,0 +1,12 @@
+{
+    "Create": {
+        "name": { "type": "string", "label": "Nome" },
+        "description": { "type": "string", "label": "Descrição", "optional": true },
+        "category_id": { "type": "string", "optional": true, "label": "Categoria" }
+    },
+    "Update": {
+        "name": { "type": "string", "label": "Nome" },
+        "description": { "type": "string", "label": "Descrição", "optional": true },
+        "category_id": { "type": "string", "optional": true, "label": "Categoria" }
+    }
+}

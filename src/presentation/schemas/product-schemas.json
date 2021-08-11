@@ -6,7 +6,7 @@
         "ncm": { "type": "string", "optional": true },
         "ean": { "type": "string", "optional": true },
         "sku": { "type": "string", "optional": true },
-        "category_id": { "type": "string", "label":"Categoria" }
+        "item_id": { "type": "string", "label":"Item" }
     },
     "Update": {
         "description": { "type": "string", "label":"Descrição" },
@@ -15,6 +15,6 @@
         "ncm": { "type": "string", "optional": true },
         "ean": { "type": "string", "optional": true },
         "sku": { "type": "string", "optional": true },
-        "category_id": { "type": "string", "label":"Categoria" }
+        "item_id": { "type": "string", "label":"Item" }
     }
 }

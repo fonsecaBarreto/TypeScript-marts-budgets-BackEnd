@@ -11,7 +11,6 @@ export interface ProductListFeed {
     data: ProductModel[],
 }
 
-
 export class FilterListProduct extends MainController{
     constructor(  private readonly productsRepository: DatabaseAdapter,
     ){  super(AccessType.ADMIN) }

@@ -10,6 +10,10 @@ export const BrandNotFoundError = () => (
 export const CategoryNotFoundError = () => (
     new ApplicationError('CategoryNotFoundError', "Categoria não encontrada ", {'category_id': "Categoria referenciada não existe"}))
 
+export const ProductItemNotFoundError = () => (
+    new ApplicationError('ProductItemNotFoundError', "Item não encontrada ", {'item_id': "Item referenciado não existe"}))
+
+
 export const ProviderNotFoundError = () => (
     new ApplicationError('ProviderNotFoundError', "Fornecedor Não encontado ", {'provider_id': "Fornecedor Desconhecido."}))
 

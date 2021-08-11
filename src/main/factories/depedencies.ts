@@ -44,7 +44,8 @@ export const repositories = {
     ordersRepository: new KnexAdapter('orders'),
     brandsRepository: new KnexAdapter('brands'),
     addressRepository: new KnexAdapter('addresses'),
-    martannexsRepository: new KnexAdapter('mart_annexs')
+    martannexsRepository: new KnexAdapter('mart_annexs'),
+    itemsRepository: new KnexAdapter('product_items')
 }
 
 MainController.encrypter = vendors.encrypter
