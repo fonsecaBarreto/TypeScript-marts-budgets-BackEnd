@@ -4,7 +4,6 @@ import { CreateProductController } from '../../presentation/controllers/products
 import { UpdateProductController } from '../../presentation/controllers/products-controllers/UpdateProduct'
 import { FilterListProduct } from '../../presentation/controllers/products-controllers/ListProducts'
 import { SearchProductController } from '../../presentation/controllers/products-controllers/SearchProducts'
-import { ListAllbrands } from '../../presentation/controllers/products-controllers/ListAllBrands'
 import KnexAdapter from '../../libs/KnexAdapter'
 
 import { MakeProductView } from '../../presentation/controllers/products-controllers/serializers/ProductView'
@@ -28,6 +27,6 @@ export const removeProductController = new RemoveController(productsRepository, 
 export const filterListProduct = new FilterListProduct(productsRepository)
 
 export const searchProductController = new SearchProductController(KnexAdapter.connection, serializers.productSearchView) //outdated
-export const listAllbrands = new ListAllbrands(KnexAdapter.connection)
+
 
 
