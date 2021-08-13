@@ -58,8 +58,6 @@ export class ListOrdersByFilter extends MainController{
                 }
             })
 
-            
-
             let group: OrderGroup = {
                 quantities, //aqui o somatorio das ordens
                 product: await this.productSerializer(productExists),
@@ -81,26 +79,51 @@ export class ListOrdersByFilter extends MainController{
         }
     }
 
-    async findByProductParams(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder,  productsDescription: string, brands_ids: string[]): Promise<void>{
+    async findByProductParams(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder, productsDescription: string, brands_ids: string[], items_ids:string[]): Promise<void>{
    
         if(!productsDescription && brands_ids.length == 0 ) return
         //get to Know all the allowed products
         let pruductsQuery = this.knexConnection('products').select("id")
         
         if(productsDescription){
-            pruductsQuery.andWhere(`products.description`, 'ilike', `%${productsDescription}%`)
+            pruductsQuery.andWhere( (query:any) =>{
+
+                query.orWhere(`products.description`, 'ilike', `%${productsDescription}%`)
+                query.orWhere(`products.ean`, 'ilike', `%${productsDescription}%`) 
+               /*  query.orWhere({ ean :`${productsDescription}%`}) */
+
+            })
+                
         }
+   
         if(brands_ids.length > 0){
-            pruductsQuery.whereIn(`brand_id`, brands_ids)
+            pruductsQuery.whereIn(`brand_id`, brands_ids) // filter
+        }
+
+        if(items_ids.length > 0 ){
+            pruductsQuery.orWhereIn('products.item_id',items_ids) //includes
+             
         }
         
         let allowedProducts = await pruductsQuery 
+
+        console.log('allowed',allowedProducts)
 
         let productsIds = allowedProducts.map(p=>(p.id))
         
         query.whereIn('orders.product_id',productsIds)
         queryCount.whereIn('orders.product_id',productsIds)
         
+    }
+
+    async findRelatedItem(text:string){
+
+        if(text){    
+            const relatedItems = await this.knexConnection('product_items').select("id").where(`product_items.name`, 'ilike', `%${text}%`)
+            if(relatedItems?.length) return relatedItems.map(r=>(r.id))        
+        }
+
+        return []
     }
 
     async handler(request: Request): Promise<Response> {
@@ -118,7 +141,11 @@ export class ListOrdersByFilter extends MainController{
 
         await this.findByForecast(query, queryCount, MAX_DATE)
 
-        await this.findByProductParams(query, queryCount, PRODUCT_DESCRIPTION, BRANDS)
+        const relatedItems = await this.findRelatedItem(PRODUCT_DESCRIPTION)
+
+        console.log(relatedItems)
+
+        await this.findByProductParams(query, queryCount, PRODUCT_DESCRIPTION, BRANDS, relatedItems)
 
         const result = await query   
         const count = await queryCount.count('id', {as: 'count'}).first(); 

@@ -13,17 +13,6 @@ export interface ItemClientView {
     products: ProductModel[]
 }
 
-/* export interface ProductClientView {
-    description: string
-    presentation: string
-    ncm: string
-    ean: string
-    sku: string
-    image: string
-    brand_id: string
-    item_id: string
-}
- */
 export interface ClientSearchResultView{
     total: number,
     subTotal: number,
@@ -62,6 +51,33 @@ export class ItemsSearchController extends MainController{
         }
     }
 
+
+    async findByProductParams(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder, productsDescription: string): Promise<string[]>{
+   
+        if(!productsDescription ) return []
+        //get to Know all the allowed products
+        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id'])
+ 
+        if(productsDescription){
+            pruductsQuery.andWhere( (query:any) =>{
+                query.orWhere(`products.description`, 'ilike', `%${productsDescription}%`)
+                query.orWhere(`products.ean`, 'ilike', `%${productsDescription}%`) 
+               /*  query.orWhere({ ean :`${productsDescription}%`}) */
+            })
+                
+        }
+           
+        let requiredProducts = await pruductsQuery 
+
+        let itemIds = requiredProducts.map(p=>(p.item_id))
+        
+        query.orWhereIn('product_items.id',itemIds)
+        queryCount.orWhereIn('product_items.id',itemIds)
+
+        return requiredProducts.map(p=>p.id)
+        
+    }
+
     async handler(request: Request): Promise<Response> {
 
         console.log("Client is search for product items")
@@ -78,9 +94,8 @@ export class ItemsSearchController extends MainController{
             subTotal: 0, 
             items: [] as ItemClientView[]
         }
- 
        
-        const totalOfITems = await this.knexConnection('product_items').count('id', {as: 'count'}).first();
+        const totalOfITems = await this.knexConnection('product_items').count('id', { as: 'count' }).first();
         result.total = totalOfITems ? Number(totalOfITems.count) : 0
         
         var query = this.knexConnection('product_items').select("id",'name',"description").offset(OFFSET).limit(LIMIT);
@@ -88,6 +103,8 @@ export class ItemsSearchController extends MainController{
         
         await this.handleByCategoriesParents(query, count_query, categories) 
         await this.handleItemNameLike(query, count_query, text)  
+
+        const productsFound = await this.findByProductParams(query, count_query, text)
         
         count_query.count('id', {as: 'count'}).first(); 
         
@@ -102,13 +119,20 @@ export class ItemsSearchController extends MainController{
         
                     await Promise.all(items.map(async i=>{
                         let products = []
-                        products = await this.findproductsInside(i.id, brands)
-                        products = await Promise.all(products.map(p=>(this.serializer(p))))
+                        products = await this.findproductsInside(i.id, brands) //fill all proucts of it
+
+                        //Se descrição do produti for encontrada na pesquisa tb, ele é levao ao topo
+                        if(productsFound?.length > 0 ){
+                            console.log(productsFound)
+                            products.sort((a, b) => !productsFound.includes(a.id) ? 1 : -1) 
+                        }
+
+                        products = await Promise.all(products.map(p=>(this.serializer(p)))) // serializer it with date needed
+
                         return { ...i, products }
                     }))
             )
-                    
-            items_result.sort((a, b) => (a.products.length < b.products.length) ? 1 : -1)
+                        
             result.items = items_result 
     
             })
