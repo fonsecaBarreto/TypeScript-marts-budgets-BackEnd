@@ -26,6 +26,8 @@ export interface OrdersView {
 export class ListOrdersByFilter extends MainController{
     constructor(  
         private readonly knexConnection: Knex,
+        private readonly productSerializer: any,
+        private readonly orderSerializer: any
     ){  super(AccessType.ADMIN) }
 
     isDateValid(date_string:string): Date{
@@ -35,8 +37,6 @@ export class ListOrdersByFilter extends MainController{
         }
         return null
     }
-
-  
 
     async groupPerProduct(orders: OrderModel[]): Promise<OrderGroup[]>{
         if(!orders) return []
@@ -58,10 +58,12 @@ export class ListOrdersByFilter extends MainController{
                 }
             })
 
+            
+
             let group: OrderGroup = {
-                quantities, //aqui o somatorio das orgesn
-                product: productExists,
-                orders: productsOrders
+                quantities, //aqui o somatorio das ordens
+                product: await this.productSerializer(productExists),
+                orders: await Promise.all(productsOrders.map(async o =>await this.orderSerializer(o)))
             }
 
             return group
@@ -72,7 +74,6 @@ export class ListOrdersByFilter extends MainController{
 
     }
 
-
     findByForecast(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder,  MAX_DATE: Date): void{
         if(MAX_DATE){
             query.whereBetween('forecast', [MAX_DATE, Infinity]);
@@ -82,30 +83,30 @@ export class ListOrdersByFilter extends MainController{
 
     async findByProductParams(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder,  productsDescription: string, brands_ids: string[]): Promise<void>{
    
-            if(!productsDescription && brands_ids.length == 0 ) return
-            //get to Know all the allowed products
-            let pruductsQuery = this.knexConnection('products').select("id")
-            
-            if(productsDescription){
-                pruductsQuery.andWhere(`products.description`, 'ilike', `%${productsDescription}%`)
-            }
-            if(brands_ids.length > 0){
-                pruductsQuery.whereIn(`brand_id`, brands_ids)
-            }
-            
-            let allowedProducts = await pruductsQuery 
+        if(!productsDescription && brands_ids.length == 0 ) return
+        //get to Know all the allowed products
+        let pruductsQuery = this.knexConnection('products').select("id")
+        
+        if(productsDescription){
+            pruductsQuery.andWhere(`products.description`, 'ilike', `%${productsDescription}%`)
+        }
+        if(brands_ids.length > 0){
+            pruductsQuery.whereIn(`brand_id`, brands_ids)
+        }
+        
+        let allowedProducts = await pruductsQuery 
 
-            console.log(allowedProducts)
-            let productsIds = allowedProducts.map(p=>(p.id))
-            
-            query.whereIn('orders.product_id',productsIds)
-            queryCount.whereIn('orders.product_id',productsIds)
+        let productsIds = allowedProducts.map(p=>(p.id))
+        
+        query.whereIn('orders.product_id',productsIds)
+        queryCount.whereIn('orders.product_id',productsIds)
         
     }
 
     async handler(request: Request): Promise<Response> {
      
         const MAX_DATE = this.isDateValid(request.query.d) //Date
+
         var BRANDS = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
         const PRODUCT_DESCRIPTION = request.query.p || null // text
          
