@@ -1,10 +1,9 @@
-import keys from '../config/keys'
 import { vendors, repositories, fileRepository } from './depedencies'
 
 import { CreateProviderController, FindController, RemoveController } from '../../presentation/controllers/providers-controllers/Crud'
 import { FilterListProvider } from '../../presentation/controllers/providers-controllers/ListProviders'
-
-import { createAddress } from './address'
+import { UpdateProvidersAddressController } from '../../presentation/controllers/providers-controllers/UpdateAddress'
+import { createAddress, updateAddress } from './address'
 import AddressSchema from '../../presentation/schemas/Address-Schema.json'
 import JsonValidator from '../../libs/JsonValidator'
 
@@ -29,3 +28,4 @@ export const removeProviderController = new RemoveController(providersRepository
 
 export const filterListProvider = new FilterListProvider(providersRepository)
 
+export const updateProvidersAddressController = new UpdateProvidersAddressController(providersRepository,createAddress, updateAddress)

@@ -13,11 +13,9 @@ export class UpdateAddressController  extends MainController{
     async handler(request: Request): Promise<Response> {
         const address_id = request.params.id
         const { body } = request
-
-
-        //should create and update mart with it doenst extists
         const updated = await this.updateAddress.execute({ id: address_id, ...body })
         return success(updated)
 
     }
 }
+
