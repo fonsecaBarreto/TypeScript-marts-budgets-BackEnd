@@ -32,9 +32,9 @@ describe('Xlsx Adapter', () =>{
             sheetName: 'Cliente Padaria & Mercados'
         })
 
+        console.log(result)
         expect(result).toBeTruthy()
-        expect(result).toHaveProperty('list')
-        expect(result).toHaveProperty('malformedList')
+
     })
 
     test('should write excel from json', async () =>{

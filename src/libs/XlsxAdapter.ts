@@ -28,36 +28,21 @@ export default class XlsxAdapter implements XlsParserAdapter{
 
         const json = xlsx.utils.sheet_to_json(sheet)
 
-        var malformedList: any = []
         var list:any = []
 
         json.map( (col:any) =>{
 
-
             var serializedColumn: Record<string, string> = { }
-
-            var invalidColumn = {
-                missing: [] as any,
-                col: serializedColumn,
-            }
 
             Object.keys(schema).map((label)=>{ // Verifica se contem todas as chaves do squema
                 const key = schema[label] 
-                
-                if ( !Object.keys(col).includes(label)){ 
-                    return invalidColumn.missing.push(key)
-                }
-
-                serializedColumn[key] = col[label]
+                serializedColumn[key] = col[label] ? col[label] : null
             })
 
-            if(invalidColumn.missing.length > 0) return malformedList.push(invalidColumn)
-
-            
             return list.push(serializedColumn)
         })
 
-        return { list, malformedList }
+        return list
     }
 
     write(params:XlsParserAdapter.WriteParams): any {

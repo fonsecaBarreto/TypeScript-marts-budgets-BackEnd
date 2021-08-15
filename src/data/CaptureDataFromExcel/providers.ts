@@ -27,6 +27,16 @@ export class ProviderFromExecel implements ExcelParser{
     }
     async excelToDb(): Promise<any> {
 
+
+        //capture data from excel
+
+        //than it Shoul validate each one of them 
+
+        //save into db
+
+
+        //return a error to the contorller if somehting went wonrg
+        
         // it Should reveice a exel and be able to write on db
         // it got to validate first before to do that
         throw new Error("Method not implemented.");
