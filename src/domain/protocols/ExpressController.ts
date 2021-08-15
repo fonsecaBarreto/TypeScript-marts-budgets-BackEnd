@@ -78,6 +78,13 @@ export function sendResponse(res: ExpressResponse, response: Response){
             params: response.body.params,
          } })
     }else{   
+
+        if(response.stream){
+            res.set(response.headers)
+            res.status(response.status)
+            return  response.stream.pipe(res);   
+        }
+
         return res.status(response.status).json(response.body)
     }
 }

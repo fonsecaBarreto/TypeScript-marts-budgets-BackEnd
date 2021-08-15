@@ -20,7 +20,7 @@ export default class LocalStorage implements FileRepository{
         return ({ name: result })
     }
 
-    async get(name: string): Promise<any> {
+    async get(name: string): Promise<FileRepository.GetResult> {
 
         const fullpath = path.join(this.root_directory, name)
 
@@ -29,7 +29,7 @@ export default class LocalStorage implements FileRepository{
         const ext = path.extname(name)
         const stream = fs.createReadStream(fullpath)
  
-        return { stream, size: file.length, contentType: mime.contentType(ext) }
+        return { stream, size: file.length, contentType: mime.contentType(ext) || '' }
     }
 
 

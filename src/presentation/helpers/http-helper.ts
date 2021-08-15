@@ -1,7 +1,6 @@
 import ApplicationError from "../../domain/protocols/Errors/ApplicationError"
 import { AccessDeniedError, ServerError } from "../../domain/protocols/Errors/CommonErrors"
 
-
 export const serverError = () =>{
     return { status: 500, body: ServerError() }
 }
@@ -9,6 +8,11 @@ export const serverError = () =>{
 export const success = (body?: any) =>{
     return { status: body ? 200 : 204, body }
 }
+
+export const download = (stream: any, headers: any) =>{
+    return { status: 206, stream, headers }
+}
+
 
 export const unauthorized = () =>{
     return { status: 401, body: AccessDeniedError()  }

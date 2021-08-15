@@ -27,9 +27,13 @@ export const CategoryConflictError = () => (
 export const ProductCodeInUseError = (param:string) =>(
     new ApplicationError('ProductCodeInUseError', ` ${param} já esta em uso`, { param: ` ${param} já esta em uso` }))
 
-
+/* Orders */
 export const InvalidForecastDateError = () =>(
     new ApplicationError('InvalidForecastDateError', `Data prevista deve ser posterior a atual`, { forecast: `Data prevista deve ser posterior a atual` }))
 
+export const MinimumQuantityError = () =>(
+    new ApplicationError('MinimumQuantityError', `Informe a quantidade desejada`, { quantity: `Informe a quantidade desejada` }))
+
     
+         
     

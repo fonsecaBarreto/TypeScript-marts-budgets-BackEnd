@@ -1,5 +1,5 @@
 import { OrderModel } from "../../../domain/entities/OrderModel";
-import { InvalidForecastDateError, MartNotFoundError, ProductNotFoundError } from "../../../domain/protocols/Errors";
+import { InvalidForecastDateError, MartNotFoundError, MinimumQuantityError, ProductNotFoundError } from "../../../domain/protocols/Errors";
 import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { IdGenerator } from "../../../domain/vendors/Utils";
@@ -21,6 +21,10 @@ export default class MakeOrder extends MainController {
         const { user, body } = request
         const { forecast, quantity, product_id } = body
 
+        if(quantity < 1 ) {
+            throw MinimumQuantityError()
+        }
+
         const mart_id = user.id
 
         const martsExists = await this.martsRepository.find({ id: mart_id })
@@ -28,13 +32,6 @@ export default class MakeOrder extends MainController {
 
         const productExits = await this.productsRepository.find({ id: product_id })
         if(!productExits) throw ProductNotFoundError()
-
-
-        console.log(forecast.getTime())
-
-        console.log(Date.now())
-        console.log(new Date().getTime())
-        console.log("Horas Restantes", Math.floor((forecast.getTime() - Date.now()) / 1000))
 
         if(forecast.getTime() <= Date.now()) throw InvalidForecastDateError()
         

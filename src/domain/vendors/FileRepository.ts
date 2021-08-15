@@ -11,6 +11,12 @@ export namespace FileRepository{
         name:string
     }
 
+    export type GetResult = {
+        stream: any,
+        size: number,
+        contentType: string
+    }
+
 }
 
 export interface FileRepository {
@@ -19,6 +25,6 @@ export interface FileRepository {
 
     remove(name:string): Promise<void>
 
-    get(name:string): Promise<any>
+    get(name:string): Promise<FileRepository.GetResult>
 
 }

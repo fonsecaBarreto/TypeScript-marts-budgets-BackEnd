@@ -14,8 +14,12 @@ export type Request = {
 
 export type Response = {
     status: number,
-    body?:any
+    body?:any,
+    headers?: object,
+    stream?:any
 }
+
+
 
 export interface AppController { handler(request: Request): Promise<Response> }
 
