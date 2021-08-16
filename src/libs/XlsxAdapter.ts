@@ -71,7 +71,7 @@ export default class XlsxAdapter implements XlsParserAdapter{
 
         const buffer= xlsx.write(newWb, { bookType: "xlsx", type: "buffer" }) 
         const stream = bufferToStream(buffer)                   // convert buffer to stream
-        return stream
+        return {stream, size:buffer.length}
     
     }
 }

@@ -62,5 +62,7 @@ describe('Xlsx Adapter', () =>{
         writeStream.write('aef35ghhjdk74hja83ksnfjk888sfsf', 'base64'); */
 
         expect(result).toBeTruthy()
+        expect(result).toHaveProperty('stream')
+        expect(result).toHaveProperty('size')
     })
 })

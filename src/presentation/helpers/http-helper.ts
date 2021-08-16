@@ -10,7 +10,7 @@ export const success = (body?: any) =>{
 }
 
 export const download = (stream: any, headers: any) =>{
-    return { status: 206, stream, headers }
+    return { status: 200, stream, headers }
 }
 
 
