@@ -19,6 +19,8 @@ export  class AdminSignInController extends MainController {
     }
     async handler(request: Request): Promise<Response> {
 
+        console.log("singin request")
+
         const { username, password } = request.body
 
         var exists = await this.adminsRepository.find({ username: username })

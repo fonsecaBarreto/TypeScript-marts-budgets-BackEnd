@@ -14,6 +14,7 @@ class AdminSignInController extends MainController_1.MainController {
         this.hasher = hasher;
     }
     async handler(request) {
+        console.log("singin request");
         const { username, password } = request.body;
         var exists = await this.adminsRepository.find({ username: username });
         if (!exists)
