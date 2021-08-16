@@ -11,9 +11,10 @@ var MartStatus;
     MartStatus[MartStatus["pending"] = 2] = "pending";
 })(MartStatus || (MartStatus = {}));
 class FilterListMart extends MainController_1.MainController {
-    constructor(martsRepository) {
+    constructor(martsRepository, serializer) {
         super(MainController_1.AccessType.ADMIN);
         this.martsRepository = martsRepository;
+        this.serializer = serializer;
     }
     async handler(request) {
         const text = request.query.v || '';
@@ -28,7 +29,7 @@ class FilterListMart extends MainController_1.MainController {
             total,
             subTotal: queryTotal,
             queries: { text, status },
-            data: await MartPrivateView_1.MapMartPrivateView(queryData),
+            data: await MartPrivateView_1.MapMarts(queryData, this.serializer),
         };
         return http_helper_1.success(providerListFeed);
     }

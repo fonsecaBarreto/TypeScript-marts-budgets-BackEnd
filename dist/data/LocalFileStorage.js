@@ -26,7 +26,7 @@ class LocalStorage {
         const file = fs_1.default.readFileSync(fullpath);
         const ext = path_1.default.extname(name);
         const stream = fs_1.default.createReadStream(fullpath);
-        return { stream, size: file.length, contentType: mime_types_1.default.contentType(ext) };
+        return { stream, size: file.length, contentType: mime_types_1.default.contentType(ext) || '' };
     }
     async remove(name) {
         const fullpath = path_1.default.join(`${this.root_directory}`, name);

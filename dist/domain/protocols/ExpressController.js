@@ -59,6 +59,11 @@ function sendResponse(res, response) {
             } });
     }
     else {
+        if (response.stream) {
+            res.set(response.headers);
+            res.status(response.status);
+            return response.stream.pipe(res);
+        }
         return res.status(response.status).json(response.body);
     }
 }

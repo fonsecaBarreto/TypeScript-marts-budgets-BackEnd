@@ -1,5 +1,5 @@
 import { MartAlreadyVerifiedError, MartNotFoundError } from "../../../domain/protocols/Errors";
-import { ExpressController } from "../../../domain/protocols/ExpressController";
+
 import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { Mailer } from "../../../domain/vendors/Mailer";
@@ -7,7 +7,7 @@ import { Hasher, IdGenerator, PasswordGenerator } from "../../../domain/vendors/
 import { success } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController";
 import { UnoComprasTemplate } from '../../helpers/EmailLayouts/UnoCompras'
-import { MakeMartPrivateView } from './serializers/MartPrivateView'
+
 export class JoinMartController extends MainController {
     constructor(
         private readonly marsRepository: DatabaseAdapter,
@@ -40,7 +40,7 @@ export class JoinMartController extends MainController {
         `))
         const updated = await this.marsRepository.find({id})
 
-        return success(MakeMartPrivateView(updated))
+        return success(updated)
 
     }
 

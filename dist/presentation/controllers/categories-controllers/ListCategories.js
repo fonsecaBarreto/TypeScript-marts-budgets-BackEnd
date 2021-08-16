@@ -1,25 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FilterListCategories = exports.ListCategoriesTree = void 0;
+exports.FilterListCategories = void 0;
 const http_helper_1 = require("../../helpers/http-helper");
 const MainController_1 = require("../../helpers/MainController");
-const CategoryTreeView_1 = require("./serializers/CategoryTreeView");
 const CategoryListView_1 = require("./serializers/CategoryListView");
-class ListCategoriesTree extends MainController_1.MainController {
-    constructor(categoryRepository) {
-        super(MainController_1.AccessType.ADMIN);
-        this.categoryRepository = categoryRepository;
-    }
-    async handler(request) {
-        const sup = request.query.s || null;
-        const categories = await this.categoryRepository.list({ category_id: sup });
-        return http_helper_1.success(await CategoryTreeView_1.MapCategoryTreeView(this.categoryRepository, categories, CategoryTreeView_1.MakeCategoryTreeView));
-    }
-}
-exports.ListCategoriesTree = ListCategoriesTree;
 class FilterListCategories extends MainController_1.MainController {
     constructor(categoryRepository) {
-        super(MainController_1.AccessType.ADMIN);
+        super(MainController_1.AccessType.MART_OR_ADMIN);
         this.categoryRepository = categoryRepository;
     }
     async handler(request) {

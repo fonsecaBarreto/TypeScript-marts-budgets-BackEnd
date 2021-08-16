@@ -2,8 +2,8 @@
     "SignIn": {
         "credentials": {
             "type": "string",
-            "missingMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado",
-            "invalidMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado"
+            "missingMessage": "Informe um dos seus dados cadastrais",
+            "invalidMessage": "Informe um dos seus dados cadastrais"
         },
         "password": {
             "type": "string",
@@ -14,8 +14,8 @@
     "resetPassword": {
         "credentials": {
             "type": "string",
-            "missingMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado",
-            "invalidMessage": "Informe seu e-mail, numero de telefone, cnpj ou cpf cadastrado"
+            "missingMessage": "Informe um dos seus dados cadastrais",
+            "invalidMessage": "Informe um dos seus dados cadastrais"
         }
     },
     "changePassword": {
@@ -24,25 +24,47 @@
     },
     "rows": {
         "name": { "type": "string",
-            "missingMessage": "Informe-nos o nome da sua empresa" },
+            "missingMessage": "Informe o Nome da sua empresa" },
         "email": { "type": "email",
-            "missingMessage": "É Preciso de um E-mail de trabalho para prosseguir ",
+            "missingMessage": "Informe um E-mail de trabalho para prosseguir ",
             "invalidMessage": "Verifique se seu E-mail esta correto"
         },
-        "phone": { "type": "phone", "optional": true },
-        "cnpj_cpf": { "type": "cnpj/cpf",
-            "missingMessage": "É Preciso de um documento para validar sua identidade",
-            "invalidMessage": "Verifique se seu documento está correto"
+        "phone": { "type": "phone", "optional": true,
+            "invalidMessage": "Informe um Número de telefone valido"
         },
-        "password": { "type": "string" },
-        "passwordConfirmation": { "type": "string", "missingMessage": "Confirme a sua nova senha" },
-        "annex": { "type": "string", "optional": true },
-        "image": { "type": "string", "optional": true },
+        "cnpj_cpf": { "type": "cnpj/cpf",
+            "missingMessage": "É necessario um documento para validar sua identidade",
+            "invalidMessage": "Verifique se o documento informado está correto"
+        },
+        "password": { "type": "string", "label": "Senha" },
+        "passwordConfirmation": { "type": "string", "missingMessage": "Confirme a senha" },
         "transfer_allowed": { "type": "boolean",
-            "missingMessage": "Sua Colaboração é muito importante, Certifique-se de que marcar umas das opções"
-        }
+            "missingMessage": "Sua Colaboração é muito importante, Certifique-se de que marcar essa opção"
+        },
+        "address": {
+            "type": "json",
+            "missingMessage": "Informe um Endereço valido",
+            "invalidMessage": "Certifique-se de preencher todos os campos"
+        },
+        "responsible_name": {
+            "type": "string", "label": "Responsável",
+            "missingMessage": "Informe o nome do Responsável"
+        },
+        "financial_email": {
+            "type": "email", "optional": true,
+            "missingMessage": "Informe um E-mail para envio de xml",
+            "invalidMessage": "Verifique se o E-mail esta correto"
+        },
+        "corporate_name": {
+            "type": "string", "label": "Razão social", "optional": true
+        },
+        "obs": { "type": "string", "label": "Observações", "optional": true }
     },
-    "Create": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed", "password", "passwordConfirmation"],
-    "Update": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"],
-    "SignUp": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed"]
+    "Create": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed",
+        "password", "passwordConfirmation",
+        "responsible_name", "financial_email", "corporate_name", "obs", "address"
+    ],
+    "Update": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed",
+        "responsible_name", "financial_email", "corporate_name", "obs"],
+    "SignUp": ["name", "email", "phone", "cnpj_cpf", "transfer_allowed", "address", "responsible_name"]
 }

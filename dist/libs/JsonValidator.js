@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const emailValidator = __importStar(require("email-validator"));
 const cpf_cnpj_validator_1 = require("cpf-cnpj-validator");
 const makeMissingMessage = (field, missingMessage) => {
-    return missingMessage || `Campo de ${field} é obrigatorio`;
+    return missingMessage || `Campo '${field}' é obrigatório`;
 };
 const makeInvalidMessage = (field, invalidMessage) => {
     return invalidMessage || `Campo '${field}' contem valor inválido `;
@@ -37,6 +37,8 @@ class JsonValidator {
         Object.keys(this.schema).map(field => {
             const { type, size, optional, label, missingMessage, invalidMessage } = this.schema[field];
             const value = body[field];
+            if (type === "any")
+                return;
             if (value === null) {
                 if (optional === true)
                     return;
@@ -89,6 +91,18 @@ class JsonValidator {
     checkType(value, type) {
         var isValid = true;
         switch (type) {
+            case "json":
+                {
+                    try {
+                        JSON.parse(value);
+                        isValid = true;
+                    }
+                    catch (e) {
+                        isValid = false;
+                    }
+                }
+                ;
+                break;
             case "cnpj/cpf":
                 {
                     try {

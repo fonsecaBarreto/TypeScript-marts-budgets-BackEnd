@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const products_1 = require("../factories/products");
 exports.default = (router) => {
-    router.get('/products/search', products_1.searchProductController.execute());
+    /*  router.get('/products/search', searchProductController.execute()) */
     router.get('/products/list', products_1.filterListProduct.execute());
     /*  admin */
     router.route('/products')

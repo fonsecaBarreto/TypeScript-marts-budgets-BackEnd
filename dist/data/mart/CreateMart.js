@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Errors_1 = require("../../domain/protocols/Errors");
+const MartsErrors_1 = require("../../domain/protocols/Errors/MartsErrors");
 class CreateMart {
-    constructor(martsRepository, idGenerator, hasher) {
+    constructor(martsRepository, idGenerator, hasher, addressRepository) {
         this.martsRepository = martsRepository;
         this.idGenerator = idGenerator;
         this.hasher = hasher;
+        this.addressRepository = addressRepository;
     }
-    async checkDuplicity(cnpj_cpf, email, phone, mart) {
+    async checkDuplicity(cnpj_cpf, email, phone, corporate_name, financial_email, mart) {
         const emailExists = await this.martsRepository.find({ email });
         if (emailExists) {
             if ((!mart) || mart.email !== email)
@@ -25,25 +27,42 @@ class CreateMart {
                     throw Errors_1.PhoneInUseError();
             }
         }
+        if (corporate_name) {
+            const corporateNameExists = await this.martsRepository.find({ corporate_name });
+            if (corporateNameExists) {
+                if ((!mart) || mart.corporate_name !== corporate_name)
+                    throw MartsErrors_1.CorporateNameInUseError();
+            }
+        }
+        if (financial_email) {
+            const financialEmailExits = await this.martsRepository.find({ financial_email });
+            if (financialEmailExits) {
+                if ((!mart) || mart.financial_email !== financial_email)
+                    throw MartsErrors_1.FinancialEmailInUseError();
+            }
+        }
     }
     async update(params) {
-        const { id, cnpj_cpf, name, email, phone, annex, transfer_allowed, image } = params;
+        const { id, cnpj_cpf, name, email, phone, transfer_allowed, corporate_name, financial_email, obs, responsible_name } = params;
         const mart = await this.martsRepository.find({ id });
         if (!mart)
             throw Errors_1.MartNotFoundError();
-        await this.checkDuplicity(cnpj_cpf, email, phone, mart);
-        await this.martsRepository.update({ id }, { cnpj_cpf, name, email, phone, annex, transfer_allowed, image });
+        await this.checkDuplicity(cnpj_cpf, email, phone, corporate_name, financial_email, mart);
+        await this.martsRepository.update({ id }, { cnpj_cpf, name, email, phone, transfer_allowed, corporate_name, financial_email, obs, responsible_name });
         const rescued = await this.martsRepository.find({ id });
         return rescued;
     }
     async execute(params) {
-        const { cnpj_cpf, name, email, phone, password, annex, transfer_allowed, image } = params;
-        await this.checkDuplicity(cnpj_cpf, email, phone);
+        const { cnpj_cpf, name, email, phone, password, transfer_allowed, image, obs, address_id, corporate_name, financial_email, responsible_name } = params;
+        const addressExits = await this.addressRepository.find({ id: address_id });
+        if (!addressExits)
+            throw Errors_1.AddressNotFoundError();
         const id = await this.idGenerator.generate();
         const password_hash = password ? await this.hasher.hash(password) : null;
         const mart = {
-            image, annex, transfer_allowed,
-            id, cnpj_cpf, name, email, phone, password: password_hash
+            image, transfer_allowed,
+            id, cnpj_cpf, name, email, phone, password: password_hash,
+            address_id, corporate_name, financial_email, responsible_name, obs,
         };
         await this.martsRepository.insert(mart);
         const rescued = await this.martsRepository.find({ id });

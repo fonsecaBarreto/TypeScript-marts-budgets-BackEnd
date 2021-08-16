@@ -15,6 +15,9 @@ class MakeOrder extends MainController_1.MainController {
     async handler(request) {
         const { user, body } = request;
         const { forecast, quantity, product_id } = body;
+        if (quantity < 1) {
+            throw Errors_1.MinimumQuantityError();
+        }
         const mart_id = user.id;
         const martsExists = await this.martsRepository.find({ id: mart_id });
         if (!martsExists)
@@ -22,10 +25,6 @@ class MakeOrder extends MainController_1.MainController {
         const productExits = await this.productsRepository.find({ id: product_id });
         if (!productExits)
             throw Errors_1.ProductNotFoundError();
-        console.log(forecast.getTime());
-        console.log(Date.now());
-        console.log(new Date().getTime());
-        console.log("Horas Restantes", Math.floor((forecast.getTime() - Date.now()) / 1000));
         if (forecast.getTime() <= Date.now())
             throw Errors_1.InvalidForecastDateError();
         const id = await this.idGenerator.generate();
