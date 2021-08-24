@@ -28,6 +28,8 @@ export default class XlsxAdapter implements XlsParserAdapter{
 
         const json = xlsx.utils.sheet_to_json(sheet)
 
+        console.log(json)
+
         var list:any = []
 
         json.map( (col:any) =>{

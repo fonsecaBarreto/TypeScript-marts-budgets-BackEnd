@@ -2,6 +2,7 @@ import XlsxADapter from '../../../src/libs/XlsxAdapter'
 import path from 'path'
 import fs from 'fs'
 const file = fs.readFileSync(path.join(__dirname,"teste.xlsx"))
+const file2 = fs.readFileSync(path.join(__dirname,"teste2.xlsx"))
 
 const makeSut = () =>{
 
@@ -28,11 +29,11 @@ describe('Xlsx Adapter', () =>{
 
         const sut = makeSut()
         const result = await sut.read({
-            file,
-            sheetName: 'Cliente Padaria & Mercados'
+            file: file2,
+            sheetName: 'items'
         })
-
-        console.log(result)
+/* 
+        console.log(result) */
         expect(result).toBeTruthy()
 
     })

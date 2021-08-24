@@ -27,5 +27,5 @@ export const removeItemController = new RemoveController(itemsRepository)
 
 export const listItemsScrewView = new ListItemsScrewView(itemsRepository)
 
-export const filterListItem = new FilterListItem(itemsRepository, serializers.itemFullview)
+export const filterListItem = new FilterListItem(itemsRepository, KnexAdapter.connection, ProductsSerializers.productView)
 export const itemsSearchController = new ItemsSearchController(KnexAdapter.connection, ProductsSerializers.productView)
