@@ -82,7 +82,7 @@ export class FilterListItem extends MainController{
         })   
 
         count_query.andWhere( (query:any) =>{
-            query.where(`product_items.name`, itemIds)
+            query.whereIn(`product_items.id`, itemIds)
         })  
 
         return allowedProducts.map(p=>(p.id))

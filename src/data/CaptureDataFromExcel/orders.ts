@@ -24,12 +24,24 @@ export class OrdersFromExcel implements ExcelParser{
         const orders = await this.repository.list({})
 
         var serialized = await Promise.all( orders.map( async (o: OrderModel)=>{
-                let mart: ""
-                let product: ""
+                var mart: string = ""
+                var product_str: string =  ""
 
                 if(o.product_id){
-                    let product_result = await this.knexConnection('products').where({id: o.product_id}).first().select("description")
-                    product = product_result ? product_result.description : ''
+                    let product_result = await this.knexConnection('products').where({id: o.product_id}).first().select(["description",'item_id', 'brand_id'])
+                    
+                    if(product_result.item_id){
+                        let item_result =await this.knexConnection('product_items').where({id:product_result.item_id}).first().select("name")
+                        product_str= `${item_result.name}, `
+                    }
+                    
+                    product_str+= product_result.description 
+
+                    if(product_result.brand_id){
+                        let brand_result =await this.knexConnection('brands').where({id:product_result.brand_id}).first().select("name")
+                        product_str+= ` - ${brand_result.name}`
+                    }
+
                 }
 
                 if(o.mart_id){
@@ -37,7 +49,7 @@ export class OrdersFromExcel implements ExcelParser{
                     mart = mart_result ? mart_result.name : ''
                 }
 
-                return { ...o, mart, product}
+                return { ...o, mart, product: product_str}
         }) )
        
         const xls = this.xlsParser.write({json: serialized, sheetName: "Ordens"})
