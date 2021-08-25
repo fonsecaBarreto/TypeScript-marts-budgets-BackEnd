@@ -37,7 +37,7 @@ export class ItemsSearchController extends MainController{
     }
 
     async searchForItem(offset: number, text_words: string, categories: string[]): Promise<any>{
-        const LIMIT = 2
+        const LIMIT = 16
         var subTotal = 0 
         var items: any[] = []
 
