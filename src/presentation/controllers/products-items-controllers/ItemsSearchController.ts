@@ -8,18 +8,21 @@ import { ProductModel } from "../../../domain/entities/ProductModel"
 import products from "../../../main/routes/products"
 import categories from "../../../main/routes/categories"
 import { runInThisContext } from "vm"
+import { query } from "express"
 
 export interface ItemClientView {
     name: string, 
     description: string,
-    products: any //ProductModel[]
+    products: any, 
+    products_matched_count: number,
+    matched_words: string[]
 }
 
 export interface ClientSearchResultView{
     total: number,
     subTotal: number,
     items: ItemClientView[],
-    related_items: any[] //items em que produtos corresponderam a pergunta
+    related_items: any[]
 }
 
 export class ItemsSearchController extends MainController{
@@ -33,8 +36,8 @@ export class ItemsSearchController extends MainController{
         return totalOfITems ? Number(totalOfITems.count) : 0
     }
 
-    async searchForItem(offset: number, item_name: string, categories: string[]): Promise<any>{
-        const LIMIT = 20
+    async searchForItem(offset: number, text_words: string, categories: string[]): Promise<any>{
+        const LIMIT = 2
         var subTotal = 0 
         var items: any[] = []
 
@@ -46,16 +49,19 @@ export class ItemsSearchController extends MainController{
             count_query.whereIn('category_id', categories)   
         }
 
-        if(item_name) {
-
-            var columns = item_name.split(" ")
-            console.log(columns)
+        if(text_words) {
             query.andWhere( (query:any) =>{
-                for (const col of columns) {
+                for (const col of text_words) {
                     query.orWhere(`product_items.name`, 'ilike', `%${col}%`) 
                 }
             })   
-            count_query.andWhere( (query:any) =>{  query.where(`product_items.name`, 'ilike', `%${item_name}%`) })  
+
+            count_query.andWhere( (query:any) =>{
+                for (const col of text_words) {
+                    query.orWhere(`product_items.name`, 'ilike', `%${col}%`) 
+                }
+            })  
+
         }
 
         count_query.count('id', {as: 'count'}).first(); 
@@ -68,19 +74,16 @@ export class ItemsSearchController extends MainController{
         return { subTotal, items }
     }
 
-    async searchForProduct(text: string, brands: string[] ): Promise<string[]>{
-   
-        if(!text ) return [] //get to Know all the allowed products
+    async searchForProduct(text_words: string, brands: string[], categories:string[]): Promise<string[]> {
+        if(text_words.length === 0 ) return [] //get to Know all the allowed products
         let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id','brand_id'])
  
-        if(text){
+        var allowedItemsByCategories = await this.knexConnection('product_items').whereIn('category_id', categories)
 
-            var columns = text.split(" ")
 
+        if(text_words){
             pruductsQuery.andWhere( (query:any) =>{
-
-                for (const col of columns) {
-
+                for (const col of text_words) {
                     query.orWhere(`products.description`, 'ilike', `%${col}%`)
                     query.orWhere(`products.ean`, 'ilike', `%${col}%`) 
                 }
@@ -88,16 +91,26 @@ export class ItemsSearchController extends MainController{
         }
 
         if(brands.length > 0){
-            pruductsQuery.whereIn('products.brand_id',brands)
+            pruductsQuery.andWhere((query: any) =>{
+                query.whereIn('products.brand_id',brands)
+            })
         }
-        
+
+        if(categories.length > 0){
+            console.log(categories)
+            pruductsQuery.andWhere((query: any) =>{
+                query.whereIn('products.item_id',allowedItemsByCategories)
+            })
+        }
+
         let requiredProducts = await pruductsQuery 
 
-        return requiredProducts
         
+
+        return requiredProducts
     }
 
-    async findproductsInside(item_id: string, brands:string[]){
+    async findproductsInside(item_id: string, brands:string[]) {
         if(!item_id) return []
         if(brands?.length > 0){
             const result = await this.knexConnection('products').whereIn('brand_id',brands).andWhere({"item_id": item_id}).select("*")
@@ -110,11 +123,18 @@ export class ItemsSearchController extends MainController{
 
     async handler(request: Request): Promise<Response> {
 
+        /* Queries iniciais */
         const text = request.query.v || '';
+        var text_words= text.trim().split(" ")
+        text_words = text_words.filter( (c:string)=>( (c !== "") && (c !== "de") && (c !== "para")))
+
         var categories = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [ request.query.c ] : []
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
         const offset = Number(request.query.o) || 0
 
+        console.log("searching for", text_words)
+
+        /* Instanciando o resultado */
 
         var result: ClientSearchResultView = { 
             total: await this.getTotal(),
@@ -124,21 +144,19 @@ export class ItemsSearchController extends MainController{
         }
 
         /* Buscando o item pela pesquisa de categoria e nome */
-        const { items, subTotal } = await this.searchForItem(offset, text, categories)
+        const { items, subTotal } = await this.searchForItem(offset, text_words, categories)
                
         result.items = items
         result.subTotal = subTotal
         const itemsFound = result.items.map((j:any,i)=>(j.id))
 
         /* Produtos encontrados pele pesquisa em texto */
+            const productsFound = await this.searchForProduct(text_words, brands, categories) 
+            var relatedProduts = [ ...new Set(productsFound.map((p: any)=>(p.id)))] 
+            var relatedItems = [ ...new Set(productsFound.map((p: any)=>(p.item_id)))] 
+            relatedItems = relatedItems.filter((r,i)=>(!itemsFound.includes(r)))
 
-        const productsFound = await this.searchForProduct(text, brands) 
-        var relatedProduts = [ ...new Set(productsFound.map((p: any)=>(p.id)))] 
-        var relatedItems = [ ...new Set(productsFound.map((p: any)=>(p.item_id)))] 
-        relatedItems = relatedItems.filter((r,i)=>(!itemsFound.includes(r)))
-        //relatedItems são os items em que existem produtos que correspondem a pesuqisa de texto, com a exeção dos que ja existes
-        //Items found receberar todos os item
-        //enqunato relatedItems receberar somento os productos encontrados
+        /* relatedItems são os items em que existem produtos que correspondem a pesuqisa de texto, com a exeção dos que ja existes */
         result.related_items = await Promise.all(relatedItems.map( async (item_id:any,i: number)=>{
             var products:any[] = []
             var item = await this.knexConnection('product_items').where({ id: item_id }).select("id",'name',"description").first()
@@ -152,16 +170,33 @@ export class ItemsSearchController extends MainController{
             return ({...item,products})
         }))
 
-
+        var text_columns = text.trim().split(" ")
         result.items = await Promise.all(result.items.map( async (j:any,i:number)=>{
+            var matched_words:string[] = []
             var products:any[] = []
+            var products_matched_count = 0
             products = await this.findproductsInside(j.id, brands)
 
+            var nameSplited = j.name.normalize('NFD').toLowerCase().replace(/[\u0300-\u036f]/g, "").split(" ")
+            nameSplited.map((n: any,i: number)=>{
+                if(text_columns.includes(n)){
+                    matched_words.push(n)
+                }
+            })              
+
+            /*  */
             if(relatedProduts?.length > 0 ){
+                //contar quantos produtos atendem a pesquisa para reposiciona-los
+                products.forEach(p=>{
+                    if(relatedProduts.includes(p.id)){
+                        products_matched_count+=1
+                    }
+                })
+
                 products.sort((a, b) => !relatedProduts.includes(a.id) ? 1 : -1) 
             }
-            //estacar o produto aqui tb
 
+            //Destacar o produto aqui tb
             products = await Promise.all(products.map(async (p)=>{
                 var distac = false
                 var serialized = await this.serializer(p)
@@ -172,17 +207,15 @@ export class ItemsSearchController extends MainController{
                 
             }) )
 
-            return ({...j, products})
+            return ({...j, products_matched_count, matched_words, products,  })
         }))
+
+        //leva ao topo o item onde mais produtos foram encontrados
+        result.items.sort((a, b) => (a.products_matched_count < b.products_matched_count ? 1 : -1)) 
         
         return success(result)
         
 
     }
 
-
-
-
-
-    
 }
