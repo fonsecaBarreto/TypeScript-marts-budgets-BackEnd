@@ -6,17 +6,20 @@ import { Knex } from "knex"
 import { ProductItem } from "../../../domain/entities/ProductItem"
 import { ProductModel } from "../../../domain/entities/ProductModel"
 import products from "../../../main/routes/products"
+import categories from "../../../main/routes/categories"
+import { runInThisContext } from "vm"
 
 export interface ItemClientView {
     name: string, 
     description: string,
-    products: ProductModel[]
+    products: any //ProductModel[]
 }
 
 export interface ClientSearchResultView{
     total: number,
     subTotal: number,
-    items: ItemClientView[]
+    items: ItemClientView[],
+    related_items: any[] //items em que produtos corresponderam a pergunta
 }
 
 export class ItemsSearchController extends MainController{
@@ -25,20 +28,74 @@ export class ItemsSearchController extends MainController{
          private readonly serializer: any
     ){  super(AccessType.MART_OR_ADMIN) }
 
-    async handleByCategoriesParents(query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, categories:string[]){
-        // it will add get categories by given id if a category list were provided
-        if(categories.length == 0 ) return
-        query.whereIn('category_id', categories) 
-        count_query.whereIn('category_id', categories)   
+    async getTotal(){
+        const totalOfITems = await this.knexConnection('product_items').count('id', { as: 'count' }).first();
+        return totalOfITems ? Number(totalOfITems.count) : 0
     }
 
-    async handleItemNameLike(query: Knex.QueryBuilder, count_query:Knex.QueryBuilder, item_name:string): Promise<void> {
-        // it will look for on names of categories with category_name:string content inside
-        if(!item_name) return 
-        query.andWhere(`product_items.name`, 'ilike', `%${item_name}%`)
-        count_query.andWhere(`product_items.name`, 'ilike', `%${item_name}%`)
+    async searchForItem(offset: number, item_name: string, categories: string[]): Promise<any>{
+        const LIMIT = 20
+        var subTotal = 0 
+        var items: any[] = []
+
+        var query = this.knexConnection('product_items').select("id",'name',"description").offset(offset).limit(LIMIT);
+        var count_query = this.knexConnection('product_items')
+
+        if(categories.length > 0 ){
+            query.whereIn('category_id', categories) 
+            count_query.whereIn('category_id', categories)   
+        }
+
+        if(item_name) {
+
+            var columns = item_name.split(" ")
+            console.log(columns)
+            query.andWhere( (query:any) =>{
+                for (const col of columns) {
+                    query.orWhere(`product_items.name`, 'ilike', `%${col}%`) 
+                }
+            })   
+            count_query.andWhere( (query:any) =>{  query.where(`product_items.name`, 'ilike', `%${item_name}%`) })  
+        }
+
+        count_query.count('id', {as: 'count'}).first(); 
+        
+        await Promise.all([
+            count_query.then((count:any)=> { subTotal = count ? Number(count.count) : 0 }),  
+            query.then( async (it) => { items = it })
+        ])
+
+        return { subTotal, items }
     }
 
+    async searchForProduct(text: string, brands: string[] ): Promise<string[]>{
+   
+        if(!text ) return [] //get to Know all the allowed products
+        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id','brand_id'])
+ 
+        if(text){
+
+            var columns = text.split(" ")
+
+            pruductsQuery.andWhere( (query:any) =>{
+
+                for (const col of columns) {
+
+                    query.orWhere(`products.description`, 'ilike', `%${col}%`)
+                    query.orWhere(`products.ean`, 'ilike', `%${col}%`) 
+                }
+            })   
+        }
+
+        if(brands.length > 0){
+            pruductsQuery.whereIn('products.brand_id',brands)
+        }
+        
+        let requiredProducts = await pruductsQuery 
+
+        return requiredProducts
+        
+    }
 
     async findproductsInside(item_id: string, brands:string[]){
         if(!item_id) return []
@@ -51,92 +108,72 @@ export class ItemsSearchController extends MainController{
         }
     }
 
-
-    async findByProductParams(query: Knex.QueryBuilder, queryCount: Knex.QueryBuilder, productsDescription: string): Promise<string[]>{
-   
-        if(!productsDescription ) return []
-        //get to Know all the allowed products
-        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id'])
- 
-        if(productsDescription){
-            pruductsQuery.andWhere( (query:any) =>{
-                query.orWhere(`products.description`, 'ilike', `%${productsDescription}%`)
-                query.orWhere(`products.ean`, 'ilike', `%${productsDescription}%`) 
-               /*  query.orWhere({ ean :`${productsDescription}%`}) */
-            })
-                
-        }
-           
-        let requiredProducts = await pruductsQuery 
-
-        let itemIds = requiredProducts.map(p=>(p.item_id))
-        
-        query.orWhereIn('product_items.id',itemIds)
-        queryCount.orWhereIn('product_items.id',itemIds)
-
-        return requiredProducts.map(p=>p.id)
-        
-    }
-
     async handler(request: Request): Promise<Response> {
 
-        console.log("Client is search for product items")
         const text = request.query.v || '';
         var categories = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [ request.query.c ] : []
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [ request.query.b ] : []
         const offset = Number(request.query.o) || 0
 
-        const LIMIT = 16
-        const OFFSET = offset
 
         var result: ClientSearchResultView = { 
-            total: 0,
+            total: await this.getTotal(),
             subTotal: 0, 
-            items: [] as ItemClientView[]
+            items: [] as ItemClientView[],
+            related_items: [ ] as any[]
         }
-       
-        const totalOfITems = await this.knexConnection('product_items').count('id', { as: 'count' }).first();
-        result.total = totalOfITems ? Number(totalOfITems.count) : 0
-        
-        var query = this.knexConnection('product_items').select("id",'name',"description").offset(OFFSET).limit(LIMIT);
-        var count_query = this.knexConnection('product_items')
-        
-        await this.handleByCategoriesParents(query, count_query, categories) 
-        await this.handleItemNameLike(query, count_query, text)  
 
-        const productsFound = await this.findByProductParams(query, count_query, text)
-        
-        count_query.count('id', {as: 'count'}).first(); 
-        
-        await Promise.all([
-            count_query.then((count:any)=> { 
-                result.subTotal =  count ? Number(count.count) : 0
-            }),
-            
-            query.then( async (items) => { 
+        /* Buscando o item pela pesquisa de categoria e nome */
+        const { items, subTotal } = await this.searchForItem(offset, text, categories)
                
-                var items_result = items.length < 0  ? [] : (
-        
-                    await Promise.all(items.map(async i=>{
-                        let products = []
-                        products = await this.findproductsInside(i.id, brands) //fill all proucts of it
+        result.items = items
+        result.subTotal = subTotal
+        const itemsFound = result.items.map((j:any,i)=>(j.id))
 
-                        //Se descrição do produti for encontrada na pesquisa tb, ele é levao ao topo
-                        if(productsFound?.length > 0 ){
-                            console.log(productsFound)
-                            products.sort((a, b) => !productsFound.includes(a.id) ? 1 : -1) 
-                        }
+        /* Produtos encontrados pele pesquisa em texto */
 
-                        products = await Promise.all(products.map(p=>(this.serializer(p)))) // serializer it with date needed
+        const productsFound = await this.searchForProduct(text, brands) 
+        var relatedProduts = [ ...new Set(productsFound.map((p: any)=>(p.id)))] 
+        var relatedItems = [ ...new Set(productsFound.map((p: any)=>(p.item_id)))] 
+        relatedItems = relatedItems.filter((r,i)=>(!itemsFound.includes(r)))
+        //relatedItems são os items em que existem produtos que correspondem a pesuqisa de texto, com a exeção dos que ja existes
+        //Items found receberar todos os item
+        //enqunato relatedItems receberar somento os productos encontrados
+        result.related_items = await Promise.all(relatedItems.map( async (item_id:any,i: number)=>{
+            var products:any[] = []
+            var item = await this.knexConnection('product_items').where({ id: item_id }).select("id",'name',"description").first()
+            products = productsFound.filter((p:any)=>(p.item_id === item_id))
+            products = await Promise.all(products.map(async (p)=>{
 
-                        return { ...i, products }
-                    }))
-            )
-                        
-            result.items = items_result 
-    
-            })
-        ])
+                var serialized = await this.serializer(p)
+                return { ...serialized, distac: true }
+                
+            }) )
+            return ({...item,products})
+        }))
+
+
+        result.items = await Promise.all(result.items.map( async (j:any,i:number)=>{
+            var products:any[] = []
+            products = await this.findproductsInside(j.id, brands)
+
+            if(relatedProduts?.length > 0 ){
+                products.sort((a, b) => !relatedProduts.includes(a.id) ? 1 : -1) 
+            }
+            //estacar o produto aqui tb
+
+            products = await Promise.all(products.map(async (p)=>{
+                var distac = false
+                var serialized = await this.serializer(p)
+                if(relatedProduts.includes(p.id)){
+                    distac =true
+                }
+                return { ...serialized, distac}
+                
+            }) )
+
+            return ({...j, products})
+        }))
         
         return success(result)
         

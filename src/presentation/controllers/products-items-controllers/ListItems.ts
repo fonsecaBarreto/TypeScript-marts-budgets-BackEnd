@@ -49,13 +49,8 @@ export class FilterListItem extends MainController{
    
         if(!itemsName) return
 
-        query.andWhere( (query:any) =>{
-            query.where(`product_items.name`, 'ilike', `%${itemsName}%`)
-        })   
-
-        count_query.andWhere( (query:any) =>{
-            query.where(`product_items.name`, 'ilike', `%${itemsName}%`)
-        })  
+        query.andWhere( (query:any) =>{ query.where(`product_items.name`, 'ilike', `%${itemsName}%`) })   
+        count_query.andWhere( (query:any) =>{  query.where(`product_items.name`, 'ilike', `%${itemsName}%`) })  
 
     }
 

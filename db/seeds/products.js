@@ -86,7 +86,6 @@ exports.seed = async function(knex) {
 
     //brand
     var brandExists = brandsToInsert.find((j,i)=>(j.name === brand))
-    console.log('marca',brandExists)
     if(!brandExists) {
       brandExists = MakeBrand(brand)
       brandsToInsert.push(brandExists)
