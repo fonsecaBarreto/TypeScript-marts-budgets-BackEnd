@@ -5,6 +5,12 @@ export interface MartAnnex {
     contentType: string
 }
 
+export interface MartsCheckList {
+    mart_id: string,
+    access_number: number,
+    first_suggestion: boolean, 
+}
+
 export interface MartModel {
     id: string,
     name: string
@@ -19,12 +25,5 @@ export interface MartModel {
     responsible_name:string,
     corporate_name:string,
     obs:string,
-    // - annex
 }
 
-
-//enviar documentos  [pdf or some image] // referente a autentificaçã de pessoa juridica ou fisica ( opcional)
-//
-//aceitar autorização de emvio das inforçãos de infprmaçoes cedidas
-
-//

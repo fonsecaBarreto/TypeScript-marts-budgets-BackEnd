@@ -7,25 +7,20 @@ import { SignUpMartController } from '../../presentation/controllers/marts-contr
 import { JoinMartController } from '../../presentation/controllers/marts-controllers/Join' 
 import { ResetPassword, ChangePasswordByToken } from '../../presentation/controllers/marts-controllers/ResetPassword'
 import { FilterListMart } from '../../presentation/controllers/marts-controllers/ListMarts' 
-
 import { createAnnex } from './annexs'
-
 import { createAddress } from './address'
+
 import AddressSchema from '../../presentation/schemas/Address-Schema.json'
 import JsonValidator from '../../libs/JsonValidator'
 
 import { MakeMartPrivateView } from '../../presentation/controllers/marts-controllers/serializers/MartPrivateView'
 import keys from '../config/keys'
 
-
 const addressValidator = new JsonValidator(AddressSchema)
-
 const { martsRepository, addressRepository, martannexsRepository} = repositories
 const { encrypter, hasher, idGenerator, mailer, passwordGenerator} = vendors
 const createMart = new CreateMart(martsRepository, idGenerator, hasher, addressRepository)
 const mrtApp = new MartApp(martsRepository)
-
-
 
 /* serializers */
 
@@ -49,5 +44,8 @@ export const filterListMart = new FilterListMart(martsRepository, serializers.ma
 
 
 /* patch */
-
 export const joinMartController = new JoinMartController(martsRepository, passwordGenerator, hasher, mailer) //Admin
+
+
+
+/* ------------------Check List */

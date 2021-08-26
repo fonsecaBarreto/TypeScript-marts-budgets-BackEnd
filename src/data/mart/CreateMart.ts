@@ -114,6 +114,7 @@ export default class CreateMart {
         await this.martsRepository.insert(mart)
 
         const rescued  = await this.martsRepository.find({id})
+        
         return rescued
     
     }
