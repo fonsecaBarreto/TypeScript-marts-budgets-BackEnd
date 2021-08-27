@@ -1,5 +1,7 @@
 import { CreateCheckList, UpdateCheckList } from '../../../data/mart/checklist'
-import { martsChecklistsRepository, martsRepository } from './dependencies'
+import { repositories, vendors } from '../dependencies/index'
 
-export const createCheckList = new CreateCheckList(martsChecklistsRepository)
-export const updateCheckList = new UpdateCheckList(martsChecklistsRepository)
+export const usecases = {
+    createCheckList: new CreateCheckList(repositories.martsChecklistsRepository),
+    updateCheckList: new UpdateCheckList(repositories.martsChecklistsRepository)
+}

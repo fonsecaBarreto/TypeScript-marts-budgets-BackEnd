@@ -1,0 +1,12 @@
+{
+    "suggestion": {
+        "items": { "type": "json", "label":"Sugestões" }
+
+    },
+
+    "item": {
+        "description":  { "type": "string", "label":"Descrição do item" },
+        "quantity":  { "type": "number", "label":"Quantidade" }
+    }
+
+}

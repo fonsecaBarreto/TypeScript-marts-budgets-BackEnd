@@ -3,6 +3,7 @@ import { AddressNotFoundError, CpfCnpjInUseError, EmailInUseError, MartNotFoundE
 import { CorporateNameInUseError, FinancialEmailInUseError } from "../../domain/protocols/Errors/MartsErrors";
 import { DatabaseAdapter } from "../../domain/vendors/DatabaseAdapter";
 import { Hasher, IdGenerator } from "../../domain/vendors/Utils";
+import { CreateCheckList } from "./checklist";
 
 export namespace CreateMart {
     export type Params = {
@@ -39,11 +40,11 @@ export default class CreateMart {
         private readonly martsRepository: DatabaseAdapter,
         private readonly idGenerator: IdGenerator,
         private readonly hasher: Hasher,
-        private readonly addressRepository: DatabaseAdapter
+        private readonly addressRepository: DatabaseAdapter,
+        private readonly createCheckList: CreateCheckList
     ){}
 
     public async checkDuplicity(cnpj_cpf: string, email: string, phone?: string, corporate_name?:string, financial_email?:string, mart?:MartModel): Promise<void> {
-
 
         const emailExists = await this.martsRepository.find({email})
         if(emailExists) {
@@ -112,6 +113,8 @@ export default class CreateMart {
         }
 
         await this.martsRepository.insert(mart)
+
+        await this.createCheckList.execute({mart_id: id})
 
         const rescued  = await this.martsRepository.find({id})
         

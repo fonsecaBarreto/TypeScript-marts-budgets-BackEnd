@@ -2,7 +2,6 @@ import { Request, Response } from "../../../domain/protocols/http";
 import { badRequest, success } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController";
 import CreateNewMart, { CreateMart } from "../../../data/mart/CreateMart";
-import { MartApp } from "../../../data/mart/MartApp";
 import { BodyValidator, SchemaRow } from "../../../domain/protocols/ControllerBateries";
 
 import { rows,  Create as CreateList, Update as UpdateList } from '../../schemas/mart-schemas.json'
@@ -14,6 +13,7 @@ import { MapMarts } from "./serializers/MartPrivateView";
 import { Database } from "sqlite3";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { FileRepository } from "../../../domain/vendors/FileRepository";
+import FindMart from "../../../data/mart/FindMart";
 
 const schemasRows: Record<string, SchemaRow> = rows
 
@@ -84,11 +84,13 @@ export class UpdateMartController  extends MainController{
 
 export class FindController  extends MainController{
     constructor( 
-        private readonly martApp: MartApp,
+        private readonly findApp: FindMart,
         private readonly serializer: any,
     ){  super(AccessType.ADMIN) }
     async handler(request: Request): Promise<Response> {
-        const result = await this.martApp.find(request.params.id)
+
+        const result = await this.findApp.execute(request.params.id)
+        
         if(request.params.id){
             return success(await this.serializer(result))
         }else{

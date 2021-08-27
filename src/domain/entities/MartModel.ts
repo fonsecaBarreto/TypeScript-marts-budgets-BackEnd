@@ -8,7 +8,7 @@ export interface MartAnnex {
 export interface MartsCheckList {
     mart_id: string,
     access_number: number,
-    first_suggestion: boolean, 
+    first_suggestions: boolean, 
 }
 
 export interface MartModel {

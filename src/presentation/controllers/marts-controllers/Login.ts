@@ -1,3 +1,4 @@
+import { UpdateCheckList } from "../../../data/mart/checklist";
 import { MartNotFoundError, MartNotVerifiedError } from "../../../domain/protocols/Errors/MartsErrors";
 import { Request, Response } from "../../../domain/protocols/http";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
@@ -44,14 +45,19 @@ export  class MartsSignInController extends MainController {
 
 export class AuthMartController extends MainController {
 
-    constructor( ){ super(AccessType.MART) }
+    constructor(
+        private readonly updateMartCheckList : UpdateCheckList,
+        private readonly serializer: any
+     ){ super(AccessType.MART) }
 
     async handler(request: Request): Promise<Response> {
 
         const { user } = request
         if(!user) return unauthorized()
+
+        this.updateMartCheckList.increaseAccessNumber({mart_id: user.id})
         
         delete user.password
-        return success(user)
+        return success( await this.serializer(user))
     }
 }

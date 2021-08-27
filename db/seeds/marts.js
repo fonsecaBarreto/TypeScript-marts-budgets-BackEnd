@@ -2,6 +2,7 @@
 const { hashSync } = require('bcryptjs')
 const faker  = require('faker')
 const { cnpj } = require('cpf-cnpj-validator')
+const { Knex } = require('knex')
 
 const createAddress = (i) =>{
   return (
@@ -17,6 +18,18 @@ const createAddress = (i) =>{
   })
   
 }
+const createCheckList = ({mart_id}) =>{
+  return (
+  {
+    mart_id, 
+    access_number: 0,
+    first_suggestions:false
+  })
+  
+}
+
+
+
 const createFakeMart = (i) =>({
   id: 'mart_test_ID_0'+i, 
   name: faker.company.companyName(),
@@ -66,9 +79,10 @@ exports.seed = async function(knex) {
           financial_email: faker.internet.email(),
           corporate_name: faker.company.companyName(),
           address_id: `address_00`
-        }, ...fakers
-        
+        }
       ]);
+
+    await knex('marts_checklists').insert(createCheckList({mart_id:'mart_00'}))
    
 };
 
