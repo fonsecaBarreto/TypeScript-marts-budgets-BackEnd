@@ -5,9 +5,7 @@ import { AccessType, MainController } from "../../helpers/MainController"
 import { OrderModel } from "../../../domain/entities/OrderModel"
 import knex, { Knex } from "knex"
 import { ProductModel } from "../../../domain/entities/ProductModel"
-import { Console, group } from "console"
-import orders from "../../../main/routes/orders"
-import products from "../../../main/routes/products"
+
 
 export interface OrderGroup {
     quantities: number,

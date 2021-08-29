@@ -1,6 +1,6 @@
 {
     "suggestion": {
-        "items": { "type": "json", "label":"Sugestões" }
+        "items": { "type": "json", "label":"Sugestões", "optional": true }
 
     },
 

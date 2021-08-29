@@ -1,30 +1,34 @@
-import { ProductsSuggestions, SuggestionItem } from "../../../domain/entities/ProductSuggestion"
+import { MartsRating } from "../../../domain/entities/MartModel"
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter"
 import { IdGenerator } from "../../../domain/vendors/Utils"
 
 
-export namespace CreateSuggestion {
+export namespace CreateRating {
 
     export type Params = {
         mart_id: string,
-        items:SuggestionItem[]
+        grade:number,
+        description: ""
     }
 }
 
-export class CreateSuggestion {
+export class CreateRating {
     constructor(
         private readonly idGenerator: IdGenerator,
         private readonly repository: DatabaseAdapter,
     ){}
-    async  execute( params: CreateSuggestion.Params ){
+    async  execute( params: CreateRating.Params ){
 
         const id = await this.idGenerator.generate()
-        const {  mart_id, items } = params
+        var {  mart_id, grade, description } = params
 
-        const suggestion: any = {
+        grade = grade > 5 ? 5 : grade < 0 ? 0 : grade
+     
+        const suggestion: MartsRating = {
             id,
             mart_id,
-            items: JSON.stringify(items)
+            grade, 
+            description
         }
         await this.repository.insert(suggestion)
         return await this.repository.find({id})

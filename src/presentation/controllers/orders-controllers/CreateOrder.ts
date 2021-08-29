@@ -13,6 +13,8 @@ export default class MakeOrder extends MainController {
         private readonly ordersRepository: DatabaseAdapter,
         private readonly productsRepository: DatabaseAdapter,
         private readonly martsRepository: DatabaseAdapter,
+        private readonly orderSerializer: any,
+        private readonly productSerializer: any
     ){
         super(AccessType.MART, CreateSchema)
     }
@@ -43,7 +45,11 @@ export default class MakeOrder extends MainController {
 
         const stored = await this.ordersRepository.find({id})
 
-        return success(stored)
+    
+        const serialized = await this.orderSerializer(stored)
+        var product = await this.productSerializer(serialized.product)
+
+        return success({ ...serialized, product})
 
     }
 

@@ -21,9 +21,11 @@ export class UpdateCheckList {
     }
     async setFirst_suggestions( params: UpdateCheckList.Params ){
         const {  mart_id } = params
-        const checkList = await this.repository.find({id: mart_id})
-        if(!checkList) return 
-        await this.repository.update({id: mart_id},{ first_suggestions: true })
+        const checkList = await this.repository.find({ mart_id})
+        if(!checkList || checkList.first_suggestions === true) return 
+
+        
+        await this.repository.update({mart_id},{ first_suggestions: true })
         return await this.repository.find({mart_id: mart_id})
     }
 }

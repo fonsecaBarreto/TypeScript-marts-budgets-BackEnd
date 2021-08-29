@@ -12,6 +12,7 @@ export const repositories = {
     martannexsRepository: new KnexAdapter('mart_annexs'),
     itemsRepository: new KnexAdapter('product_items'),
     martsChecklistsRepository: new KnexAdapter('marts_checklists'),
-    suggestionsRepository: new KnexAdapter('suggestions')
+    suggestionsRepository: new KnexAdapter('suggestions'),
+    ratingRepository: new KnexAdapter('marts_rating')
 }
 

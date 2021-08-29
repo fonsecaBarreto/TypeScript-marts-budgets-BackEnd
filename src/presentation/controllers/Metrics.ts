@@ -9,6 +9,8 @@ export type MetricsView = {
     totalProducts: number,
     totalProviders: number,
     totalOrders: number,
+    totalSuggestions: number,
+    totalRatings:number,
     lastMarts: any[],
     lastOrders: any[],
 }
@@ -35,6 +37,15 @@ export class MetricsController extends MainController{
         var totalOrders = !aux ? 0  : Number(aux.count) 
 
 
+        aux = await this.knexConnection('suggestions').where({}).count('id', {as: 'count'}).first();
+        var totalSuggestions = !aux ? 0  : Number(aux.count) 
+
+
+        aux = await this.knexConnection('marts_rating').where({}).count('id', {as: 'count'}).first();
+        var totalRatings = !aux ? 0  : Number(aux.count) 
+
+
+    
         var lastMarts = await this.knexConnection('marts').select(['id','name','created_at']).limit(5).orderBy('created_at', 'asc')
         var lastOrders = await this.knexConnection('orders').limit(5).orderBy('created_at', 'asc')
 
@@ -56,6 +67,8 @@ export class MetricsController extends MainController{
             totalProducts,
             totalProviders,
             totalOrders,
+            totalSuggestions,
+            totalRatings,
             lastMarts,
             lastOrders
         }

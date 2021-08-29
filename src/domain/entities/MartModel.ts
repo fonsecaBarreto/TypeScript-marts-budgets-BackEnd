@@ -11,6 +11,13 @@ export interface MartsCheckList {
     first_suggestions: boolean, 
 }
 
+export interface MartsRating {
+    id: string,
+    mart_id: string,
+    grade:number,
+    description: string
+}
+
 export interface MartModel {
     id: string,
     name: string
