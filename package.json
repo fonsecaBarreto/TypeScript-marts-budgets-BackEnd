@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production forever start ./dist/main/server.js",
     "dev": "cross-env NODE_ENV=development nodemon --exec sucrase-node ./src/main/server.ts",
-    "stage": "cross-env NODE_ENV=stage nodemon --exec sucrase-node ./src/main/server.ts",
+    "stage": "cross-env NODE_ENV=production node ./dist/main/server.js",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:watch": "npm test -- --watch ",
     "test:verbose": "jest --passWithNoTests --runInBand",
