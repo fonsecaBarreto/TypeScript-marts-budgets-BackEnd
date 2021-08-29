@@ -62,13 +62,13 @@ class UpdateMartController extends MainController_1.MainController {
 exports.UpdateMartController = UpdateMartController;
 /* Find, Remove, List */
 class FindController extends MainController_1.MainController {
-    constructor(martApp, serializer) {
+    constructor(findApp, serializer) {
         super(MainController_1.AccessType.ADMIN);
-        this.martApp = martApp;
+        this.findApp = findApp;
         this.serializer = serializer;
     }
     async handler(request) {
-        const result = await this.martApp.find(request.params.id);
+        const result = await this.findApp.execute(request.params.id);
         if (request.params.id) {
             return http_helper_1.success(await this.serializer(result));
         }

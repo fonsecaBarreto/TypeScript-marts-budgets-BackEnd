@@ -7,6 +7,7 @@ const Downloadxls_1 = require("../../presentation/controllers/Downloadxls");
 const providers_1 = require("../../data/CaptureDataFromExcel/providers");
 const marts_1 = require("../../data/CaptureDataFromExcel/marts");
 const products_1 = require("../../data/CaptureDataFromExcel/products");
+const orders_1 = require("../../data/CaptureDataFromExcel/orders");
 const depedencies_1 = require("../factories/depedencies");
 const KnexAdapter_1 = __importDefault(require("../../libs/KnexAdapter"));
 /* providers */
@@ -18,8 +19,12 @@ const martsFromExcelController = new Downloadxls_1.DownloadXlsController(martsFr
 /* products */
 const productsFromExcel = new products_1.ProductsFromExcel(depedencies_1.repositories.productsRepository, KnexAdapter_1.default.connection); //caso de uso
 const productsFromExcelController = new Downloadxls_1.DownloadXlsController(productsFromExcel, 'Items');
+/* orders */
+const ordersFromExcel = new orders_1.OrdersFromExcel(depedencies_1.repositories.ordersRepository, KnexAdapter_1.default.connection); //caso de uso
+const orderFronExcelController = new Downloadxls_1.DownloadXlsController(ordersFromExcel, 'Ordens');
 exports.default = (router) => {
     router.get("/data/download/excel/providers", prividerFormExecelController.execute());
     router.get("/data/download/excel/marts", martsFromExcelController.execute());
     router.get("/data/download/excel/products", productsFromExcelController.execute());
+    router.get("/data/download/excel/orders", orderFronExcelController.execute());
 };

@@ -3,11 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Errors_1 = require("../../domain/protocols/Errors");
 const MartsErrors_1 = require("../../domain/protocols/Errors/MartsErrors");
 class CreateMart {
-    constructor(martsRepository, idGenerator, hasher, addressRepository) {
+    constructor(martsRepository, idGenerator, hasher, addressRepository, createCheckList) {
         this.martsRepository = martsRepository;
         this.idGenerator = idGenerator;
         this.hasher = hasher;
         this.addressRepository = addressRepository;
+        this.createCheckList = createCheckList;
     }
     async checkDuplicity(cnpj_cpf, email, phone, corporate_name, financial_email, mart) {
         const emailExists = await this.martsRepository.find({ email });
@@ -65,6 +66,7 @@ class CreateMart {
             address_id, corporate_name, financial_email, responsible_name, obs,
         };
         await this.martsRepository.insert(mart);
+        await this.createCheckList.execute({ mart_id: id });
         const rescued = await this.martsRepository.find({ id });
         return rescued;
     }

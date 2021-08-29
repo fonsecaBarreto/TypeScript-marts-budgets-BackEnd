@@ -1,15 +1,14 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./depedencies"), exports);
-__exportStar(require("./admins"), exports);
-__exportStar(require("./marts"), exports);
+const keys_1 = __importDefault(require("../config/keys"));
+const KnexAdapter_1 = __importDefault(require("../../libs/KnexAdapter"));
+const MainController_1 = require("../../presentation/helpers/MainController");
+const dependencies_1 = require("./dependencies");
+const depedencies_1 = require("./depedencies");
+KnexAdapter_1.default.open(keys_1.default.node_env);
+MainController_1.MainController.encrypter = depedencies_1.vendors.encrypter;
+MainController_1.MainController.martRepository = dependencies_1.repositories.martsRepository;
+MainController_1.MainController.adminRepository = dependencies_1.repositories.adminsRepository;

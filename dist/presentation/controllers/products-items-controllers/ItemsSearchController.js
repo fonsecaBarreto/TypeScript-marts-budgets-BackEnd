@@ -9,19 +9,65 @@ class ItemsSearchController extends MainController_1.MainController {
         this.knexConnection = knexConnection;
         this.serializer = serializer;
     }
-    async handleByCategoriesParents(query, count_query, categories) {
-        // it will add get categories by given id if a category list were provided
-        if (categories.length == 0)
-            return;
-        query.whereIn('category_id', categories);
-        count_query.whereIn('category_id', categories);
+    async getTotal() {
+        const totalOfITems = await this.knexConnection('product_items').count('id', { as: 'count' }).first();
+        return totalOfITems ? Number(totalOfITems.count) : 0;
     }
-    async handleItemNameLike(query, count_query, item_name) {
-        // it will look for on names of categories with category_name:string content inside
-        if (!item_name)
-            return;
-        query.andWhere(`product_items.name`, 'ilike', `%${item_name}%`);
-        count_query.andWhere(`product_items.name`, 'ilike', `%${item_name}%`);
+    async searchForItem(offset, text_words, categories) {
+        const LIMIT = 16;
+        var subTotal = 0;
+        var items = [];
+        var query = this.knexConnection('product_items').select("id", 'name', "description").offset(offset).limit(LIMIT);
+        var count_query = this.knexConnection('product_items');
+        if (categories.length > 0) {
+            query.whereIn('category_id', categories);
+            count_query.whereIn('category_id', categories);
+        }
+        if (text_words) {
+            query.andWhere((query) => {
+                for (const col of text_words) {
+                    query.orWhere(`product_items.name`, 'ilike', `%${col}%`);
+                }
+            });
+            count_query.andWhere((query) => {
+                for (const col of text_words) {
+                    query.orWhere(`product_items.name`, 'ilike', `%${col}%`);
+                }
+            });
+        }
+        count_query.count('id', { as: 'count' }).first();
+        await Promise.all([
+            count_query.then((count) => { subTotal = count ? Number(count.count) : 0; }),
+            query.then(async (it) => { items = it; })
+        ]);
+        return { subTotal, items };
+    }
+    async searchForProduct(text_words, brands, categories) {
+        if (text_words.length === 0)
+            return []; //get to Know all the allowed products
+        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id', 'brand_id']);
+        var allowedItemsByCategories = await this.knexConnection('product_items').whereIn('category_id', categories);
+        if (text_words) {
+            pruductsQuery.andWhere((query) => {
+                for (const col of text_words) {
+                    query.orWhere(`products.description`, 'ilike', `%${col}%`);
+                    query.orWhere(`products.ean`, 'ilike', `%${col}%`);
+                }
+            });
+        }
+        if (brands.length > 0) {
+            pruductsQuery.andWhere((query) => {
+                query.whereIn('products.brand_id', brands);
+            });
+        }
+        if (categories.length > 0) {
+            console.log(categories);
+            pruductsQuery.andWhere((query) => {
+                query.whereIn('products.item_id', allowedItemsByCategories);
+            });
+        }
+        let requiredProducts = await pruductsQuery;
+        return requiredProducts;
     }
     async findproductsInside(item_id, brands) {
         if (!item_id)
@@ -35,64 +81,78 @@ class ItemsSearchController extends MainController_1.MainController {
             return result;
         }
     }
-    async findByProductParams(query, queryCount, productsDescription) {
-        if (!productsDescription)
-            return [];
-        //get to Know all the allowed products
-        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id']);
-        if (productsDescription) {
-            pruductsQuery.andWhere((query) => {
-                query.orWhere(`products.description`, 'ilike', `%${productsDescription}%`);
-                query.orWhere(`products.ean`, 'ilike', `%${productsDescription}%`);
-                /*  query.orWhere({ ean :`${productsDescription}%`}) */
-            });
-        }
-        let requiredProducts = await pruductsQuery;
-        let itemIds = requiredProducts.map(p => (p.item_id));
-        query.orWhereIn('product_items.id', itemIds);
-        queryCount.orWhereIn('product_items.id', itemIds);
-        return requiredProducts.map(p => p.id);
-    }
     async handler(request) {
-        console.log("Client is search for product items");
+        /* Queries iniciais */
         const text = request.query.v || '';
+        var text_words = text.trim().split(" ");
+        text_words = text_words.filter((c) => ((c !== "") && (c !== "de") && (c !== "para")));
         var categories = (request.query.c) ? Array.isArray(request.query.c) ? request.query.c : [request.query.c] : [];
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [request.query.b] : [];
         const offset = Number(request.query.o) || 0;
-        const LIMIT = 16;
-        const OFFSET = offset;
+        console.log("searching for", text_words);
+        /* Instanciando o resultado */
         var result = {
-            total: 0,
+            total: await this.getTotal(),
             subTotal: 0,
-            items: []
+            items: [],
+            related_items: []
         };
-        const totalOfITems = await this.knexConnection('product_items').count('id', { as: 'count' }).first();
-        result.total = totalOfITems ? Number(totalOfITems.count) : 0;
-        var query = this.knexConnection('product_items').select("id", 'name', "description").offset(OFFSET).limit(LIMIT);
-        var count_query = this.knexConnection('product_items');
-        await this.handleByCategoriesParents(query, count_query, categories);
-        await this.handleItemNameLike(query, count_query, text);
-        const productsFound = await this.findByProductParams(query, count_query, text);
-        count_query.count('id', { as: 'count' }).first();
-        await Promise.all([
-            count_query.then((count) => {
-                result.subTotal = count ? Number(count.count) : 0;
-            }),
-            query.then(async (items) => {
-                var items_result = items.length < 0 ? [] : (await Promise.all(items.map(async (i) => {
-                    let products = [];
-                    products = await this.findproductsInside(i.id, brands); //fill all proucts of it
-                    //Se descrição do produti for encontrada na pesquisa tb, ele é levao ao topo
-                    if ((productsFound === null || productsFound === void 0 ? void 0 : productsFound.length) > 0) {
-                        console.log(productsFound);
-                        products.sort((a, b) => !productsFound.includes(a.id) ? 1 : -1);
+        /* Buscando o item pela pesquisa de categoria e nome */
+        const { items, subTotal } = await this.searchForItem(offset, text_words, categories);
+        result.items = items;
+        result.subTotal = subTotal;
+        const itemsFound = result.items.map((j, i) => (j.id));
+        /* Produtos encontrados pele pesquisa em texto */
+        const productsFound = await this.searchForProduct(text_words, brands, categories);
+        var relatedProduts = [...new Set(productsFound.map((p) => (p.id)))];
+        var relatedItems = [...new Set(productsFound.map((p) => (p.item_id)))];
+        relatedItems = relatedItems.filter((r, i) => (!itemsFound.includes(r)));
+        /* relatedItems são os items em que existem produtos que correspondem a pesuqisa de texto, com a exeção dos que ja existes */
+        result.related_items = await Promise.all(relatedItems.map(async (item_id, i) => {
+            var products = [];
+            var item = await this.knexConnection('product_items').where({ id: item_id }).select("id", 'name', "description").first();
+            products = productsFound.filter((p) => (p.item_id === item_id));
+            products = await Promise.all(products.map(async (p) => {
+                var serialized = await this.serializer(p);
+                return { ...serialized, distac: true };
+            }));
+            return ({ ...item, products });
+        }));
+        var text_columns = text.trim().split(" ");
+        result.items = await Promise.all(result.items.map(async (j, i) => {
+            var matched_words = [];
+            var products = [];
+            var products_matched_count = 0;
+            products = await this.findproductsInside(j.id, brands);
+            var nameSplited = j.name.normalize('NFD').toLowerCase().replace(/[\u0300-\u036f]/g, "").split(" ");
+            nameSplited.map((n, i) => {
+                if (text_columns.includes(n)) {
+                    matched_words.push(n);
+                }
+            });
+            /*  */
+            if ((relatedProduts === null || relatedProduts === void 0 ? void 0 : relatedProduts.length) > 0) {
+                //contar quantos produtos atendem a pesquisa para reposiciona-los
+                products.forEach(p => {
+                    if (relatedProduts.includes(p.id)) {
+                        products_matched_count += 1;
                     }
-                    products = await Promise.all(products.map(p => (this.serializer(p)))); // serializer it with date needed
-                    return { ...i, products };
-                })));
-                result.items = items_result;
-            })
-        ]);
+                });
+                products.sort((a, b) => !relatedProduts.includes(a.id) ? 1 : -1);
+            }
+            //Destacar o produto aqui tb
+            products = await Promise.all(products.map(async (p) => {
+                var distac = false;
+                var serialized = await this.serializer(p);
+                if (relatedProduts.includes(p.id)) {
+                    distac = true;
+                }
+                return { ...serialized, distac };
+            }));
+            return ({ ...j, products_matched_count, matched_words, products, });
+        }));
+        //leva ao topo o item onde mais produtos foram encontrados
+        result.items.sort((a, b) => (a.products_matched_count < b.products_matched_count ? 1 : -1));
         return http_helper_1.success(result);
     }
 }

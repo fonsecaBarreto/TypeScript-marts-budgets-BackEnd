@@ -17,6 +17,10 @@ class MetricsController extends MainController_1.MainController {
         var totalProviders = !aux ? 0 : Number(aux.count);
         aux = await this.knexConnection('orders').where({}).count('id', { as: 'count' }).first();
         var totalOrders = !aux ? 0 : Number(aux.count);
+        aux = await this.knexConnection('suggestions').where({}).count('id', { as: 'count' }).first();
+        var totalSuggestions = !aux ? 0 : Number(aux.count);
+        aux = await this.knexConnection('marts_rating').where({}).count('id', { as: 'count' }).first();
+        var totalRatings = !aux ? 0 : Number(aux.count);
         var lastMarts = await this.knexConnection('marts').select(['id', 'name', 'created_at']).limit(5).orderBy('created_at', 'asc');
         var lastOrders = await this.knexConnection('orders').limit(5).orderBy('created_at', 'asc');
         if (lastOrders.length > 0) {
@@ -33,6 +37,8 @@ class MetricsController extends MainController_1.MainController {
             totalProducts,
             totalProviders,
             totalOrders,
+            totalSuggestions,
+            totalRatings,
             lastMarts,
             lastOrders
         };

@@ -23,6 +23,7 @@ class XlsxAdapter {
             throw new Error("SheetDoenstExits");
         const sheet = workbook.Sheets[sheetName];
         const json = xlsx_1.default.utils.sheet_to_json(sheet);
+        console.log(json);
         var list = [];
         json.map((col) => {
             var serializedColumn = {};

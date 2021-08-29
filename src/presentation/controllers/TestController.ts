@@ -2,8 +2,6 @@ import { success } from "../helpers/http-helper";
 import { Request, Response } from "../../domain/protocols/http";
 import { AccessType, MainController } from "../helpers/MainController";
 import { FileSchema } from "../helpers/FormDataParser";
-import { fileRepository } from "../../main/factories";
-
 
 const annexSchema: Record<string, FileSchema> = {
     annexs: {
@@ -12,7 +10,6 @@ const annexSchema: Record<string, FileSchema> = {
         max_size: 0.5e+6,
         multiples: 3
     },
-
 }
 
 
@@ -22,8 +19,6 @@ export class TestController extends MainController{
     }
 
     async handler(request: Request): Promise<Response> {
-     
         return success(request.files)
-
     }
 }

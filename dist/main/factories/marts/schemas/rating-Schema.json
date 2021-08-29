@@ -1,0 +1,5 @@
+{
+    "grade": { "type": "number", "label": "Nota",
+        "missingMessage": "De 0 a 5, informe sua Avaliação" },
+    "description": { "type": "string", "label": "opinião", "optional": true }
+}

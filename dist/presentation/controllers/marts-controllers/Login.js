@@ -34,13 +34,18 @@ class MartsSignInController extends MainController_1.MainController {
 }
 exports.MartsSignInController = MartsSignInController;
 class AuthMartController extends MainController_1.MainController {
-    constructor() { super(MainController_1.AccessType.MART); }
+    constructor(updateMartCheckList, serializer) {
+        super(MainController_1.AccessType.MART);
+        this.updateMartCheckList = updateMartCheckList;
+        this.serializer = serializer;
+    }
     async handler(request) {
         const { user } = request;
         if (!user)
             return http_helper_1.unauthorized();
+        this.updateMartCheckList.increaseAccessNumber({ mart_id: user.id });
         delete user.password;
-        return http_helper_1.success(user);
+        return http_helper_1.success(await this.serializer(user));
     }
 }
 exports.AuthMartController = AuthMartController;

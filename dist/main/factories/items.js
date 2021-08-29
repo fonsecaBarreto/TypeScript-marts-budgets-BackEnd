@@ -28,5 +28,5 @@ exports.updateItemController = new UpdateProductItem_1.UpdateProductItemControll
 exports.findItemController = new ReadDelete_1.FindController(itemsRepository, exports.serializers.itemView);
 exports.removeItemController = new ReadDelete_1.RemoveController(itemsRepository);
 exports.listItemsScrewView = new ItemsScrewView_1.ListItemsScrewView(itemsRepository);
-exports.filterListItem = new ListItems_1.FilterListItem(itemsRepository, exports.serializers.itemFullview);
+exports.filterListItem = new ListItems_1.FilterListItem(itemsRepository, KnexAdapter_1.default.connection, products_1.serializers.productView);
 exports.itemsSearchController = new ItemsSearchController_1.ItemsSearchController(KnexAdapter_1.default.connection, products_1.serializers.productView);
