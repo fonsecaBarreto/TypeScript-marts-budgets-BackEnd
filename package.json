@@ -4,7 +4,8 @@
   "description": "Nodejs back end to sherwood",
   "main": "server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production forever start ./dist/main/server.js",
+    "start": "cross-env NODE_ENV=production node start ./dist/main/server.js",
+    "ec2": "cross-env NODE_ENV=production forever start ./dist/main/server.js",
     "dev": "cross-env NODE_ENV=development nodemon --exec sucrase-node ./src/main/server.ts",
     "stage": "cross-env NODE_ENV=production node ./dist/main/server.js",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
