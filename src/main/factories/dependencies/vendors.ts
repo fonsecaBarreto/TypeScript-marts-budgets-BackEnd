@@ -9,14 +9,7 @@ import PasswordGeneratorAdapter from '../../../libs/PasswordGeneratorAdapter'
 import BcryptAdapter from '../../../libs/BcryptAdapter'
 import JsonWebTokenAdapter from '../../../libs/JsonWebTokenAdapter'
 import NodeMailerAdapter from '../../../libs/NodeMailerAdapter'
-
-class MailterStub implements Mailer {
-    async send(to: string, subject: string, html: string): Promise<void> {
-        return console.log(`\nEnviando email para: ${to},
-        \nAssunto: ${subject}, 
-        \nCorpo: ${html}`)
-    }
-}
+import { MailterStub } from './stubs/MailerStub'
 
 export const fileRepository = new LocalFileStorage(path.join(__dirname,'..','..','..','uploads',keys.node_env))
 export const amazonS3 = new S3FileRepository(keys.aws_uploads_bucket, keys.aws_access_key, keys.aws_secret_key, keys.aws_region)

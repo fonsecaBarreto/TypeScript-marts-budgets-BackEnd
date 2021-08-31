@@ -16,7 +16,8 @@ import { JoinMartController } from '../../../presentation/controllers/marts-cont
 import { FilterListMart } from '../../../presentation/controllers/marts-controllers/ListMarts' 
 
 /* dependencies */
-const { idGenerator, hasher, encrypter, mailer, fileRepository, passwordGenerator  } = vendors
+import { signUpEmailHook } from '../EmailHooks'
+const { idGenerator, hasher, encrypter, mailer, fileRepository, passwordGenerator } = vendors
 const { martsRepository, addressRepository, martannexsRepository, martsChecklistsRepository } = repositories
 /* instaces */
 export const createMart = new CreateMart(martsRepository, idGenerator, hasher, addressRepository, checkListUseCases.createCheckList)
@@ -40,7 +41,7 @@ export const controllers = {
     },
     
     login:{
-        signup: new SignUpMartController(addressValidator, AddressUseCases.createAddress, createMart, annexsUseCases.createAnnex),
+        signup: new SignUpMartController(addressValidator, AddressUseCases.createAddress, createMart, annexsUseCases.createAnnex, signUpEmailHook), //'contato@unacompras.com.br'
         signin: new MartsSignInController(martsRepository, encrypter, hasher),
         auth: new AuthMartController(checkListUseCases.updateCheckList, serializers.martPrivateView),
         resetPassword: new ResetPassword(martsRepository, mailer, encrypter, keys.react_client),

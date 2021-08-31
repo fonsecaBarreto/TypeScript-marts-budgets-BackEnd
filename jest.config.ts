@@ -1,7 +1,7 @@
 
 export default {
 
-  testTimeout: 30000,
+  testTimeout: 90000,
 
   roots: ['<rootDir>/test/', '<rootDir>/src'],
 

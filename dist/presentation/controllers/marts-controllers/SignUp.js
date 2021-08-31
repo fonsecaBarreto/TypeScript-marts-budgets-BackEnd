@@ -17,12 +17,14 @@ const annexSchema = {
     }
 };
 class SignUpMartController extends MainController_1.MainController {
-    constructor(adressValidator, createAddress, createNewMart, createAnnex) {
+    constructor(adressValidator, createAddress, createNewMart, createAnnex, mailerAdapter, hookEmail) {
         super(MainController_1.AccessType.PUBLIC, SignUpSchema, annexSchema);
         this.adressValidator = adressValidator;
         this.createAddress = createAddress;
         this.createNewMart = createNewMart;
         this.createAnnex = createAnnex;
+        this.mailerAdapter = mailerAdapter;
+        this.hookEmail = hookEmail;
     }
     async handler(request) {
         const { body, files } = request;
@@ -59,6 +61,12 @@ class SignUpMartController extends MainController_1.MainController {
                     name: (annex.fileName).split('.').slice(0, -1).join('.')
                 });
             }));
+        }
+        try {
+            this.mailerAdapter.send(this.hookEmail, "Novo Usuario Cadastrado", `${JSON.stringify(stored)}`);
+        }
+        catch (err) {
+            console.log(err);
         }
         return http_helper_1.success(stored);
     }

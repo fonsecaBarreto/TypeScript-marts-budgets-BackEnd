@@ -1,8 +1,8 @@
 const { cnpj } = require('cpf-cnpj-validator')
 const faker  = require('faker')
 
-const createAddress = (i) =>({
-    id: 'provider_address_test_ID_'+i, 
+const createAddress = (id) =>({
+    id,
     address: faker.address.streetAddress(),
     address_region: faker.address.county(),
     address_number: Math.ceil(Math.random() * 200),
@@ -12,17 +12,16 @@ const createAddress = (i) =>({
     details: ""
 })
 
-const createFakeProviders = (i) => ({
+const createFakeProviders = ({ id, address_id }) => ({
 
-    id: "test_ID_0"+i,
+    id,
     name: faker.company.companySuffix(),
     email: faker.internet.email(),
     phone: (faker.phone.phoneNumber()).replace(/[^\d]+/g,''),
     cnpj: (cnpj.generate()).replace(/[^\d]+/g,''),
     corporate_name: faker.company.companyName(),
     obs: "Observação sobre a empresa",
-
-    address_id:`provider_address_test_ID_${i}`,
+    address_id,
     financial_email:  faker.internet.email(),
     responsible_name: faker.name.firstName()+ " " + faker.name.lastName(),
 
@@ -31,18 +30,10 @@ const createFakeProviders = (i) => ({
 
 exports.seed = async function(knex) {
 
-  const total = 10
-  const addresses = []
-  const providers = []
-  for(let i = 1; i < total; i ++ ){
-    addresses.push(createAddress(i))
-    providers.push(createFakeProviders(i))
-  }
-
   await knex('providers').del()
-
-  await knex('addresses').insert(addresses);
-  await knex('providers').insert(providers);
+  
+  await knex('addresses').insert([createAddress('address_provider_00')]);
+  await knex('providers').insert([createFakeProviders({ id: 'provider_00', address_id: 'address_provider_00'})]);
 
  
 };

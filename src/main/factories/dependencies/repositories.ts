@@ -1,5 +1,5 @@
 import KnexAdapter from '../../../libs/KnexAdapter'
-
+import { MartsKnexPostgresRepository, OrdersKnexPostgresRepository, ProductsKnexPostgresRepository } from '../../../infra/repositories/KnexPostgres'
 export const repositories = {
     martsRepository: new KnexAdapter('marts'),
     providersRepository: new KnexAdapter('providers'),
@@ -16,3 +16,8 @@ export const repositories = {
     ratingRepository: new KnexAdapter('marts_rating')
 }
 
+export const infra = {
+    ordersRepository: new OrdersKnexPostgresRepository(),
+    martsRepository: new MartsKnexPostgresRepository(),
+    productsRepository: new ProductsKnexPostgresRepository()
+}

@@ -9,7 +9,6 @@ const { ratingRepository, martsRepository } = repositories
 
 
 /* serializers */
-
 export const serializers = {
     ratingPrivateView: MakeRatingPrivateView(martsRepository)
 }

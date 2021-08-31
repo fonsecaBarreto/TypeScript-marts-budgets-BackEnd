@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { makeOrder, listOrdersByFilter, listOrdersLatest } from '../factories/orders'
+import { listOrdersByFilter, listOrdersLatest } from '../factories/orders'
+import { controllers } from '../factories/orders/index'
 
 
 
@@ -10,7 +11,7 @@ export default (router: Router) =>{
     router.get('/orders/latest', listOrdersLatest.execute())
     /*  admin */
     router.route('/orders/make')
-        .post(makeOrder.execute())
+        .post(controllers.order.execute())
 
 
 }

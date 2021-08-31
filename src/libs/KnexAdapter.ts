@@ -3,7 +3,6 @@ import knex, { Knex } from 'knex'
 import { off } from 'process';
 const knexfile = require("../../knexfile")
 
-
 export default class KnexAdapter implements DatabaseAdapter {
 
     static connection: Knex;

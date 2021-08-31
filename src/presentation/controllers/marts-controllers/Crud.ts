@@ -10,7 +10,6 @@ import { MartAnnex, MartModel } from "../../../domain/entities/MartModel";
 import { DisagreementPasswordError, InvalidRequestBodyError, MartNotFoundError } from "../../../domain/protocols/Errors";
 import  CreateAddress from "../../../data/address/CreateAdress";
 import { MapMarts } from "./serializers/MartPrivateView";
-import { Database } from "sqlite3";
 import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
 import { FileRepository } from "../../../domain/vendors/FileRepository";
 import FindMart from "../../../data/mart/FindMart";

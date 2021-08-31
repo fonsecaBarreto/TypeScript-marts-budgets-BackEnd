@@ -38,7 +38,7 @@ exports.controllers = {
         remove: new Crud_1.RemoveController(martsRepository, addressRepository, martannexsRepository, fileRepository),
     },
     login: {
-        signup: new SignUp_1.SignUpMartController(address_1.validator, address_1.usecases.createAddress, exports.createMart, annexs_1.usecases.createAnnex),
+        signup: new SignUp_1.SignUpMartController(address_1.validator, address_1.usecases.createAddress, exports.createMart, annexs_1.usecases.createAnnex, mailer, 'contato@unacompras.com.br'),
         signin: new Login_1.MartsSignInController(martsRepository, encrypter, hasher),
         auth: new Login_1.AuthMartController(checkList_1.usecases.updateCheckList, exports.serializers.martPrivateView),
         resetPassword: new ResetPassword_1.ResetPassword(martsRepository, mailer, encrypter, keys_1.default.react_client),

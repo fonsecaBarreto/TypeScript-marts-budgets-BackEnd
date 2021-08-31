@@ -14,12 +14,9 @@ const { martsRepository, productsRepository, ordersRepository, itemsRepository }
 export const serializers = { 
     orderView: MakeOrderView(martsRepository),
     orderProductView: MakeOrderProductView(martsRepository, productsRepository, itemsRepository)
- 
 }
 
-
-
-
-export const makeOrder = new MakeOrder(vendors.idGenerator, ordersRepository, productsRepository, martsRepository, serializers.orderProductView, productsSerializers.productView)
+/* export const makeOrder = new MakeOrder(vendors.idGenerator, ordersRepository, productsRepository, martsRepository, serializers.orderProductView, productsSerializers.productView)
+ */
 export const listOrdersByFilter = new ListOrdersByFilter(KnexAdapter.connection, productsSerializers.productView, serializers.orderView)
 export const listOrdersLatest = new ListOrdersLatest(KnexAdapter.connection, serializers.orderProductView, productsSerializers.productView)

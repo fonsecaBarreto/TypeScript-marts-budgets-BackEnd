@@ -1,3 +1,4 @@
+import CreateOrder from "../../../data/orders/CreateOrder";
 import { OrderModel } from "../../../domain/entities/OrderModel";
 import { InvalidForecastDateError, MartNotFoundError, MinimumQuantityError, ProductNotFoundError } from "../../../domain/protocols/Errors";
 import { Request, Response } from "../../../domain/protocols/http";
@@ -7,50 +8,22 @@ import { success } from "../../helpers/http-helper";
 import { AccessType, MainController } from "../../helpers/MainController";
 import { Create as CreateSchema } from '../../schemas/order-schemas.json'
 
-export default class MakeOrder extends MainController {
+export default class CreateOrderController extends MainController {
     constructor(
-        private readonly idGenerator: IdGenerator,
-        private readonly ordersRepository: DatabaseAdapter,
-        private readonly productsRepository: DatabaseAdapter,
-        private readonly martsRepository: DatabaseAdapter,
+        private readonly createOrder: CreateOrder,
         private readonly orderSerializer: any,
         private readonly productSerializer: any
     ){
         super(AccessType.MART, CreateSchema)
     }
     async handler(request: Request): Promise<Response> {
-        
         const { user, body } = request
         const { forecast, quantity, product_id } = body
-
-        if(quantity < 1 ) {
-            throw MinimumQuantityError()
-        }
-
         const mart_id = user.id
-
-        const martsExists = await this.martsRepository.find({ id: mart_id })
-        if(!martsExists) throw MartNotFoundError()
-
-        const productExits = await this.productsRepository.find({ id: product_id })
-        if(!productExits) throw ProductNotFoundError()
-
-        if(forecast.getTime() <= Date.now()) throw InvalidForecastDateError()
-        
-        const id = await this.idGenerator.generate();
-
-        const order: OrderModel = {  id, forecast, mart_id, product_id, quantity }
-
-        await this.ordersRepository.insert(order)
-
-        const stored = await this.ordersRepository.find({id})
-
-    
+        const stored = await this.createOrder.execute({forecast, quantity, product_id, mart_id})
         const serialized = await this.orderSerializer(stored)
-        var product = await this.productSerializer(serialized.product)
-
+        var product = await this.productSerializer(serialized.product) 
         return success({ ...serialized, product})
-
     }
 
 }

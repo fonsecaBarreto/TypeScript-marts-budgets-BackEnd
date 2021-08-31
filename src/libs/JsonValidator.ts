@@ -55,7 +55,7 @@ export default class JsonValidator implements BodyValidator{
       if(final_value == null) return body[field] = null
 
       switch(type){
-        
+        case "cep": final_value = (value+"").replace(/[^\d]+/g,'');break;
         case "cnpj/cpf": final_value = (value+"").replace(/[^\d]+/g,'');break;
         case "phone":  final_value = (value+"").replace(/[^\d]+/g,''); break;
         case "number": { if(!isNaN(value)) final_value = Number(value); };break;
@@ -77,6 +77,10 @@ export default class JsonValidator implements BodyValidator{
         } catch (e) {
           isValid = false;
         }
+      };break;
+
+      case "cep" :{
+          isValid = true;
       };break;
 
       case "cnpj/cpf" : {

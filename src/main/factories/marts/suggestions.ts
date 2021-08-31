@@ -9,8 +9,6 @@ import { item as ItemSchema, suggestion as SuggestionSchema} from './schemas/sug
 import JsonValidator from '../../../libs/JsonValidator'
 import { SchemaRow } from '../../../domain/protocols/ControllerBateries'
 
-
-
 const suggestionSchema: Record<string, SchemaRow> = SuggestionSchema
 const itemSchema: Record<string, SchemaRow> = ItemSchema
 

@@ -2,12 +2,11 @@
 const { hashSync } = require('bcryptjs')
 const faker  = require('faker')
 const { cnpj } = require('cpf-cnpj-validator')
-const { Knex } = require('knex')
 
-const createAddress = (i) =>{
+const createAddress = (id) =>{
   return (
   {
-    id: 'address_test_ID_'+i, 
+    id,
     address: faker.address.streetAddress(),
     address_region: faker.address.county(),
     address_number: Math.ceil(Math.random() * 200),
@@ -28,61 +27,30 @@ const createCheckList = ({mart_id}) =>{
   
 }
 
-
-
-const createFakeMart = (i) =>({
-  id: 'mart_test_ID_0'+i, 
-  name: faker.company.companyName(),
-  email: faker.internet.email(),
+const createFakeMart = ({ id, address_id }) =>({
+  id,
+  name: 'Mercado Teste', 
+  email: "emailtest@mail.com",
   phone: (faker.phone.phoneNumber()).replace(/[^\d]+/g,''),
   cnpj_cpf: (cnpj.generate()).replace(/[^\d]+/g,''),
-  password: Math.random() > 0.5 ? hashSync('123456') : null,
+  password: hashSync('123456'),
   transfer_allowed: Math.random() > 0.5 ? true : false,
   image: null,
   financial_email: faker.internet.email(),
-  responsible_name:"Lucas Fonseca Barreto Test",
+  responsible_name:"Responsavel Estabelecimento teste",
   corporate_name: faker.company.companyName(),
-  address_id: `address_test_ID_${i}`
+  address_id,
 })
 
 exports.seed = async function(knex) {
 
-  const fakers = []
-  const addresses = []
-  for(let i = 1; i < 9; i ++ ){
-    fakers.push(createFakeMart(i))
-    addresses.push(createAddress(i))
-  }
   await knex('addresses').del()
   await knex('marts').del()
-
-  // Inserts seed entries
-  await knex('addresses').insert( [
-    {
-      ...createAddress(999),
-      id: "address_00"
-    },
-    ...addresses ]);
-   
-  await knex('marts').insert([
-        { 
-          id: 'mart_00', 
-          name: 'Mercado Teste', 
-          password: hashSync('123456'),
-          email: "emailtest@mail.com",
-          phone: "2134567892",
-          cnpj_cpf: "16684653216687",
-
-          transfer_allowed: true,
-          image: null,
-          responsible_name:"Lucas Fonseca Barretp",
-          financial_email: faker.internet.email(),
-          corporate_name: faker.company.companyName(),
-          address_id: `address_00`
-        }
-      ]);
-
-    await knex('marts_checklists').insert(createCheckList({mart_id:'mart_00'}))
+  await knex('marts_checklists').del()
+  
+  await knex('addresses').insert( [ createAddress('address_mart_00') ]);
+  await knex('marts').insert([  createFakeMart({ id: 'mart_00', address_id: 'address_mart_00'}) ]);
+  await knex('marts_checklists').insert(createCheckList({mart_id:'mart_00'}))
    
 };
 

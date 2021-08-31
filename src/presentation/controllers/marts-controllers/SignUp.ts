@@ -7,9 +7,9 @@ import { FileSchema } from "../../helpers/FormDataParser";
 import { rows, SignUp as SignupList } from '../../schemas/mart-schemas.json'
 import { InvalidRequestBodyError } from "../../../domain/protocols/Errors/CommonErrors";
 import CreateAddress from "../../../data/address/CreateAdress";
-import CreateAnnex from "../../../data/annex/CreateAnnex";
-
-import mime from 'mime-types'
+import CreateAnnex from "../../../data/mart/annex/CreateAnnex";
+import { SignUpEmailHook } from './emailhooks/index'
+import address from "../../../main/routes/address";
 
 const schemasRows: Record<string, SchemaRow> = rows
 const SignUpSchema:any = {}
@@ -30,53 +30,62 @@ export class SignUpMartController extends MainController {
         private readonly adressValidator: BodyValidator,
         private readonly createAddress: CreateAddress,
         private readonly createNewMart: CreateNewMart,
-        private readonly createAnnex: CreateAnnex
-
+        private readonly createAnnex: CreateAnnex,
+        private readonly hookMailer: SignUpEmailHook,
+   
         ){ super(AccessType.PUBLIC, SignUpSchema, annexSchema ) }
-    async handler(request: Request): Promise<Response> {
 
-        const { body, files } = request
-        const { annexs } = files
-        const { name, email, phone, cnpj_cpf, transfer_allowed, address, responsible_name } = body
+    async validateAddress(json: any) {
 
-        //Validates the address
-        const errors = await this.adressValidator.validate(JSON.parse(address))
+        var address = JSON.parse(json)
+        const errors = await this.adressValidator.validate(address)
         if(errors){
             var outputErr:any= { address:{} }
             Object.keys(errors).map((e:string) =>{ outputErr.address[e]=errors[e] })
-            return  badRequest(InvalidRequestBodyError(outputErr))
+            throw InvalidRequestBodyError(outputErr)
+
         }
+        return address
+    }
 
-        /* Check duplicity */
-        await this.createNewMart.checkDuplicity(cnpj_cpf, email, phone)
-
-        //store adress
-        const storedAddress = await this.createAddress.execute(JSON.parse(address))
-
-        //create new mart
-        const params: CreateMart.Params = {
-            name, email, phone, cnpj_cpf, transfer_allowed,  responsible_name, 
-            obs: "",
-            password : null, 
-            image: null,
-            address_id: storedAddress.id,
-            financial_email: null, 
-            corporate_name: null
-        }
-
-        const stored = await this.createNewMart.execute(params)
-
+    async addAnnexs(annexs:any, mart_id: string){
         if(annexs){
             await Promise.all(annexs.map( async (annex: any) =>{
                 await this.createAnnex.execute({
                     buffer: annex.buffer,
                     contentType: annex.contentType,
-                    mart_id:stored.id,
+                    mart_id,
                     name: (annex.fileName).split('.').slice(0, -1).join('.')
                 })
             }))  
         }
+    }
+    
+    async handler(request: Request): Promise<Response> {
 
+        const { body, files } = request
+        const { annexs } = files
+        var { name, email, phone, cnpj_cpf, transfer_allowed, address, responsible_name } = body
+
+        await this.createNewMart.checkDuplicity(cnpj_cpf, email, phone)
+
+        try{ address = await this.validateAddress(address)
+        }catch(err){ return badRequest(err) }
+
+        const storedAddress = await this.createAddress.execute(address)
+
+        const params: CreateMart.Params = {
+            name, email, phone, cnpj_cpf, transfer_allowed,  responsible_name, 
+            obs: "", password : null, image: null,
+            financial_email: null, corporate_name: null,
+            address_id: storedAddress.id,
+        }
+
+        const stored = await this.createNewMart.execute(params)
+
+        await this.addAnnexs(annexs, stored.id)
+   
+        this.hookMailer.execute(stored)
 
         return success(stored)
     }

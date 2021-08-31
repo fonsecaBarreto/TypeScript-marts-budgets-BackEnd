@@ -1,6 +1,6 @@
-import { DatabaseAdapter } from "../../domain/vendors/DatabaseAdapter";
-import { FileRepository } from "../../domain/vendors/FileRepository";
-import { IdGenerator } from "../../domain/vendors/Utils";
+import { DatabaseAdapter } from "../../../domain/vendors/DatabaseAdapter";
+import { FileRepository } from "../../../domain/vendors/FileRepository";
+import { IdGenerator } from "../../../domain/vendors/Utils";
 
 export namespace CreateAnnex {
     export type Params = {
