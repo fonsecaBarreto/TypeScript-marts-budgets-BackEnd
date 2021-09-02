@@ -45,7 +45,7 @@ class ItemsSearchController extends MainController_1.MainController {
     async searchForProduct(text_words, brands, categories) {
         if (text_words.length === 0)
             return [];
-        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id', 'brand_id']);
+        let pruductsQuery = this.knexConnection('products').select([]);
         var allowedItemsByCategories = await this.knexConnection('product_items').whereIn('category_id', categories);
         if (text_words) {
             pruductsQuery.andWhere((query) => {
