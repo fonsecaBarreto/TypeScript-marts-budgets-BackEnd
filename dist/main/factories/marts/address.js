@@ -13,12 +13,10 @@ const JsonValidator_1 = __importDefault(require("../../../libs/JsonValidator"));
 const { idGenerator } = index_1.vendors;
 const { addressRepository } = index_1.repositories;
 exports.validator = new JsonValidator_1.default(Address_Schema_json_1.default);
-/* usecases */
 exports.usecases = {
     createAddress: new CreateAdress_1.default(idGenerator, addressRepository),
     updateAddress: new UpdateAddress_1.default(addressRepository)
 };
-/* controllers */
 exports.controllers = {
     updateAddressController: new Crud_1.UpdateAddressController(exports.usecases.updateAddress)
 };

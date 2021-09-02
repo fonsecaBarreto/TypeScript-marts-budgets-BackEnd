@@ -11,4 +11,3 @@ const MakeOrderView = (martsRepository) => {
     };
 };
 exports.MakeOrderView = MakeOrderView;
-//create a Productview Serializer

@@ -22,4 +22,3 @@ class ListOrdersLatest extends MainController_1.MainController {
     }
 }
 exports.ListOrdersLatest = ListOrdersLatest;
-//

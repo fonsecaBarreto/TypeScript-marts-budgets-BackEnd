@@ -12,7 +12,6 @@ const ItemsScrewView_1 = require("../../presentation/controllers/products-items-
 const ListItems_1 = require("../../presentation/controllers/products-items-controllers/ListItems");
 const ItemsSearchController_1 = require("../../presentation/controllers/products-items-controllers/ItemsSearchController");
 const KnexAdapter_1 = __importDefault(require("../../libs/KnexAdapter"));
-/* serialiex */
 const products_1 = require("./products");
 const ItemView_1 = require("../../presentation/controllers/products-items-controllers/serializers/ItemView");
 const FullItemView_1 = require("../../presentation/controllers/products-items-controllers/serializers/FullItemView");
@@ -22,7 +21,6 @@ exports.serializers = {
     itemView: ItemView_1.MakeItemView(categoriesRepository),
     itemFullview: FullItemView_1.MakeItemFullView(categoriesRepository, productsRepository, products_1.serializers.productView)
 };
-/* crud */
 exports.createItemController = new CreateProductItem_1.CreateProductItemController(itemsRepository, categoriesRepository, idGenerator, exports.serializers.itemView);
 exports.updateItemController = new UpdateProductItem_1.UpdateProductItemController(itemsRepository, categoriesRepository, exports.serializers.itemView);
 exports.findItemController = new ReadDelete_1.FindController(itemsRepository, exports.serializers.itemView);

@@ -14,7 +14,7 @@ class FormDataParser {
         if (!this.fileSchema)
             return null;
         const formidable = formidable_1.default({ multiples: true });
-        var filesBuffer = {}; //result
+        var filesBuffer = {};
         const fieldNames = Object.keys(this.fileSchema);
         return new Promise((resolve, reject) => {
             formidable.parse(request, async (err, fields) => {
@@ -35,8 +35,8 @@ class FormDataParser {
             formidable.onPart = (part) => {
                 if (!part.filename || !part.mime) {
                     formidable.handlePart(part);
-                } // all non-files will pass
-                if (part.mime && fieldNames.includes(part.name)) { // Handle files
+                }
+                if (part.mime && fieldNames.includes(part.name)) {
                     const { max_size, types, multiples } = this.fileSchema[part.name];
                     partNameCount[part.name] = partNameCount[part.name] ? partNameCount[part.name] + 1 : 1;
                     if (partNameCount[part.name] > multiples)

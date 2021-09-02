@@ -56,7 +56,7 @@ class JsonValidator {
                 delete body[param];
             }
         });
-        var initialBody = { ...body }; // clone body
+        var initialBody = { ...body };
         Object.keys(this.schema).forEach(field => {
             const { type } = this.schema[field];
             var value = initialBody[field];

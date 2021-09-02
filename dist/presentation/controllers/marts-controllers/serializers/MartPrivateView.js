@@ -10,7 +10,6 @@ const MakeMartPrivateView = (addressRepository, annexsRepository, checklistsRepo
         if (checkListExists) {
             checkList = checkListExists;
         }
-        // Should i have a universal database seearker i think it is better this way
         const address = !mart.address_id ? null : await addressRepository.find({ id: mart.address_id });
         const annexes = await annexsRepository.list({ mart_id: mart.id });
         const novo = ({ ...mart, address, annexes, checkList, isActive: mart.password ? true : false });

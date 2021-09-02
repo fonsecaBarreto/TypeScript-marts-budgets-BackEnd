@@ -18,13 +18,11 @@ const Crud_1 = require("../../../presentation/controllers/marts-controllers/Crud
 const SignUp_1 = require("../../../presentation/controllers/marts-controllers/SignUp");
 const Join_1 = require("../../../presentation/controllers/marts-controllers/Join");
 const ListMarts_1 = require("../../../presentation/controllers/marts-controllers/ListMarts");
-/* dependencies */
+const EmailHooks_1 = require("../EmailHooks");
 const { idGenerator, hasher, encrypter, mailer, fileRepository, passwordGenerator } = index_1.vendors;
 const { martsRepository, addressRepository, martannexsRepository, martsChecklistsRepository } = index_1.repositories;
-/* instaces */
 exports.createMart = new CreateMart_1.default(martsRepository, idGenerator, hasher, addressRepository, checkList_1.usecases.createCheckList);
 exports.findMart = new FindMart_1.default(martsRepository);
-/* Controllers */
 exports.serializers = {
     martPrivateView: MartPrivateView_1.MakeMartPrivateView(addressRepository, martannexsRepository, martsChecklistsRepository)
 };
@@ -38,7 +36,7 @@ exports.controllers = {
         remove: new Crud_1.RemoveController(martsRepository, addressRepository, martannexsRepository, fileRepository),
     },
     login: {
-        signup: new SignUp_1.SignUpMartController(address_1.validator, address_1.usecases.createAddress, exports.createMart, annexs_1.usecases.createAnnex, mailer, 'contato@unacompras.com.br'),
+        signup: new SignUp_1.SignUpMartController(address_1.validator, address_1.usecases.createAddress, exports.createMart, annexs_1.usecases.createAnnex, EmailHooks_1.signUpEmailHook),
         signin: new Login_1.MartsSignInController(martsRepository, encrypter, hasher),
         auth: new Login_1.AuthMartController(checkList_1.usecases.updateCheckList, exports.serializers.martPrivateView),
         resetPassword: new ResetPassword_1.ResetPassword(martsRepository, mailer, encrypter, keys_1.default.react_client),

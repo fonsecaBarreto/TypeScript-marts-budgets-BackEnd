@@ -54,20 +54,18 @@ class ListOrdersByFilter extends MainController_1.MainController {
     async findByProductParams(query, queryCount, productsDescription, brands_ids, items_ids) {
         if (!productsDescription && brands_ids.length == 0)
             return;
-        //get to Know all the allowed products
         let pruductsQuery = this.knexConnection('products').select("id");
         if (productsDescription) {
             pruductsQuery.andWhere((query) => {
                 query.orWhere(`products.description`, 'ilike', `%${productsDescription}%`);
                 query.orWhere(`products.ean`, 'ilike', `%${productsDescription}%`);
-                /*  query.orWhere({ ean :`${productsDescription}%`}) */
             });
         }
         if (brands_ids.length > 0) {
-            pruductsQuery.whereIn(`brand_id`, brands_ids); // filter
+            pruductsQuery.whereIn(`brand_id`, brands_ids);
         }
         if (items_ids.length > 0) {
-            pruductsQuery.orWhereIn('products.item_id', items_ids); //includes
+            pruductsQuery.orWhereIn('products.item_id', items_ids);
         }
         let allowedProducts = await pruductsQuery;
         console.log('allowed', allowedProducts);
@@ -84,9 +82,9 @@ class ListOrdersByFilter extends MainController_1.MainController {
         return [];
     }
     async handler(request) {
-        const MAX_DATE = this.isDateValid(request.query.d); //Date
+        const MAX_DATE = this.isDateValid(request.query.d);
         var BRANDS = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [request.query.b] : [];
-        const PRODUCT_DESCRIPTION = request.query.p || null; // text
+        const PRODUCT_DESCRIPTION = request.query.p || null;
         const totalOrders = await this.knexConnection('orders').count('id', { as: 'count' }).first();
         const TOTAL = totalOrders ? Number(totalOrders.count) : 0;
         const query = this.knexConnection('orders').where({});
@@ -107,4 +105,3 @@ class ListOrdersByFilter extends MainController_1.MainController {
     }
 }
 exports.ListOrdersByFilter = ListOrdersByFilter;
-//

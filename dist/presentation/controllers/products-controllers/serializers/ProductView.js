@@ -13,4 +13,3 @@ const MakeProductView = (brandsRepository, itemsRepository) => {
     };
 };
 exports.MakeProductView = MakeProductView;
-//create a Productview Serializer

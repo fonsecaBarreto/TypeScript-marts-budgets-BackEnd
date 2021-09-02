@@ -24,7 +24,7 @@ class JoinMartController extends MainController_1.MainController {
         const password_hash = await this.hasher.hash(password);
         await this.marsRepository.update({ id }, { password: password_hash });
         this.mailer.send(exists.email, "Bem Vindo ao UnaCompras", UnoCompras_1.UnoComprasTemplate(`
-            <h2> Bem Vindo ao UnoCompra  </h2>
+            <h2> Bem Vindo ao UnaCompras  </h2>
             <h2 style=" color: #333; font-size:20px;"> Sua Senha:</h2>
             <h2 style="padding: 10px 32px; border: dashed 3px #ccc; width: fit-content; margin:auto">
                 ${password}

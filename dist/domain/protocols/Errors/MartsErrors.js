@@ -21,4 +21,3 @@ const MartAlreadyVerifiedError = () => (new ApplicationError_1.default('MartAlre
 exports.MartAlreadyVerifiedError = MartAlreadyVerifiedError;
 const CorporateNameInUseError = () => (new ApplicationError_1.default('CorporateNameInUseError', "Razão social já está em uso", { 'corporate_name': "Razão social já está em uso" }));
 exports.CorporateNameInUseError = CorporateNameInUseError;
-/*  */

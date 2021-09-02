@@ -50,7 +50,7 @@ class XlsxAdapter {
         var newWs = xlsx_1.default.utils.json_to_sheet(data);
         xlsx_1.default.utils.book_append_sheet(newWb, newWs, sheetName);
         const buffer = xlsx_1.default.write(newWb, { bookType: "xlsx", type: "buffer" });
-        const stream = bufferToStream(buffer); // convert buffer to stream
+        const stream = bufferToStream(buffer);
         return { stream, size: buffer.length };
     }
 }

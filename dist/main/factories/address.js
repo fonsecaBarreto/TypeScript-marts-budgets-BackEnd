@@ -10,10 +10,8 @@ const UpdateAddress_1 = __importDefault(require("../../data/address/UpdateAddres
 const Crud_1 = require("../../presentation/controllers/address-controllers/Crud");
 const { idGenerator } = depedencies_1.vendors;
 const { addressRepository } = depedencies_1.repositories;
-/* usecases */
 exports.createAddress = new CreateAdress_1.default(idGenerator, addressRepository);
 exports.updateAddress = new UpdateAddress_1.default(addressRepository);
-/* controllers */
 exports.controllers = {
     updateAddressController: new Crud_1.UpdateAddressController(exports.updateAddress)
 };

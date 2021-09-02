@@ -17,7 +17,6 @@ const ServerError = () => (new ApplicationError_1.default('ServerError', "Erro n
 exports.ServerError = ServerError;
 const AddressNotFoundError = () => (new ApplicationError_1.default('AddressNotFoundError', "Endereço não encontrado", { 'address_id': "Endereço não encontrado" }));
 exports.AddressNotFoundError = AddressNotFoundError;
-/* files */
 const InvalidFileBufferError = (types, limit, param, fileName) => {
     const list = types.map(t => (` .${t.substring(t.lastIndexOf("/") + 1, t.length)}`));
     const limitMb = (limit / (1024 * 1024)).toFixed(2);

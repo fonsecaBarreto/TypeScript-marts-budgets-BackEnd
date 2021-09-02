@@ -24,9 +24,8 @@ class CreateCategoryController extends MainController_1.MainController {
             if (!fatherExists)
                 throw Errors_1.CategoryNotFoundError();
             if (fatherExists.id === id)
-                throw Errors_1.CategoryConflictError(); //Should not be father of it self
+                throw Errors_1.CategoryConflictError();
         }
-        /* persistence */
         if (request.params.id) {
             stored = await this.categoryRepository.update({ id }, { name, category_id });
         }

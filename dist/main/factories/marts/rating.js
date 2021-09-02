@@ -11,15 +11,12 @@ const rating_Schema_json_1 = __importDefault(require("./schemas/rating-Schema.js
 const RatingPrivateView_1 = require("../../../presentation/controllers/marts-controllers/rating/serializers/RatingPrivateView");
 const { idGenerator } = index_1.vendors;
 const { ratingRepository, martsRepository } = index_1.repositories;
-/* serializers */
 exports.serializers = {
     ratingPrivateView: RatingPrivateView_1.MakeRatingPrivateView(martsRepository)
 };
-/* usecases */
 exports.usecases = {
     createRating: new CreateRating_1.CreateRating(idGenerator, ratingRepository),
 };
-/* controllers */
 exports.controllers = {
     rate: new rating_1.MakeRatingontroller(rating_Schema_json_1.default, exports.usecases.createRating),
     list: new rating_1.FindRatingController(ratingRepository, exports.serializers.ratingPrivateView)

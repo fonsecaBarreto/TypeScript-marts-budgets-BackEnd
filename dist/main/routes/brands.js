@@ -4,7 +4,6 @@ const brands_1 = require("../factories/brands");
 exports.default = (router) => {
     router.get('/brands/list', brands_1.listAllbrands.execute());
     router.get("/brands/screw", brands_1.listBrandsScrewView.execute());
-    /*  admin */
     router.route('/brands')
         .get(brands_1.findBrandController.execute())
         .post(brands_1.createBrandController.execute());

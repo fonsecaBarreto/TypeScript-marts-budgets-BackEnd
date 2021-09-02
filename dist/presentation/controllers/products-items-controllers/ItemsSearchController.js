@@ -44,7 +44,7 @@ class ItemsSearchController extends MainController_1.MainController {
     }
     async searchForProduct(text_words, brands, categories) {
         if (text_words.length === 0)
-            return []; //get to Know all the allowed products
+            return [];
         let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id', 'brand_id']);
         var allowedItemsByCategories = await this.knexConnection('product_items').whereIn('category_id', categories);
         if (text_words) {
@@ -82,7 +82,6 @@ class ItemsSearchController extends MainController_1.MainController {
         }
     }
     async handler(request) {
-        /* Queries iniciais */
         const text = request.query.v || '';
         var text_words = text.trim().split(" ");
         text_words = text_words.filter((c) => ((c !== "") && (c !== "de") && (c !== "para")));
@@ -90,24 +89,20 @@ class ItemsSearchController extends MainController_1.MainController {
         var brands = (request.query.b) ? Array.isArray(request.query.b) ? request.query.b : [request.query.b] : [];
         const offset = Number(request.query.o) || 0;
         console.log("searching for", text_words);
-        /* Instanciando o resultado */
         var result = {
             total: await this.getTotal(),
             subTotal: 0,
             items: [],
             related_items: []
         };
-        /* Buscando o item pela pesquisa de categoria e nome */
         const { items, subTotal } = await this.searchForItem(offset, text_words, categories);
         result.items = items;
         result.subTotal = subTotal;
         const itemsFound = result.items.map((j, i) => (j.id));
-        /* Produtos encontrados pele pesquisa em texto */
         const productsFound = await this.searchForProduct(text_words, brands, categories);
         var relatedProduts = [...new Set(productsFound.map((p) => (p.id)))];
         var relatedItems = [...new Set(productsFound.map((p) => (p.item_id)))];
         relatedItems = relatedItems.filter((r, i) => (!itemsFound.includes(r)));
-        /* relatedItems são os items em que existem produtos que correspondem a pesuqisa de texto, com a exeção dos que ja existes */
         result.related_items = await Promise.all(relatedItems.map(async (item_id, i) => {
             var products = [];
             var item = await this.knexConnection('product_items').where({ id: item_id }).select("id", 'name', "description").first();
@@ -130,9 +125,7 @@ class ItemsSearchController extends MainController_1.MainController {
                     matched_words.push(n);
                 }
             });
-            /*  */
             if ((relatedProduts === null || relatedProduts === void 0 ? void 0 : relatedProduts.length) > 0) {
-                //contar quantos produtos atendem a pesquisa para reposiciona-los
                 products.forEach(p => {
                     if (relatedProduts.includes(p.id)) {
                         products_matched_count += 1;
@@ -140,7 +133,6 @@ class ItemsSearchController extends MainController_1.MainController {
                 });
                 products.sort((a, b) => !relatedProduts.includes(a.id) ? 1 : -1);
             }
-            //Destacar o produto aqui tb
             products = await Promise.all(products.map(async (p) => {
                 var distac = false;
                 var serialized = await this.serializer(p);
@@ -151,7 +143,6 @@ class ItemsSearchController extends MainController_1.MainController {
             }));
             return ({ ...j, products_matched_count, matched_words, products, });
         }));
-        //leva ao topo o item onde mais produtos foram encontrados
         result.items.sort((a, b) => (a.products_matched_count < b.products_matched_count ? 1 : -1));
         return http_helper_1.success(result);
     }

@@ -12,7 +12,6 @@ const { idGenerator, fileRepository, imageTransformer } = depedencies_1.vendors;
 exports.serializers = {
     productView: ProductView_1.MakeProductView(brandsRepository, itemsRepository)
 };
-/* crud */
 exports.createProductController = new CreateProduct_1.CreateProductController(productsRepository, itemsRepository, brandsRepository, idGenerator, fileRepository, imageTransformer, exports.serializers.productView);
 exports.updateProductController = new UpdateProduct_1.UpdateProductController(productsRepository, itemsRepository, brandsRepository, fileRepository, imageTransformer, exports.serializers.productView);
 exports.findProductController = new ReadDelete_1.FindController(productsRepository, exports.serializers.productView);

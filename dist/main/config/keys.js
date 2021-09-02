@@ -5,8 +5,9 @@ dotenv_1.config();
 exports.default = {
     node_env: process.env.NODE_ENV || 'test',
     port: process.env.PORT || 9000,
-    react_client: process.env.REACT_CLIENT,
     jwt_secret: process.env.JWT_ECRET || 'test_secret',
+    hook_email: process.env.HOOK_EMAIL,
+    react_client: process.env.REACT_CLIENT,
     email_address: process.env.EMAIL_ADDRESS,
     email_password: process.env.EMAIL_PASSWORD,
     aws_uploads_bucket: process.env.AWS_UPLOADS_BUCKET,

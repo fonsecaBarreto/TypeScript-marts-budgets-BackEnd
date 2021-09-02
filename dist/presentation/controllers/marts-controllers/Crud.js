@@ -31,7 +31,6 @@ class CreateMartController extends MainController_1.MainController {
         }
         await this.createNewMart.checkDuplicity(cnpj_cpf, email, phone, corporate_name, financial_email);
         const storedAddress = await this.createAddress.execute(JSON.parse(address));
-        //create new mart
         const params = {
             name, email, phone, cnpj_cpf, transfer_allowed, password,
             image: null,
@@ -60,7 +59,6 @@ class UpdateMartController extends MainController_1.MainController {
     }
 }
 exports.UpdateMartController = UpdateMartController;
-/* Find, Remove, List */
 class FindController extends MainController_1.MainController {
     constructor(findApp, serializer) {
         super(MainController_1.AccessType.ADMIN);
@@ -109,7 +107,6 @@ class RemoveController extends MainController_1.MainController {
                 }
             }));
         }
-        //Anexos Should be deleted here
         await this.martsRepository.remove({ id });
         return http_helper_1.success();
     }

@@ -5,7 +5,7 @@
         "missingMessage": "Informe seu Bairro" },
     "address_number": { "type": "string", "label": "Numero",
         "missingMessage": "Informe o Numero" },
-    "address_postalcode": { "type": "string", "label": "CEP",
+    "address_postalcode": { "type": "cep", "label": "CEP",
         "missingMessage": "Informe um CEP válido" },
     "address_city": { "type": "string", "label": "Cidade",
         "missingMessage": "Informe sua Cidade" },

@@ -20,7 +20,7 @@ class FilterListItem extends MainController_1.MainController {
         if (brands.length === 0)
             return [];
         let productsBrandsQuery = this.knexConnection('products').select(["id", 'description', 'item_id']);
-        if (brands.length > 0) { //produtos com marca tal
+        if (brands.length > 0) {
             productsBrandsQuery.where((query) => {
                 query.whereIn('products.brand_id', brands);
             });
@@ -73,15 +73,13 @@ class FilterListItem extends MainController_1.MainController {
         if (item_name) {
             await this.findByItemsName(query, count_query, item_name);
         }
-        if (product_description) { // werent found any product, it doesnt return the item as well
+        if (product_description) {
             requiredProducts = await this.findByProductParams(query, count_query, product_description, brands);
         }
         const queryResult = await query;
         const count = await count_query.count('id', { as: 'count' }).first();
         result.subTotal = count ? Number(count.count) : 0;
         result.data = queryResult;
-        //whether gettin the products frominside de item
-        // if where giben a products_descriptionand it should use required products to filter
         result.data = await Promise.all(queryResult.map(async (i) => {
             let products = [];
             const productsquery = this.knexConnection('products').where({ item_id: i.id });
@@ -91,11 +89,10 @@ class FilterListItem extends MainController_1.MainController {
                 });
             }
             products = await productsquery;
-            products = await Promise.all(products.map(p => (this.serializer(p)))); // serializer it with date needed
+            products = await Promise.all(products.map(p => (this.serializer(p))));
             return { ...i, products };
         }));
         return http_helper_1.success(result);
     }
 }
 exports.FilterListItem = FilterListItem;
-/*   products.sort((a, b) => !matchedProducts.includes(a.id) ? 1 : -1)  */ 

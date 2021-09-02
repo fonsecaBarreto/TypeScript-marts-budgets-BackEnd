@@ -15,13 +15,10 @@ const ProductItemNotFoundError = () => (new ApplicationError_1.default('ProductI
 exports.ProductItemNotFoundError = ProductItemNotFoundError;
 const ProviderNotFoundError = () => (new ApplicationError_1.default('ProviderNotFoundError', "Fornecedor Não encontado ", { 'provider_id': "Fornecedor Desconhecido." }));
 exports.ProviderNotFoundError = ProviderNotFoundError;
-/* categories */
 const CategoryConflictError = () => (new ApplicationError_1.default('CategoryConflictError', "Categoria não pode herdar de si mesmo", { 'category_id': "Categoria não pode herdar de si mesmo" }));
 exports.CategoryConflictError = CategoryConflictError;
-/*  Products */
 const ProductCodeInUseError = (param) => (new ApplicationError_1.default('ProductCodeInUseError', ` ${param} já esta em uso`, { param: ` ${param} já esta em uso` }));
 exports.ProductCodeInUseError = ProductCodeInUseError;
-/* Orders */
 const InvalidForecastDateError = () => (new ApplicationError_1.default('InvalidForecastDateError', `Data prevista deve ser posterior a atual`, { forecast: `Data prevista deve ser posterior a atual` }));
 exports.InvalidForecastDateError = InvalidForecastDateError;
 const MinimumQuantityError = () => (new ApplicationError_1.default('MinimumQuantityError', `Informe a quantidade desejada`, { quantity: `Informe a quantidade desejada` }));

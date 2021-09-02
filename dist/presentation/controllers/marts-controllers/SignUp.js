@@ -17,57 +17,57 @@ const annexSchema = {
     }
 };
 class SignUpMartController extends MainController_1.MainController {
-    constructor(adressValidator, createAddress, createNewMart, createAnnex, mailerAdapter, hookEmail) {
+    constructor(adressValidator, createAddress, createNewMart, createAnnex, hookMailer) {
         super(MainController_1.AccessType.PUBLIC, SignUpSchema, annexSchema);
         this.adressValidator = adressValidator;
         this.createAddress = createAddress;
         this.createNewMart = createNewMart;
         this.createAnnex = createAnnex;
-        this.mailerAdapter = mailerAdapter;
-        this.hookEmail = hookEmail;
+        this.hookMailer = hookMailer;
     }
-    async handler(request) {
-        const { body, files } = request;
-        const { annexs } = files;
-        const { name, email, phone, cnpj_cpf, transfer_allowed, address, responsible_name } = body;
-        //Validates the address
-        const errors = await this.adressValidator.validate(JSON.parse(address));
+    async validateAddress(json) {
+        var address = JSON.parse(json);
+        const errors = await this.adressValidator.validate(address);
         if (errors) {
             var outputErr = { address: {} };
             Object.keys(errors).map((e) => { outputErr.address[e] = errors[e]; });
-            return http_helper_1.badRequest(CommonErrors_1.InvalidRequestBodyError(outputErr));
+            throw CommonErrors_1.InvalidRequestBodyError(outputErr);
         }
-        /* Check duplicity */
-        await this.createNewMart.checkDuplicity(cnpj_cpf, email, phone);
-        //store adress
-        const storedAddress = await this.createAddress.execute(JSON.parse(address));
-        //create new mart
-        const params = {
-            name, email, phone, cnpj_cpf, transfer_allowed, responsible_name,
-            obs: "",
-            password: null,
-            image: null,
-            address_id: storedAddress.id,
-            financial_email: null,
-            corporate_name: null
-        };
-        const stored = await this.createNewMart.execute(params);
+        return address;
+    }
+    async addAnnexs(annexs, mart_id) {
         if (annexs) {
             await Promise.all(annexs.map(async (annex) => {
                 await this.createAnnex.execute({
                     buffer: annex.buffer,
                     contentType: annex.contentType,
-                    mart_id: stored.id,
+                    mart_id,
                     name: (annex.fileName).split('.').slice(0, -1).join('.')
                 });
             }));
         }
+    }
+    async handler(request) {
+        const { body, files } = request;
+        const { annexs } = files;
+        var { name, email, phone, cnpj_cpf, transfer_allowed, address, responsible_name } = body;
+        await this.createNewMart.checkDuplicity(cnpj_cpf, email, phone);
         try {
-            this.mailerAdapter.send(this.hookEmail, "Novo Usuario Cadastrado", `${JSON.stringify(stored)}`);
+            address = await this.validateAddress(address);
         }
         catch (err) {
-            console.log(err);
+            return http_helper_1.badRequest(err);
         }
+        const storedAddress = await this.createAddress.execute(address);
+        const params = {
+            name, email, phone, cnpj_cpf, transfer_allowed, responsible_name,
+            obs: "", password: null, image: null,
+            financial_email: null, corporate_name: null,
+            address_id: storedAddress.id,
+        };
+        const stored = await this.createNewMart.execute(params);
+        await this.addAnnexs(annexs, stored.id);
+        this.hookMailer.execute(stored);
         return http_helper_1.success(stored);
     }
 }

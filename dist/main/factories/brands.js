@@ -7,7 +7,6 @@ const BrandsScrewView_1 = require("../../presentation/controllers/bands-controll
 const ListAllBrands_1 = require("../../presentation/controllers/bands-controllers/ListAllBrands");
 const { brandsRepository } = depedencies_1.repositories;
 const { idGenerator } = depedencies_1.vendors;
-/* crud */
 exports.createBrandController = new Crud_1.CreateBrandController(brandsRepository, idGenerator);
 exports.updateBrandController = new Crud_1.CreateBrandController(brandsRepository, idGenerator);
 exports.findBrandController = new Crud_1.FindController(brandsRepository);

@@ -28,4 +28,3 @@ const MapCategoryListView = (categoriesRepository, categories) => {
     }));
 };
 exports.MapCategoryListView = MapCategoryListView;
-/* tree */

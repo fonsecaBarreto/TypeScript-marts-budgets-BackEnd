@@ -56,7 +56,7 @@ class JsonValidator {
                 delete body[param];
             }
         });
-        var initialBody = { ...body }; // clone body
+        var initialBody = { ...body };
         Object.keys(this.schema).forEach(field => {
             const { type } = this.schema[field];
             var value = initialBody[field];
@@ -64,6 +64,9 @@ class JsonValidator {
             if (final_value == null)
                 return body[field] = null;
             switch (type) {
+                case "cep":
+                    final_value = (value + "").replace(/[^\d]+/g, '');
+                    break;
                 case "cnpj/cpf":
                     final_value = (value + "").replace(/[^\d]+/g, '');
                     break;
@@ -100,6 +103,12 @@ class JsonValidator {
                     catch (e) {
                         isValid = false;
                     }
+                }
+                ;
+                break;
+            case "cep":
+                {
+                    isValid = true;
                 }
                 ;
                 break;

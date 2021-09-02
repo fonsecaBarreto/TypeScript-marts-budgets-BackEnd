@@ -20,7 +20,6 @@ const MakeItemFullView = (categoryRepository, productsRepository, productSeriali
                     return await productSerializer(p);
                 }))
             ];
-        //lis tproducts here
         return { ...item, category_name, products };
     };
 };

@@ -19,7 +19,6 @@ const { idGenerator } = depedencies_1.vendors;
 exports.serializers = {
     providerPrivateView: ProviderPrivateView_1.MakeProviderPrivateView(addressRepository)
 };
-/* crud */
 exports.createProviderController = new Crud_1.CreateProviderController(addressValidator, address_1.createAddress, providersRepository, idGenerator, exports.serializers.providerPrivateView, provider_schemas_json_1.Create);
 exports.updateProviderController = new Crud_1.CreateProviderController(addressValidator, address_1.createAddress, providersRepository, idGenerator, exports.serializers.providerPrivateView, provider_schemas_json_1.Update);
 exports.findProviderController = new Crud_1.FindController(providersRepository, exports.serializers.providerPrivateView);

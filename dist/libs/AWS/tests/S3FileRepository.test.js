@@ -46,34 +46,4 @@ describe("Should upload file using aws s3", () => {
         const sut = makeSut();
         await sut.remove(`${data}/name_test.jpg`);
     });
-    /* describe("Download", () => {
-      test('Should get full Object ', async () =>{
-        const sut = makeSut()
-        const result = await sut.download({ name: "test/name_test.jpg" })
-        expect(result).toHaveProperty('size')
-        expect(result).toHaveProperty('contentType')
-        expect(result).toHaveProperty('body')
-        expect(result.body).toBeTruthy()
-      })
-    })
-    describe("Stream", () => {
-      test('Should stream object ', async () =>{
-        const sut = makeSut()
-        const result = await sut.stream({ name: "test/name_test.jpg" })
-        expect(result).toHaveProperty('size')
-        expect(result).toHaveProperty('contentType')
-        expect(result).toHaveProperty('body')
-        expect(result.body).toBeTruthy()
-      })
-    })
-    describe("Get data", () => {
-      test('Should get object data', async () =>{
-        const sut = makeSut()
-        const result = await sut.getMetaData({ name: "test/name_test.jpg" })
-        expect(result).toHaveProperty('size')
-        expect(result).toHaveProperty('contentType')
-        expect(result).toHaveProperty('body')
-        expect(result.body).toBeFalsy()
-      })
-    })  */
 });
