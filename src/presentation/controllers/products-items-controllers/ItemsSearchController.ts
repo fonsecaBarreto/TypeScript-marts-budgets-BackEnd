@@ -76,7 +76,7 @@ export class ItemsSearchController extends MainController{
 
     async searchForProduct(text_words: string, brands: string[], categories:string[]): Promise<string[]> {
         if(text_words.length === 0 ) return [] //get to Know all the allowed products
-        let pruductsQuery = this.knexConnection('products').select(["id", 'description', 'item_id','brand_id'])
+        let pruductsQuery = this.knexConnection('products').select([])
  
         var allowedItemsByCategories = await this.knexConnection('product_items').whereIn('category_id', categories)
 
