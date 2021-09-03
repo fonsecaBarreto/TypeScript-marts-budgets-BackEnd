@@ -9,6 +9,7 @@ export interface MartsCheckList {
     mart_id: string,
     access_number: number,
     first_suggestions: boolean, 
+    first_rating: boolean,
 }
 
 export interface MartsRating {

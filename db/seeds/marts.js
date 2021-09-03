@@ -22,7 +22,8 @@ const createCheckList = ({mart_id}) =>{
   {
     mart_id, 
     access_number: 0,
-    first_suggestions:false
+    first_suggestions:false,
+    first_rating: false
   })
   
 }
