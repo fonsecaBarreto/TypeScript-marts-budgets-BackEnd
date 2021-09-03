@@ -92,10 +92,7 @@ export class FindController  extends MainController{
         
         if(request.params.id){
             return success(await this.serializer(result))
-        }else{
-
-            return success(await MapMarts( result, this.serializer))
-        }
+        }else {  return success(await MapMarts( result, this.serializer))  }
     }
 }
 

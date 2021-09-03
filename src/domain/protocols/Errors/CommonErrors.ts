@@ -1,6 +1,6 @@
 import ApplicationError from './ApplicationError'
 
-export const InvalidRequestBodyError = (errors: Record<string, string>) => (
+export const InvalidRequestBodyError = (errors: Record<string, any>) => (
     new ApplicationError("InvalidRequestBodyError", "Preencha todos os campos corretamente!", errors))
 
 export const AccessDeniedError = () => (

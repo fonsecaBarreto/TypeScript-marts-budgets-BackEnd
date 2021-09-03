@@ -1,6 +1,6 @@
 import { Addresses } from '../../src/domain/entities/Addresses'
 import faker from 'faker'
-export const MakeFakeAddress = ( fields: Partial<Addresses>): Addresses =>{
+export const MakeFakeAddress = ( fields?: Partial<Addresses>): Addresses =>{
     return (
     {
       id: "test_01",

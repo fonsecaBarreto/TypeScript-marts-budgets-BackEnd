@@ -2,7 +2,14 @@ import { Addresses } from "../../domain/entities/Addresses"
 import { DatabaseAdapter } from "../../domain/vendors/DatabaseAdapter"
 import { IdGenerator } from "../../domain/vendors/Utils"
 
+
+
 export namespace CreateAddress {
+
+    export interface ICreateAddress {
+        execute(params: CreateParams ): Promise<Addresses> 
+    }
+
     export type CreateParams = {
         address: string,
         address_region: string, 
@@ -14,7 +21,7 @@ export namespace CreateAddress {
     }
 }
 
-export default class CreateAddress {
+export default class CreateAddress implements CreateAddress.ICreateAddress {
     constructor(
         private readonly idGenerator: IdGenerator,
         private readonly addressRepository: DatabaseAdapter
@@ -34,3 +41,4 @@ export default class CreateAddress {
         return await this.addressRepository.find({id})
     }
 }
+

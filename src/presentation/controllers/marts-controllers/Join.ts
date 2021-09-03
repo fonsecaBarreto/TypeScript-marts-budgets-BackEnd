@@ -13,7 +13,7 @@ export class JoinMartController extends MainController {
         private readonly marsRepository: DatabaseAdapter,
         private readonly passwordGenerator: PasswordGenerator,
         private readonly hasher: Hasher,
-        private readonly mailer: Mailer
+        private readonly hooks:  Function
     ){
         super(AccessType.ADMIN)
      }
@@ -31,14 +31,9 @@ export class JoinMartController extends MainController {
 
         await this.marsRepository.update({id}, { password: password_hash })
 
-        this.mailer.send(exists.email,"Bem Vindo ao UnaCompras", UnoComprasTemplate(`
-            <h2> Bem Vindo ao UnaCompras  </h2>
-            <h2 style=" color: #333; font-size:20px;"> Sua Senha:</h2>
-            <h2 style="padding: 10px 32px; border: dashed 3px #ccc; width: fit-content; margin:auto">
-                ${password}
-            </h2>
-        `))
         const updated = await this.marsRepository.find({id})
+
+        try{ this.hooks({ ...updated, password}) }catch(err){console.log(err)}
 
         return success(updated)
 

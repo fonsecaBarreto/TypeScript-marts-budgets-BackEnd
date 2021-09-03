@@ -58,7 +58,7 @@ export abstract class ExpressController implements AppController {
                 const response = await this.handler(request)
                 sendResponse(res, response)
 
-            } catch(err) {   
+            } catch(err: any) {   
                 if( err?.code == "ApplicationError" ){ return sendResponse(res, { status: 403, body: err }) }
                 console.log( console.log("\n *Error: ", err.stack) )
                 return sendResponse(res, { status: 500, body: ServerError() }) 

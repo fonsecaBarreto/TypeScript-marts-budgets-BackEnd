@@ -3,6 +3,7 @@ import { AddressNotFoundError, CpfCnpjInUseError, EmailInUseError, MartNotFoundE
 import { CorporateNameInUseError, FinancialEmailInUseError } from "../../domain/protocols/Errors/MartsErrors";
 import { DatabaseAdapter } from "../../domain/vendors/DatabaseAdapter";
 import { Hasher, IdGenerator } from "../../domain/vendors/Utils";
+import { updateAddress } from "../../main/factories/address";
 import { CreateCheckList } from "./checklist";
 
 export namespace CreateMart {
@@ -32,9 +33,14 @@ export namespace CreateMart {
         corporate_name:string,
         obs:string,
     }
+    export interface ICreateMart {
+        update(params: CreateMart.UpdateParams): Promise<MartModel>
+        execute(params: CreateMart.Params): Promise<MartModel>
+        checkDuplicity(cnpj_cpf: string, email: string, phone?: string, corporate_name?:string, financial_email?:string, mart?:MartModel): Promise<void> 
+    }
 }
 
-export default class CreateMart {
+export default class CreateMart implements CreateMart.ICreateMart {
 
     constructor(
         private readonly martsRepository: DatabaseAdapter,

@@ -3,6 +3,11 @@ import { FileRepository } from "../../../domain/vendors/FileRepository";
 import { IdGenerator } from "../../../domain/vendors/Utils";
 
 export namespace CreateAnnex {
+
+    export interface ICreateAnnex {
+        execute(params: Params ): Promise<boolean> 
+    }
+
     export type Params = {
         buffer: Buffer,
         contentType: string,
@@ -11,7 +16,7 @@ export namespace CreateAnnex {
     }
 }
 
-export default class CreateAnnex {
+export default class CreateAnnex implements CreateAnnex.ICreateAnnex{
     constructor(
         private readonly idGenerator: IdGenerator,
         private readonly fileRepository: FileRepository,

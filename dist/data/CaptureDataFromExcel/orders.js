@@ -11,6 +11,8 @@ class OrdersFromExcel {
         this.knexConnection = knexConnection;
         this.xlsParser = new XlsxAdapter_1.default({
             "Quantidade": 'quantity',
+            "Numero": 'os',
+            "Data": "created_at",
             "Previsão": "forecast",
             "Produto": "product",
             "Estabelecimento": "mart",
@@ -23,12 +25,15 @@ class OrdersFromExcel {
             var mart = "";
             var product_str = "";
             if (o.product_id) {
-                let product_result = await this.knexConnection('products').where({ id: o.product_id }).first().select(["description", 'item_id', 'brand_id']);
+                let product_result = await this.knexConnection('products').where({ id: o.product_id }).first().select(["description", 'item_id', 'presentation', 'brand_id']);
                 if (product_result.item_id) {
                     let item_result = await this.knexConnection('product_items').where({ id: product_result.item_id }).first().select("name");
                     product_str = `${item_result.name}, `;
                 }
                 product_str += product_result.description;
+                if (product_result.presentation) {
+                    product_str += ` - ${product_result.presentation}`;
+                }
                 if (product_result.brand_id) {
                     let brand_result = await this.knexConnection('brands').where({ id: product_result.brand_id }).first().select("name");
                     product_str += ` - ${brand_result.name}`;

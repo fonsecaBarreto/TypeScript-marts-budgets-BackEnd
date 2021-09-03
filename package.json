@@ -10,6 +10,7 @@
     "stage": "cross-env NODE_ENV=stage nodemon --exec sucrase-node ./src/main/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.ts",
+    "test:integration": "npm test -- --watch -c jest-integration-config.ts",
     "test:watch": "npm test -- --watch ",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "build": "tsc"

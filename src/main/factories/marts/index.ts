@@ -14,11 +14,17 @@ import { CreateMartController, UpdateMartController, FindController, RemoveContr
 import { SignUpMartController } from '../../../presentation/controllers/marts-controllers/SignUp'
 import { JoinMartController } from '../../../presentation/controllers/marts-controllers/Join' 
 import { FilterListMart } from '../../../presentation/controllers/marts-controllers/ListMarts' 
+import { signUpSchema, signUpfilesSchema } from './schemas/'
+
+/* schemas */
 
 /* dependencies */
-import { signUpEmailHook } from '../EmailHooks'
+import { signUpEmailHook, martWelcomeEmailHook } from '../EmailHooks'
+import { MartModel } from '../../../domain/entities/MartModel'
+
 const { idGenerator, hasher, encrypter, mailer, fileRepository, passwordGenerator } = vendors
 const { martsRepository, addressRepository, martannexsRepository, martsChecklistsRepository } = repositories
+
 /* instaces */
 export const createMart = new CreateMart(martsRepository, idGenerator, hasher, addressRepository, checkListUseCases.createCheckList)
 export const findMart = new FindMart(martsRepository)
@@ -31,7 +37,9 @@ export const serializers = {
 export const controllers = {
     
     filterList: new FilterListMart(martsRepository, serializers.martPrivateView),
-    join: new JoinMartController(martsRepository, passwordGenerator, hasher, mailer), 
+    join: new JoinMartController(martsRepository, passwordGenerator, hasher, (mart: MartModel) =>{
+        martWelcomeEmailHook.execute(mart)
+    }), 
     
     crud: {
         create: new CreateMartController(addressValidator, AddressUseCases.createAddress, createMart, serializers.martPrivateView),
@@ -41,7 +49,9 @@ export const controllers = {
     },
     
     login:{
-        signup: new SignUpMartController(addressValidator, AddressUseCases.createAddress, createMart, annexsUseCases.createAnnex, signUpEmailHook), //'contato@unacompras.com.br'
+        signup: new SignUpMartController(signUpSchema, signUpfilesSchema, addressValidator, AddressUseCases.createAddress, createMart, annexsUseCases.createAnnex, (mart:MartModel)=>{
+            signUpEmailHook.execute(mart)
+        }), 
         signin: new MartsSignInController(martsRepository, encrypter, hasher),
         auth: new AuthMartController(checkListUseCases.updateCheckList, serializers.martPrivateView),
         resetPassword: new ResetPassword(martsRepository, mailer, encrypter, keys.react_client),

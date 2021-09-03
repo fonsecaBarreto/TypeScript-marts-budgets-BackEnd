@@ -1,0 +1,37 @@
+{
+    "SignUp": {
+        "name": { "type": "string",
+            "missingMessage": "Informe o Nome da sua empresa" },
+        "email": { "type": "email",
+            "missingMessage": "Informe um E-mail de trabalho para prosseguir ",
+            "invalidMessage": "Verifique se seu E-mail esta correto"
+        },
+        "phone": { "type": "phone", "optional": true,
+            "invalidMessage": "Informe um Número de telefone valido"
+        },
+        "cnpj_cpf": { "type": "cnpj/cpf",
+            "missingMessage": "É necessario um documento para validar sua identidade",
+            "invalidMessage": "Verifique se o documento informado está correto"
+        },
+        "transfer_allowed": { "type": "boolean",
+            "missingMessage": "Sua Colaboração é muito importante, Certifique-se de que marcar essa opção"
+        },
+        "address": {
+            "type": "json",
+            "missingMessage": "Informe um Endereço valido",
+            "invalidMessage": "Certifique-se de preencher todos os campos"
+        },
+        "responsible_name": {
+            "type": "string", "label": "Responsável",
+            "missingMessage": "Informe o nome do Responsável"
+        }
+    },
+    "FilesSchema": {
+        "annexs": {
+            "optional": true,
+            "types": ["image/jpeg", "image/png", "image/webp", "application/pdf"],
+            "max_size": 5e+6,
+            "multiples": 10
+        }
+    }
+}

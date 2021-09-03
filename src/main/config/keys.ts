@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 config()
 
-export default {
+export default {//'contato@unacompras.com.br'
     node_env: process.env.NODE_ENV || 'test',
     port: process.env.PORT || 9000,
     jwt_secret: process.env.JWT_ECRET || 'test_secret',

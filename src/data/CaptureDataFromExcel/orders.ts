@@ -13,6 +13,8 @@ export class OrdersFromExcel implements ExcelParser{
     ){
         this.xlsParser = new XlsxAdapter({
             "Quantidade": 'quantity',
+            "Numero": 'os',
+            "Data": "created_at",
             "Previsão": "forecast",
             "Produto": "product",
             "Estabelecimento": "mart",
@@ -28,7 +30,7 @@ export class OrdersFromExcel implements ExcelParser{
                 var product_str: string =  ""
 
                 if(o.product_id){
-                    let product_result = await this.knexConnection('products').where({id: o.product_id}).first().select(["description",'item_id', 'brand_id'])
+                    let product_result = await this.knexConnection('products').where({id: o.product_id}).first().select(["description",'item_id','presentation', 'brand_id'])
                     
                     if(product_result.item_id){
                         let item_result =await this.knexConnection('product_items').where({id:product_result.item_id}).first().select("name")
@@ -37,10 +39,18 @@ export class OrdersFromExcel implements ExcelParser{
                     
                     product_str+= product_result.description 
 
+                    if(product_result.presentation){
+                        product_str+=` - ${product_result.presentation}`
+                    }
+
                     if(product_result.brand_id){
                         let brand_result =await this.knexConnection('brands').where({id:product_result.brand_id}).first().select("name")
                         product_str+= ` - ${brand_result.name}`
                     }
+
+                 
+
+
 
                 }
 
