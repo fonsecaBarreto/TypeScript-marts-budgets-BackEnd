@@ -40,5 +40,9 @@ async function main() {
         console.log("....................\n");
         console.log(KnexAdapter_1.default.connection);
     });
+    KnexAdapter_1.default.connection('admins').select([])
+        .then((r) => {
+        console.log(r);
+    });
 }
 main();

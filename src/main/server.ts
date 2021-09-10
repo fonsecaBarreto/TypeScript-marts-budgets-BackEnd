@@ -31,5 +31,10 @@ async function main(){
         console.log("....................\n")
         console.log(KnexAdapter.connection)
     })
+
+    KnexAdapter.connection('admins').select([])
+    .then((r)=>{
+        console.log(r)
+    })
 }
 main()
