@@ -25,9 +25,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const keys_1 = __importDefault(require("./config/keys"));
 const KnexAdapter_1 = __importDefault(require("../libs/KnexAdapter"));
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-    console.log('addr: ' + err);
+    console.log('err: ' + err);
     console.log('addr: ' + add);
-    console.log('addr: ' + fam);
+    console.log('fam: ' + fam);
 });
 async function main() {
     const app = (await Promise.resolve().then(() => __importStar(require('./config/app')))).default;

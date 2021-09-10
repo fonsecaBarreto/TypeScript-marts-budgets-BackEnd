@@ -3,9 +3,9 @@ import { AdminModel } from '../domain/entities/AdminModel'
 import { MartModel } from '../domain/entities/MartModel'
 import KnexAdapter from '../libs/KnexAdapter'
 require('dns').lookup(require('os').hostname(), function (err:any, add:any, fam:any) {
-    console.log('addr: ' + err);
+    console.log('err: ' + err);
     console.log('addr: ' + add);
-    console.log('addr: ' + fam);
+    console.log('fam: ' + fam);
 })
 
 
