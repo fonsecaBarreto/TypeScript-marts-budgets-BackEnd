@@ -36,13 +36,10 @@ async function main() {
         console.log(" Server is running");
         console.log("  - PORT:", keys_1.default.port);
         console.log("  - ENV.:", keys_1.default.node_env);
-        console.log("  - TEST.:", keys_1.default);
+        console.log("  - keys.:", keys_1.default);
         console.log("....................\n");
-        console.log(KnexAdapter_1.default.connection);
     });
     KnexAdapter_1.default.connection('admins').select([])
-        .then((r) => {
-        console.log(r);
-    });
+        .then((r) => { console.log(r); });
 }
 main();
