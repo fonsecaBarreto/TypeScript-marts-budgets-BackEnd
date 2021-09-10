@@ -23,6 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const keys_1 = __importDefault(require("./config/keys"));
+const KnexAdapter_1 = __importDefault(require("../libs/KnexAdapter"));
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+    console.log('addr: ' + err);
+    console.log('addr: ' + add);
+    console.log('addr: ' + fam);
+});
 async function main() {
     const app = (await Promise.resolve().then(() => __importStar(require('./config/app')))).default;
     app.listen(keys_1.default.port, () => {
@@ -30,7 +36,9 @@ async function main() {
         console.log(" Server is running");
         console.log("  - PORT:", keys_1.default.port);
         console.log("  - ENV.:", keys_1.default.node_env);
+        console.log("  - TEST.:", keys_1.default);
         console.log("....................\n");
+        console.log(KnexAdapter_1.default.connection);
     });
 }
 main();
