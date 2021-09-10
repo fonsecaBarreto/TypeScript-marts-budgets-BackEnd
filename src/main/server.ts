@@ -27,14 +27,11 @@ async function main(){
         console.log(" Server is running")
         console.log("  - PORT:", keys.port)
         console.log("  - ENV.:", keys.node_env)
-        console.log("  - TEST.:", keys)
+        console.log("  - keys.:", keys)
         console.log("....................\n")
-        console.log(KnexAdapter.connection)
     })
 
     KnexAdapter.connection('admins').select([])
-    .then((r)=>{
-        console.log(r)
-    })
+    .then((r)=>{  console.log(r) })
 }
 main()
