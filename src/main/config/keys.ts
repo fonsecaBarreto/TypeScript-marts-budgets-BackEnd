@@ -12,6 +12,10 @@ export default {//'contato@unacompras.com.br'
     aws_uploads_bucket: process.env.AWS_UPLOADS_BUCKET, 
     aws_access_key: process.env.AWS_ACCESS_KEY, 
     aws_secret_key: process.env.AWS_SECRET_KEY, 
-    aws_region: process.env.AWS_REGION
+    aws_region: process.env.AWS_REGION,
+
+
+    database_url: process.env.DATABASE_URL,
+    stage_database_url: process.env.STAGE_DATABASE_URL
 }
 
